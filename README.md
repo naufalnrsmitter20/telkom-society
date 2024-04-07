@@ -34,7 +34,7 @@ Teknologi yang digunakan
 
 Coming soon
 
-## Member
+## Members
 
 ### Project Management
 
