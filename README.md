@@ -43,11 +43,12 @@ Coming soon
 ### Developer
 
 - Naufal Nabil Ramadhan (X RPL 8)
+- Arsyad Ali Mahardika (X RPL 1)
 - Muhammad Zuhair Zuhdi (X RPL 6)
 - Fahrell Sandy Zhariif Widiatmoko (X RPL 5)
 
 ### UI/UX Designer
 
-- Arsyad Ali Mahardika
 - Haza Nashrullah Kuswantoro (X RPL 5)
+- Fahrell Sandy Zhariif Widiatmoko (X RPL 5)
 - Ryo Hariyono Angwyn (X RPL 5)
