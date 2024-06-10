@@ -1,4 +1,4 @@
-# Telkom Society - Docs
+# Telkom Society
 
 ## How to run
 
