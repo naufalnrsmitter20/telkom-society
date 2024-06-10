@@ -3,7 +3,7 @@ import React from "react";
 
 export default function page() {
   return (
-    <div>
+    <div className="mt-48">
       <LinkButton href="#" variant="base" loading>
         Hello
       </LinkButton>
