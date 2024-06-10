@@ -1,4 +1,4 @@
-# Build your best team (By Best) - Docs
+# Telkom Society - Docs
 
 ## How to run
 
