@@ -10,7 +10,7 @@ export default function Home() {
         <div>
           <div></div>
           <div>
-            <Image src={Orangkeren} alt="Orang Sukses Aamiin" />
+            <Image src={Orangkeren} alt="Orang Sukses Amin" />
           </div>
         </div>
       </div>
