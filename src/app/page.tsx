@@ -1,13 +1,18 @@
 import Navbar from "./components/utils/Navbar";
 import Image from "next/image";
-import LinkButton from "./components/utils/Button";
 
+import Orangkeren from "@/../public/img/Element01.png";
 
 export default function Home() {
   return (
     <main>
-      <div>
-        <Navbar />
+      <div className="mt-[119px]">
+        <div>
+          <div></div>
+          <div>
+            <Image src={Orangkeren} alt="Orang Sukses Aamiin" />
+          </div>
+        </div>
       </div>
     </main>
   );
