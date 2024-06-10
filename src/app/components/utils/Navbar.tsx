@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import LinkButton from "./Button";
+import { LinkButton } from "./Button";
 
 import Logo from "@/../public/Telkom Society 1.png";
 import { useState } from "react";
