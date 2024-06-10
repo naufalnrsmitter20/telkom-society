@@ -119,7 +119,7 @@ export function FormButton({ className, children, disabled, loading, onClick, ty
     );
   } else if (disableButton) {
     return (
-      <button type={type} onClick={onClick} className={`focus:outline-none text-black bg-slate-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 ${className} `} disabled>
+      <button type={type} onClick={onClick} className={`focus:outline-none text-black bg-slate-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 ${className} `} disabled={disabled}>
         {children}
       </button>
     );
