@@ -56,7 +56,7 @@ export default function Navbar() {
                   <ul className="fixed left-0 mt-4 w-screen border-y bg-white border-slate-300 bg-primary-1000 py-2">
                     <li>
                       <Link
-                        href="#"
+                        href="..."
                         className="text-red-400 rounded md:bg-transparent hover:text-red-600"
                         aria-current="page"
                       >
@@ -100,7 +100,7 @@ export default function Navbar() {
             <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 opacity-80">
               <li>
                 <Link
-                  href="#"
+                  href=".."
                   className="text-red-400 rounded md:bg-transparent hover:text-red-600 duration-300"
                   aria-current="page"
                 >
