@@ -14,17 +14,19 @@ import Hijau from "@/../public/ui/Group_fill.png";
 import Piala from "@/../public/ui/piala.png";
 import Merah from "@/../public/ui/User_alt_fill.png";
 
-const Festivebg = "bg-[url(" + festbg + ")]";
+// const Festivebg = "bg-[url(" + festbg + ")]";
 
 export default function Home() {
   return (
     <main className="mt-[200px]">
-      <div className="justify-center flex items-center">
-        <div>
-          <h1 className={`text-[64px] text-start ${archivo_black.className}`}>
-            TELKOM<span className="text-red-500">SOCIETY</span>
+      <div className="justify-center flex flex-col xl:flex-row items-center px-4">
+        <div className="max-w-[490px]">
+          <h1
+            className={`text-[64px] text-start ${archivo_black.className} leading-none`}
+          >
+            TELKOM <span className="text-red-500">SOCIETY</span>
           </h1>
-          <p className="text-[36px] font-[400]">
+          <p className="text-[32px] font-[400]">
             Find the Best Competition
             <br /> Partner to Succeed Together!
           </p>
@@ -36,7 +38,7 @@ export default function Home() {
             Join Us Now!
           </LinkButton>
         </div>
-        <div>
+        <div className="mt-12">
           <Image src={Orangkeren} alt="Orang Sukses Amin" />
         </div>
       </div>
@@ -53,7 +55,7 @@ export default function Home() {
           </div>
         </div>
         <div className="flex justify-center items-center">
-          <div className="mt-[42px] flex gap-[190px] text-center">
+          <div className="mt-[42px] flex flex-col xl:flex-row gap-[50px] xl:gap-[190px] text-center">
             <div className="flex flex-col gap-4 items-center">
               <Image src={speed} alt="Fast" />
               <h1 className="text-red-500 text-[28px] font-medium">Fast</h1>
@@ -71,42 +73,43 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="w-full max-w-full h-screen relative mt-[270px]">
+      <div className="w-full max-w-full h-[1100px] xl:h-screen relative mt-[400px] xl:mt-[270px] xl:bg-transparent bg-red-500">
         <Image
           src={festbg}
           alt="Background"
-          className="w-full object-cover h-full absolute -z-10"
+          className="w-full object-cover h-full absolute -z-10 invisible xl:visible"
         />
-        <div className="flex justify-center text-center w-full">
-          <h1 className="text-[36px] text-white font-[600] mt-[120px]">
+        <div className="flex flex-col justify-center text-center w-full">
+          <div className="h-12"></div>
+          <h1 className="text-[36px] text-white font-[600] xl:mt-[120px]">
             Telkom Society is trusted and used by dozens of students in
             <br /> Telkom Malang Vocational School.
           </h1>
         </div>
-        <div className="flex w-full items-end justify-center absolute bottom-0 max-w-full">
-          <div className="mx-auto flex gap-x-[150px] text-[28px] text-center">
-            <div className="bg-white flex justify-center pt-[30px] mt-24 rounded-t-xl flex-col text-center">
+        <div className="flex w-full items-center xl:items-end justify-center static xl:absolute bottom-0 max-w-full mt-12">
+          <div className="xl:mx-auto mx-0 flex flex-col xl:flex-row gap-y-4 xl:gap-x-[150px] text-[28px] text-center">
+            <div className="bg-white flex justify-center pt-4 xl:pt-[30px] mt-0 xl:mt-24 rounded-xl xl:rounded-b-none xl:rounded-t-xl flex-col text-center">
               <div className="w-[275px]"></div>
-              <div className="flex flex-col justify-center items-center px-[10px] pb-[140px] ">
+              <div className="flex flex-col justify-center items-center px-[10px] md:pb-[80px] xl:pb-[140px] pb-12 ">
                 <Image src={Piala} alt="Piala" />
                 <h1>Jumlah Kompetisi</h1>
                 <p className="opacity-70">Placeholder</p>
               </div>
             </div>
-            <div className="bg-white flex justify-center pt-[30px] rounded-t-xl flex-col text-center">
+            <div className="bg-white flex justify-center pt-4 xl:pt-[30px] xl:rounded-t-xl xl:rounded-b-none rounded-xl flex-col text-center">
               <div className="w-[275px]"></div>
-              <div className="flex flex-col justify-center items-center px-[10px] pb-[140px]">
+              <div className="flex flex-col justify-center items-center px-[10px] md:pb-[80px] xl:pb-[140px] pb-12">
                 <Image src={Merah} alt="Merah" />
                 <h1>Jumlah User</h1>
-                <p className="opacity-70 mb-24">Placeholder</p>
+                <p className="opacity-70 xl:mb-24 mb-0">Placeholder</p>
               </div>
             </div>
-            <div className="bg-white flex justify-center pt-[30px] mt-12 rounded-t-xl flex-col text-center">
+            <div className="bg-white flex justify-center pt-4 xl:pt-[30px] mt-0 xl:mt-12 xl:rounded-t-xl xl:rounded-b-none rounded-xl flex-col text-center pb-12">
               <div className="w-[275px]"></div>
-              <div className="flex flex-col justify-center items-center px-[10px] pb-[140px]">
+              <div className="flex flex-col justify-center items-center px-[10px] md:pb-[80px] xl:pb-[140px] pb-12]">
                 <Image src={Hijau} alt="Hijau" />
                 <h1>Jumlah Tim</h1>
-                <p className="opacity-70 mb-12">Placeholder</p>
+                <p className="opacity-70 mb-0 xl:mb-12">Placeholder</p>
               </div>
             </div>
           </div>
