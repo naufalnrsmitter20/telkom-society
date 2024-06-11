@@ -91,7 +91,7 @@ export function FormButton({ className, children, disabled, loading, onClick, ty
             <span>Loading...</span>
           </>
         ) : (
-          <>{children}</>
+          <p className="mx-auto">{children}</p>
         )}
       </button>
     );
