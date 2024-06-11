@@ -40,7 +40,7 @@ export default function Navbar() {
                 <div className="flex mt-10 text-center">
                   <ul className="fixed left-0 mt-4 w-screen border-y bg-white border-slate-300 bg-primary-1000 py-2">
                     <li>
-                      <Link href="#" className="text-red-400 rounded md:bg-transparent hover:text-red-600" aria-current="page">
+                      <Link href="..." className="text-red-400 rounded md:bg-transparent hover:text-red-600" aria-current="page">
                         Home
                       </Link>
                     </li>
@@ -68,7 +68,7 @@ export default function Navbar() {
           <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
             <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 opacity-80">
               <li>
-                <Link href="#" className="text-red-400 rounded md:bg-transparent hover:text-red-600 duration-300" aria-current="page">
+                <Link href=".." className="text-red-400 rounded md:bg-transparent hover:text-red-600 duration-300" aria-current="page">
                   Home
                 </Link>
               </li>

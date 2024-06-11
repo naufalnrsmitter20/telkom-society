@@ -1,5 +1,9 @@
 import React from "react";
 
 export default function partner() {
-  return <div>page</div>;
+  return (
+    <main className="">
+      <div>hello world</div>
+    </main>
+  );
 }
