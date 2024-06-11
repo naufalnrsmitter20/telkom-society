@@ -1,4 +1,4 @@
-# Build your best team (By Best) - Docs
+# Telkom Society
 
 ## How to run
 
@@ -42,13 +42,12 @@ Coming soon
 
 ### Developer
 
-- Naufal Nabil Ramadhan (X RPL 8)
-- Arsyad Ali Mahardika (X RPL 1)
-- Muhammad Zuhair Zuhdi (X RPL 6)
-- Fahrell Sandy Zhariif Widiatmoko (X RPL 5)
+- Naufal Nabil Ramadhan (XI RPL)
+- Muhammad Zuhair Zuhdi (XI RPL)
+- Arsyad Ali Mahardika (XI RPL)
+- Fahrell Sandy Zhariif Widiatmoko (XI RPL)
+- Haza Nashrullah Kuswantoro (XI RPL)
 
 ### UI/UX Designer
 
-- Haza Nashrullah Kuswantoro (X RPL 5)
-- Fahrell Sandy Zhariif Widiatmoko (X RPL 5)
-- Ryo Hariyono Angwyn (X RPL 5)
+- Ryo Hariyono Angwyn (XI RPL)

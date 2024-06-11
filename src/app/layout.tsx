@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Inter, Poppins } from "next/font/google";
+import { Inter, Poppins, Quicksand } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/utils/Navbar";
 import Footer from "./components/utils/Footer";
+import AuthProviders from "@/lib/AuthProvider";
 
 const poppins = Poppins({ weight: "400", subsets: ["latin"] });
 
@@ -19,9 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={poppins.className}>
-        <Navbar />
-        {children}
-        <Footer />
+        <AuthProviders>
+          <Navbar />
+          {children}
+          <Footer variants="red" />
+        </AuthProviders>
       </body>
     </html>
   );
