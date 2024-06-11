@@ -42,7 +42,7 @@ export default function Home() {
           <Image src={Orangkeren} alt="Orang Sukses Amin" />
         </div>
       </div>
-      <div className="mt-[175px]">
+      <div className="mt-[175px] px-4">
         <div className="flex justify-center text-center">
           <div>
             <h1 className="text-[36px] text-red-500 font-[600]">
@@ -81,7 +81,7 @@ export default function Home() {
         />
         <div className="flex flex-col justify-center text-center w-full">
           <div className="h-12"></div>
-          <h1 className="text-[36px] text-white font-[600] xl:mt-[120px]">
+          <h1 className="text-[36px] text-white font-[600] xl:mt-[120px] px-4">
             Telkom Society is trusted and used by dozens of students in
             <br /> Telkom Malang Vocational School.
           </h1>
@@ -115,7 +115,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="mt-[215px] justify-center items-center flex">
+      <div className="mt-[215px] justify-center items-center flex px-4">
         <div className="flex flex-col text-center items-center">
           <h1 className="text-[32px] font-[500]">
             Join the Telkom Society and find your dream

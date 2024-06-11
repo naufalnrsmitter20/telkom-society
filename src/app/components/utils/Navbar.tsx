@@ -134,7 +134,7 @@ export default function Navbar() {
                   href="/"
                   className={`${
                     pathName === "/" ? "text-red-400" : "text-black"
-                  } rounded md:bg-transparent hover:text-red-600`}
+                  } rounded md:bg-transparent hover:text-red-600 duration-500`}
                 >
                   Home
                 </Link>
@@ -144,7 +144,7 @@ export default function Navbar() {
                   href="/partner"
                   className={`${
                     pathName === "/partner" ? "text-red-400" : "text-black"
-                  } rounded md:hover:bg-transparent hover:text-red-600`}
+                  } rounded md:hover:bg-transparent hover:text-red-600 duration-500`}
                 >
                   Partner
                 </Link>
@@ -154,7 +154,7 @@ export default function Navbar() {
                   href="/messages"
                   className={`${
                     pathName === "/messages" ? "text-red-400" : "text-black"
-                  }text-black rounded md:hover:bg-transparent hover:text-red-600`}
+                  }text-black rounded md:hover:bg-transparent hover:text-red-600 duration-500`}
                 >
                   Messages
                 </Link>
@@ -164,7 +164,7 @@ export default function Navbar() {
                   href="/pengembang"
                   className={`${
                     pathName === "/pengembang" ? "text-red-400" : "text-black"
-                  } rounded md:hover:bg-transparent hover:text-red-600`}
+                  } rounded md:hover:bg-transparent hover:text-red-600 duration-500`}
                 >
                   Developers
                 </Link>
