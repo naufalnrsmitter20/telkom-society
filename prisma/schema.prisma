@@ -5,7 +5,6 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
-
 }
 
 enum Job {
@@ -20,12 +19,18 @@ enum Role {
   ADMIN
 }
 
+enum Status {
+  Have_Team
+  Dont_Have_Team
+}
+
 model User {
-  id            String  @id @default(uuid()) @map("user_id") @db.Char(36)
-  email         String  @unique
+  id            String        @id @default(uuid()) @map("user_id") @db.Char(36)
+  email         String        @unique
   photo_profile String
   role          Role
   job           Job
+  status        Status
   Skills        Skill[]
   timMembers    Tim[]
   userAuth      UserAuth?
@@ -36,7 +41,6 @@ model User {
   instagram     String?
   website       String?
   whatsapp      String?
-
 }
 
 model UserAuth {
@@ -55,15 +59,15 @@ model Tim {
   members     User[]
 }
 
-model Skill{
+model Skill {
   SkillName String @id @unique
   users     User[]
 }
 
 model Project {
-  id          String @id @unique
-  name        String
-  members     User[]
+  id      String @id @unique
+  name    String
+  members User[]
 }
 
 model certificate {
@@ -72,5 +76,5 @@ model certificate {
   description String
   link        String
   userid      String
-  user        User @relation(fields: [userid], references: [id])
+  user        User   @relation(fields: [userid], references: [id])
 }

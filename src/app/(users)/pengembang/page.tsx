@@ -3,11 +3,11 @@ import React from "react";
 export default function Pengembang() {
   const developers = [
     { job: "Project Manager", name: "Muhammad Chusni Agus, M.Pd., Gr." },
-    { job: "Hacker Grounded", name: "Naufal Nabil Ramadhan" },
-    { job: "Hacker The Next Way", name: "Muhammad Zuhair Zuhdi" },
-    { job: "Hacker Grounded", name: "Fahrell Sandy Zhariif Widiatmoko" },
-    { job: "Hacker Grounded", name: "Haza Nasrullah Kuswantoro" },
-    { job: "Hipster Grounded", name: "Ryo Hariyono Angwyn" },
+    { job: "CIO Grounded", name: "Naufal Nabil Ramadhan" },
+    { job: "CTO The Next Way", name: "Muhammad Zuhair Zuhdi" },
+    { job: "CTO Grounded", name: "Fahrell Sandy Zhariif Widiatmoko" },
+    { job: "CFO Grounded", name: "Haza Nasrullah Kuswantoro" },
+    { job: "CMO Grounded", name: "Ryo Hariyono Angwyn" },
   ];
 
   return (

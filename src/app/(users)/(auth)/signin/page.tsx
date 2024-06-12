@@ -4,12 +4,11 @@ import imageSigIn from "@/../public/img/sigin image.png";
 import Logo from "@/../public/img/logo telkom society big.png";
 import { FormButton } from "@/app/components/utils/Button";
 import google from "@/../public/svg/google.svg";
-import Footer from "@/app/components/utils/Footer";
 
 export default function signin() {
   return (
     <React.Fragment>
-      <main className="h-full">
+      <main className="min-h-screen-minus-10">
         <div className="flex max-w-full w-full h-screen items-center justify-center relative">
           <div className="w-1/2 hidden lg:inline-block relative">
             <Image src={imageSigIn} alt="gambar login" className="object-cover max-h-screen w-full -z-10" />
