@@ -3,8 +3,14 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("MONGODB_URI")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Job {
+  HUSTLER
+  HIPSTER
+  HACKER
 }
 
 enum Role {
@@ -13,20 +19,62 @@ enum Role {
   ADMIN
 }
 
+enum Status {
+  Have_Team
+  Dont_Have_Team
+}
+
 model User {
-  id            String  @id @default(auto()) @map("_id") @db.ObjectId
-  email         String  @unique
-  name          String
-  password      String?
+  id            String        @id @default(uuid()) @map("user_id") @db.Char(36)
+  email         String        @unique
   photo_profile String
   role          Role
+  job           Job
+  status        Status
+  Skills        Skill[]
   timMembers    Tim[]
+  userAuth      UserAuth?
+  projects      Project[]
+  certificates  certificate[]
+  linkedin      String?
+  github        String?
+  instagram     String?
+  website       String?
+  whatsapp      String?
+}
+
+model UserAuth {
+  id         String    @id @default(uuid()) @map("userauth_id") @db.Char(36)
+  password   String?
+  last_login DateTime?
+  userEmail  String    @unique
+  user       User      @relation(references: [email], fields: [userEmail], onDelete: Cascade)
 }
 
 model Tim {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  id          String @id @unique
   name        String
   description String
   photo       String
   members     User[]
+}
+
+model Skill {
+  SkillName String @id @unique
+  users     User[]
+}
+
+model Project {
+  id      String @id @unique
+  name    String
+  members User[]
+}
+
+model certificate {
+  id          String @id @unique
+  name        String
+  description String
+  link        String
+  userid      String
+  user        User   @relation(fields: [userid], references: [id])
 }

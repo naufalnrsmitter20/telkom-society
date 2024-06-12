@@ -22,19 +22,19 @@ export default function InformasiPilihan() {
     </div>
     <div className="mb-10">
       <h1 className="text-[25px] font-medium text-[#F45846] ">Hipster</h1>
-      <div className="w-full max-w-full mb-3">
+      <div className="w-full max-w-full mb-5">
         <Image src={Hipster} alt="helo world" className="mx-auto" width={500} height={500} />
       </div>
       <p className="text-[20px] font-medium text-black opacity-70 -mt-2 text-justify">Hustler adalah penggerak bisnis yang fokus pada strategi, pemasaran, dan pertumbuhan perusahaan. Mereka mengembangkan strategi bisnis, mencari dan mengamankan pelanggan, serta menjalin hubungan dengan investor. Dengan keterampilan dalam penjualan, pemasaran, dan manajemen proyek, mereka memastikan produk dikenal di pasar dan menghasilkan pendapatan, serta menciptakan model bisnis yang berkelanjutan dan berkembang.</p>
     </div>
     <div className="mb-10">
       <h1 className="text-[25px] font-medium text-[#F45846] ">Hacker</h1>
-      <div className="w-full max-w-full mb-3">
+      <div className="w-full max-w-full mb-5">
         <Image src={Hacker} alt="helo world" className="mx-auto" width={500} height={500} />
       </div>
-      <p className="text-[20px] font-medium text-black opacity-70 -mt-2 text-justify">Hacker adalah teknisi yang mengembangkan dan memelihara produk. Mereka menulis kode, mengembangkan fitur baru, memecahkan bug, dan memastikan infrastruktur teknis berjalan dengan baik. Dengan keahlian dalam pemrograman, pengembangan web/app, dan sistem basis data, mereka memastikan produk berfungsi dengan optimal, aman, dan memiliki kinerja yang handal.</p>
+      <p className="text-[20px] font-medium text-black opacity-70 text-justify mt-5">Hacker adalah teknisi yang mengembangkan dan memelihara produk. Mereka menulis kode, mengembangkan fitur baru, memecahkan bug, dan memastikan infrastruktur teknis berjalan dengan baik. Dengan keahlian dalam pemrograman, pengembangan web/app, dan sistem basis data, mereka memastikan produk berfungsi dengan optimal, aman, dan memiliki kinerja yang handal.</p>
     </div>
-    <div className="w-full max-w-full mb-3">
+    <div className="w-full max-w-full mb-5">
       <h1 className="text-[25px] font-medium mx-auto">Sudah Paham? Jika sudah, silahkan kembali ke halaman pemilihan</h1>
       <div className="px-80">
 
