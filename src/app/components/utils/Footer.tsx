@@ -7,7 +7,7 @@ export default function Footer({ variants }: FooterProps) {
   const invisFooter = variants === "invis";
   if (redFooter) {
     return (
-      <footer className="flex justify-center items-center h-16 staticssss bottom-0 left-0 right-0 z-10 bg-red-500 text-white">
+      <footer className="flex justify-center items-center h-16 relative bottom-0 left-0 right-0 z-10 bg-red-500 text-white mt-10 lg:mt-0">
         <p className="text-center">© 2024 - SMK Telkom Malang</p>
       </footer>
     );
