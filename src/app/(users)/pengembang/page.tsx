@@ -18,8 +18,8 @@ export default function Pengembang() {
           <div className="grid grid-cols-2 gap-y-2 gap-x-3 max-w-3xl">
             {developers.map((developer, index) => (
               <React.Fragment key={index}>
-                <p className="text-[18px] font-semibold text-black opacity-70">{developer.job}</p>
-                <p className="text-[18px] font-medium text-black opacity-70">{developer.name}</p>
+                <p className="xl:text-[18px] lg:text-[17px] md:text-[16px] sm:text-[15px] text-[14px] font-semibold text-black opacity-70">{developer.job}</p>
+                <p className="xl:text-[18px] lg:text-[17px] md:text-[16px] sm:text-[15px] text-[14px] font-medium text-black opacity-70">{developer.name}</p>
               </React.Fragment>
             ))}
           </div>
