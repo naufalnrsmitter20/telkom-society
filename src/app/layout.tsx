@@ -5,7 +5,10 @@ import Navbar from "./components/utils/Navbar";
 import Footer from "./components/utils/Footer";
 import AuthProviders from "@/lib/AuthProvider";
 
-const poppins = Poppins({ weight: "400", subsets: ["latin"] });
+const poppins = Poppins({ 
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"], 
+  subsets: ["latin"] 
+});
 
 export const metadata: Metadata = {
   title: "Telkom Society",
