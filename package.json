@@ -6,10 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prisma:push" : "dotenv -e .env.local prisma db push"
   },
   "dependencies": {
     "@prisma/client": "^5.15.0",
+    "dotenv-cli": "^7.4.2",
     "mongodb": "^6.7.0",
     "mongoose": "^8.4.1",
     "next": "^14.2.3",
