@@ -92,7 +92,12 @@ export default function Navbar() {
                 </Link>
               </li>
               <li>
-                <Link href="/messages" className={`${pathName === "/messages" ? "text-red-400" : "text-black"}text-black rounded md:hover:bg-transparent hover:text-red-600 duration-500`}>
+                <Link
+                  href="/messages"
+                  className={`${
+                    pathName === "/messages" ? "text-red-400" : "text-black"
+                  } rounded md:hover:bg-transparent hover:text-red-600 duration-500`}
+                >
                   Messages
                 </Link>
               </li>
