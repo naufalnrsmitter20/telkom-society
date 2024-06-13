@@ -20,7 +20,7 @@ export default function Home() {
       <div className="justify-center flex flex-col xl:flex-row items-center px-4">
         <div className="max-w-[800px]">
           <h1 className={`text-[64px] text-start ${archivo_black.className} leading-none`}>
-            TELKOM<span className="text-red-500">SOCIETY</span>
+            TELKOM <span className="text-red-500">SOCIETY</span>
           </h1>
           <p className="text-[32px] font-normal my-2">
             Find the Best Competition
