@@ -19,7 +19,7 @@ export default function Home() {
     <main className="mt-[200px]">
       <div className="justify-center flex flex-col xl:flex-row items-center px-4">
         <div className="max-w-[800px]">
-          <h1 className={`xl:text-[64px] lg:text-[62px] md:text-[60px] sm:text-[58px] text-[56px] text-start ${archivo_black.className} leading-none`}>
+          <h1 className={`text-[64px] text-start ${archivo_black.className} leading-none`}>
             TELKOM <span className="text-red-500">SOCIETY</span>
           </h1>
           <p className="xl:text-[32px] lg:text-[30px] md:text-[28px] sm:text-[26px] text-[24px] font-normal my-2">

@@ -75,7 +75,7 @@ export default function IsiIdentitas() {
               variants="medium"
               formText="Phone"
               formName="Phone"
-              formType="text"
+              formType="number"
               formPlaceholder="Insert your Phone Number"
             />
             <Form
