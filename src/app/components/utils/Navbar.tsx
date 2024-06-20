@@ -20,7 +20,7 @@ export default function Navbar() {
   return (
     <main>
       <nav className="bg-white fixed w-full z-20 top-0 start-0 border-b border-gray-200">
-        <div className="w-screen flex flex-wrap items-center justify-between mx-auto p-4 px-20">
+        <div className="w-screen flex flex-wrap items-center justify-between mx-auto p-4 lg:px-20">
           <Link
             href="#"
             className="flex items-center space-x-3 rtl:space-x-reverse"
@@ -28,21 +28,17 @@ export default function Navbar() {
             <Image src={Logo} alt="Telkom Society" />
           </Link>
           <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-            <div>
+            {/* <div>
               {status === "unauthenticated" ? (
-                <FormButton
-                  onClick={() => signIn()}
-                  variant="white"
-                  className="rounded-full outline outline-gray-200"
-                >
+                <button onClick={() => signIn()} className="focus:outline-none text-black bg-white hover:bg-slate-100 focus:ring focus:ring-slate-100 font-medium rounded-full border border-slate-300 text-sm px-5 py-2.5 me-2 mb-2">
                   Sign In
-                </FormButton>
+                </button>
               ) : (
                 <LinkButton href="" variant="base" withArrow>
                   nama
                 </LinkButton>
               )}
-            </div>
+            </div> */}
             <button
               data-collapse-toggle="navbar-sticky"
               type="button"
@@ -108,6 +104,18 @@ export default function Navbar() {
                     </li>
                     <li>
                       <Link
+                        href="/division"
+                        className={`${
+                          pathName === "/division"
+                            ? "text-red-400"
+                            : "text-black"
+                        }text-black rounded md:hover:bg-transparent hover:text-red-600`}
+                      >
+                        Division
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
                         href="/pengembang"
                         className={`${
                           pathName === "/pengembang"
@@ -154,9 +162,19 @@ export default function Navbar() {
                   href="/messages"
                   className={`${
                     pathName === "/messages" ? "text-red-400" : "text-black"
-                  }text-black rounded md:hover:bg-transparent hover:text-red-600 duration-500`}
+                  } rounded md:hover:bg-transparent hover:text-red-600 duration-500`}
                 >
                   Messages
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/division"
+                  className={`${
+                    pathName === "/division" ? "text-red-400" : "text-black"
+                  } rounded md:hover:bg-transparent hover:text-red-600 duration-500`}
+                >
+                  Division
                 </Link>
               </li>
               <li>

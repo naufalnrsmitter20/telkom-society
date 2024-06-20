@@ -7,26 +7,74 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Job {
+  HUSTLER
+  HIPSTER
+  HACKER
+}
+
 enum Role {
   SISWA
   GURU
   ADMIN
 }
 
+enum Status {
+  Have_Team
+  Dont_Have_Team
+}
+
 model User {
-  id            Int     @id @default(autoincrement())
-  email         String  @unique
-  name          String
-  password      String?
+  id            String        @id @default(uuid()) @map("user_id") @db.Char(36)
+  email         String        @unique
   photo_profile String
   role          Role
+  job           Job
+  status        Status
+  Skills        Skill[]
   timMembers    Tim[]
+  userAuth      UserAuth?
+  projects      Project[]
+  certificates  certificate[]
+  linkedin      String?
+  github        String?
+  instagram     String?
+  website       String?
+  whatsapp      String?
+}
+
+model UserAuth {
+  id         String    @id @default(uuid()) @map("userauth_id") @db.Char(36)
+  password   String?
+  last_login DateTime?
+  userEmail  String    @unique
+  user       User      @relation(references: [email], fields: [userEmail], onDelete: Cascade)
 }
 
 model Tim {
-  id          Int    @id @default(autoincrement())
+  id          String @id @unique
   name        String
   description String
   photo       String
   members     User[]
+}
+
+model Skill {
+  SkillName String @id @unique
+  users     User[]
+}
+
+model Project {
+  id      String @id @unique
+  name    String
+  members User[]
+}
+
+model certificate {
+  id          String @id @unique
+  name        String
+  description String
+  link        String
+  userid      String
+  user        User   @relation(fields: [userid], references: [id])
 }
