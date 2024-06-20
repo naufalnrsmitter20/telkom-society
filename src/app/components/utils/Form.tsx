@@ -18,16 +18,7 @@ interface DropdownProps {
   id: number;
 }
 
-export default function Form({
-  formText,
-  formPlaceholder,
-  formType,
-  formName,
-  variants,
-  className,
-  dropvar,
-  inClassName,
-}: FormProps) {
+export default function Form({ formText, formPlaceholder, formType, formName, variants, className, dropvar, inClassName }: FormProps) {
   const gender: DropdownProps[] = [
     {
       text: "Male",
@@ -93,7 +84,7 @@ export default function Form({
         <label htmlFor="" className="flex flex-col opacity-80">
           <span className="text-[17px] font-normal mb-[10px]">{formText}</span>
           <textarea
-            className={`rounded-[8px] h-[56px] w-[575px] mb-6 p-[10px] outline outline-gray-400`}
+            className={`rounded-[8px] py-2.5 w-[575px] mb-6 p-[10px] border border-slate-400 placeholder:text-slate-600 placeholder:font-normal placeholder:tracking-wide`}
             // type={formType}
             placeholder={formPlaceholder}
             name={formName}
@@ -107,7 +98,7 @@ export default function Form({
         <label htmlFor="" className="flex flex-col opacity-80">
           <span className="text-[17px] font-normal mb-[10px]">{formText}</span>
           <input
-            className={`rounded-[8px] h-[56px] w-[335px] xl:w-[575px] mb-6 p-[10px] outline outline-gray-400`}
+            className={`rounded-[8px] py-2.5 w-[335px] xl:w-[575px] mb-6 p-[10px] border border-slate-400 placeholder:text-slate-600 placeholder:font-normal placeholder:tracking-wide`}
             type={formType}
             placeholder={formPlaceholder}
             name={formName}
@@ -121,7 +112,7 @@ export default function Form({
         <label htmlFor="" className="flex flex-col opacity-80">
           <span className="text-[17px] font-normal mb-[10px]">{formText}</span>
           <input
-            className={`rounded-[8px] h-[56px] w-[335px] xl:w-[260px] mb-6 p-[10px] outline outline-gray-400`}
+            className={`rounded-[8px] py-2.5 w-[335px] xl:w-[260px] mb-6 p-[10px] border border-slate-400 placeholder:text-slate-600 placeholder:font-normal placeholder:tracking-wide`}
             type={formType}
             placeholder={formPlaceholder}
             name={formName}
@@ -136,10 +127,8 @@ export default function Form({
       return (
         <main className={className}>
           <label htmlFor="" className="flex flex-col opacity-80">
-            <span className="text-[17px] font-normal mb-[10px]">
-              {formText}
-            </span>
-            <select className="rounded-[8px] h-[56px] w-[335px] xl:w-[575px] mb-6 p-[10px] outline outline-gray-400">
+            <span className="text-[17px] font-normal mb-[10px]">{formText}</span>
+            <select className="rounded-[8px] py-2.5 w-[335px] xl:w-[575px] mb-6 p-[10px] border border-slate-400">
               <option selected>Select Gender</option>
               {gender.map((e, i) => (
                 <option key={i} value={e.value}>
@@ -154,10 +143,8 @@ export default function Form({
       return (
         <main className={className}>
           <label htmlFor="" className="flex flex-col opacity-80">
-            <span className="text-[17px] font-normal mb-[10px]">
-              {formText}
-            </span>
-            <select className="rounded-[8px] h-[56px] w-[335px] xl:w-[575px] mb-6 p-[10px] outline outline-gray-400">
+            <span className="text-[17px] font-normal mb-[10px]">{formText}</span>
+            <select className="rounded-[8px] py-2.5 w-[335px] xl:w-[575px] mb-6 p-[10px] border border-slate-400">
               <option selected>Select Region</option>
               {religion.map((e, i) => (
                 <option key={i} value={e.value}>
