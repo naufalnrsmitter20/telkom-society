@@ -5,7 +5,7 @@ import { FormButton, LinkButton } from "./Button";
 
 import Logo from "@/../public/Telkom Society 1.png";
 import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 
 export default function Navbar() {
@@ -15,6 +15,7 @@ export default function Navbar() {
   };
 
   const pathName = usePathname();
+  const router = useRouter();
 
   const { data: session, status } = useSession();
   return (
@@ -25,9 +26,12 @@ export default function Navbar() {
             <Image src={Logo} alt="Telkom Society" />
           </Link>
           <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-            {/* <div>
+            <div>
               {status === "unauthenticated" ? (
-                <button onClick={() => signIn()} className="focus:outline-none text-black bg-white hover:bg-slate-100 focus:ring focus:ring-slate-100 font-medium rounded-full border border-slate-300 text-sm px-5 py-2.5 me-2 mb-2">
+                <button
+                  onClick={() => router.push("/signin")}
+                  className="focus:outline-none text-black bg-white hover:bg-slate-100 focus:ring focus:ring-slate-100 font-medium rounded-full border border-slate-300 text-sm px-5 py-2.5 me-2 mb-2"
+                >
                   Sign In
                 </button>
               ) : (
@@ -35,7 +39,7 @@ export default function Navbar() {
                   nama
                 </LinkButton>
               )}
-            </div> */}
+            </div>
             <button
               data-collapse-toggle="navbar-sticky"
               type="button"
@@ -92,12 +96,7 @@ export default function Navbar() {
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/messages"
-                  className={`${
-                    pathName === "/messages" ? "text-red-400" : "text-black"
-                  } rounded md:hover:bg-transparent hover:text-red-600 duration-500`}
-                >
+                <Link href="/messages" className={`${pathName === "/messages" ? "text-red-400" : "text-black"} rounded md:hover:bg-transparent hover:text-red-600 duration-500`}>
                   Messages
                 </Link>
               </li>

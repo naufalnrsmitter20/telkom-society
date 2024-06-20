@@ -112,6 +112,25 @@ export default function partner() {
                 </div>
               </div>
             </div>
+            <div id="container" className="w-full bg-slate-50 rounded-3xl pb-6 border border-slate-200">
+              <Image src={banner} alt="banner" className="w-full" />
+              <div className="rounded-full overflow-hidden -mt-12 relative w-[60px] h-[60px] ml-4">
+                <Image src={gambarRyo} width={60} alt="image" className="absolute" />
+              </div>
+              <div className="ml-12 mt-2">
+                <p className="font-medium xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] text-[16px] text-black">Ryo Hariyono Angwyn</p>
+                <p className="font-normal xl:text-[15px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[11px] text-slate-600">Hipster | UI/UX Designer</p>
+                <p className="font-normal xl:text-[15px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[11px] text-green-400 mt-2">Status: Have Team</p>
+                <div className="mt-6 justify-start">
+                  <LinkButton variant="white" href="#" className="bg-transparent border rounded-full">
+                    Profil
+                  </LinkButton>
+                  <LinkButton variant="white" href="#" className="bg-transparent border rounded-full">
+                    Chat
+                  </LinkButton>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
