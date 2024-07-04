@@ -8,7 +8,7 @@ interface FormProps {
   formName: string;
   formType?: string;
   className?: string;
-  dropvar?: "gender" | "religion";
+  dropvar?: "gender" | "religion" | "mentor";
   inClassName?: string;
 }
 
@@ -62,6 +62,28 @@ export default function Form({ formText, formPlaceholder, formType, formName, va
       text: "Konghucu",
       value: "Konghucu",
       id: 6,
+    },
+  ];
+  const mentor: DropdownProps[] = [
+    {
+      text: "M. Chusni Agus",
+      value: "M. Chusni Agus",
+      id: 1,
+    },
+    {
+      text: "Muhammad Bagus Arifin S.Pd",
+      value: "Muhammad Bagus Arifin S.Pd",
+      id: 2,
+    },
+    {
+      text: "Firmansyah Ayatullah",
+      value: "Firmansyah Ayatullah",
+      id: 3,
+    },
+    {
+      text: "More",
+      value: "More",
+      id: 4,
     },
   ];
 
@@ -123,6 +145,7 @@ export default function Form({ formText, formPlaceholder, formType, formName, va
   } else if (dropdownForm) {
     const drop1 = dropvar === "gender";
     const drop2 = dropvar === "religion";
+    const drop3 = dropvar === "mentor";
     if (drop1) {
       return (
         <main className={className}>
@@ -147,6 +170,24 @@ export default function Form({ formText, formPlaceholder, formType, formName, va
             <select className="rounded-[8px] py-2.5 w-[335px] xl:w-[575px] mb-6 p-[10px] border border-slate-400">
               <option selected>Select Region</option>
               {religion.map((e, i) => (
+                <option key={i} value={e.value}>
+                  {e.text}
+                </option>
+              ))}
+            </select>
+          </label>
+        </main>
+      );
+    } else if (drop3) {
+      return (
+        <main className={className}>
+          <label htmlFor="" className="flex flex-col opacity-80">
+            <span className="text-[17px] font-normal mb-[10px]">
+              {formText}
+            </span>
+            <select className="rounded-[8px] h-[56px] w-[335px] xl:w-[575px] mb-6 p-[10px] outline outline-gray-400">
+              <option selected>Select Mentor</option>
+              {mentor.map((e, i) => (
                 <option key={i} value={e.value}>
                   {e.text}
                 </option>

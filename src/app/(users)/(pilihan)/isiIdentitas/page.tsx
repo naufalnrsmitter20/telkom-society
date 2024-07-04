@@ -1,9 +1,12 @@
 import React from "react";
 import Form from "@/app/components/utils/Form";
-import { LinkButton } from "@/app/components/utils/Button";
+import { FormButton } from "@/app/components/utils/Button";
 import Link from "next/link";
+import { redirect } from "next/dist/server/api-utils";
+import { useRouter } from "next/navigation";
 
 export default function IsiIdentitas() {
+  const router = useRouter();
   return (
     <main className="mt-[150px] flex w-full">
       <div className="mx-auto h-auto">
@@ -97,9 +100,13 @@ export default function IsiIdentitas() {
               <div className="flex gap-[45px] items-center ">
                 <Link href="..">Skip</Link>
                 <button title="submit">
-                  <LinkButton href=".." className="text-[20px]" variant="base">
+                  <FormButton
+                    onClick={() => router.push("/")}
+                    className="text-[20px]"
+                    variant="base"
+                  >
                     Save Identity
-                  </LinkButton>
+                  </FormButton>
                 </button>
               </div>
             </div>
