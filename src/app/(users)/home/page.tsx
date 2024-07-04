@@ -26,7 +26,7 @@ export default function Home() {
             Find the Best Competition
             <br /> Partner to Succeed Together!
           </p>
-          <LinkButton href="#" className="mt-[17px] scale-125 ml-4" variant="base">
+          <LinkButton href="/signin" className="mt-[17px] scale-125 ml-4" variant="base">
             Join Us Now!
           </LinkButton>
         </div>
@@ -102,7 +102,7 @@ export default function Home() {
             Join the Telkom Society and find your dream
             <br /> team for you school competition!
           </h1>
-          <LinkButton href="#" variant="base" className="scale-125 mb-[215px] mt-[20px]">
+          <LinkButton href="/signin" variant="base" className="scale-125 mb-[215px] mt-[20px]">
             Join Us Now!
           </LinkButton>
         </div>
