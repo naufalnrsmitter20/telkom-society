@@ -1,6 +1,7 @@
+"use client";
 import Image from "next/image";
 
-import { LinkButton } from "./../../components/utils/Button";
+import { FormButton, LinkButton } from "./../../components/utils/Button";
 
 import { Archivo_Black } from "next/font/google";
 const archivo_black = Archivo_Black({ weight: "400", subsets: ["latin"] });
@@ -13,6 +14,7 @@ import festbg from "@/../public/ui/festive-background.png";
 import Hijau from "@/../public/ui/Group_fill.png";
 import Piala from "@/../public/ui/piala.png";
 import Merah from "@/../public/ui/User_alt_fill.png";
+import { signIn } from "next-auth/react";
 
 export default function Home() {
   return (
@@ -26,9 +28,9 @@ export default function Home() {
             Find the Best Competition
             <br /> Partner to Succeed Together!
           </p>
-          <LinkButton href="/signin" className="mt-[17px] scale-125 ml-4" variant="base">
+          <FormButton onClick={() => signIn()} className="mt-[17px] scale-125 ml-4" variant="base">
             Join Us Now!
-          </LinkButton>
+          </FormButton>
         </div>
         <div className="mt-12">
           <Image src={Orangkeren} alt="Orang Sukses Amin" />
