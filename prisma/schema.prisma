@@ -7,7 +7,66 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            String        @id @default(uuid()) @map("user_id") @db.Char(36)
+  email         String        @unique
+  photo_profile String
+  role          Role          @default(SISWA)
+  job           Job
+  status        Status        @default(Dont_Have_Team)
+  linkedin      String?
+  github        String?
+  instagram     String?
+  website       String?
+  whatsapp      String?
+  name          String
+  userAuth      UserAuth?
+  certificates  certificate[]
+  projects      Project[]     @relation("ProjectToUser")
+  Skills        Skill[]       @relation("SkillToUser")
+  timMembers    Tim[]         @relation("TimToUser")
+}
+
+model UserAuth {
+  id         String    @id @default(uuid()) @map("userauth_id") @db.Char(36)
+  password   String?
+  last_login DateTime?
+  userEmail  String    @unique
+  user       User      @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+}
+
+model Tim {
+  id          String @id @unique
+  name        String
+  description String
+  photo       String
+  members     User[] @relation("TimToUser")
+}
+
+model Skill {
+  SkillName String @id @unique
+  users     User[] @relation("SkillToUser")
+}
+
+model Project {
+  id      String @id @unique
+  name    String
+  members User[] @relation("ProjectToUser")
+}
+
+model certificate {
+  id          String @id @unique
+  name        String
+  description String
+  link        String
+  userid      String
+  user        User   @relation(fields: [userid], references: [id])
+
+  @@index([userid], map: "certificate_userid_fkey")
+}
+
 enum Job {
+  UNDEFINED
   HUSTLER
   HIPSTER
   HACKER
@@ -22,59 +81,4 @@ enum Role {
 enum Status {
   Have_Team
   Dont_Have_Team
-}
-
-model User {
-  id            String        @id @default(uuid()) @map("user_id") @db.Char(36)
-  email         String        @unique
-  photo_profile String
-  role          Role
-  job           Job
-  status        Status
-  Skills        Skill[]
-  timMembers    Tim[]
-  userAuth      UserAuth?
-  projects      Project[]
-  certificates  certificate[]
-  linkedin      String?
-  github        String?
-  instagram     String?
-  website       String?
-  whatsapp      String?
-}
-
-model UserAuth {
-  id         String    @id @default(uuid()) @map("userauth_id") @db.Char(36)
-  password   String?
-  last_login DateTime?
-  userEmail  String    @unique
-  user       User      @relation(references: [email], fields: [userEmail], onDelete: Cascade)
-}
-
-model Tim {
-  id          String @id @unique
-  name        String
-  description String
-  photo       String
-  members     User[]
-}
-
-model Skill {
-  SkillName String @id @unique
-  users     User[]
-}
-
-model Project {
-  id      String @id @unique
-  name    String
-  members User[]
-}
-
-model certificate {
-  id          String @id @unique
-  name        String
-  description String
-  link        String
-  userid      String
-  user        User   @relation(fields: [userid], references: [id])
 }
