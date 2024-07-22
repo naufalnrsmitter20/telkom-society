@@ -47,29 +47,29 @@ export default function PilihKeahlian() {
     <React.Fragment>
       <main className="flex max-w-full w-full h-screen items-center justify-center">
         {!selectedOccupation && (
-          <div className={"w-7/12 grid grid-cols-3 gap-x-6"}>
+          <div className={"w-1/2 grid grid-cols-3 gap-x-6"}>
             <Image src={programmer} alt="Programmer" className="w-full h-screen object-cover" />
             <Image src={hipster} alt="Hipster" className="w-full h-screen object-cover" />
             <Image src={hustler} alt="Hustler" className="w-full h-screen object-cover" />
           </div>
         )}
         {selectedOccupation === 1 && (
-          <div className="w-7/12 grid grid-cols-1 gap-x-6">
+          <div className="w-1/2 grid grid-cols-1 gap-x-6">
             <Image src={hipster} alt="Hipster" className="w-full h-screen object-cover" />
           </div>
         )}
         {selectedOccupation === 2 && (
-          <div className="w-7/12 grid grid-cols-1 gap-x-6">
+          <div className="w-1/2 grid grid-cols-1 gap-x-6">
             <Image src={programmer} alt="Programmer" className="w-full h-screen object-cover" />
           </div>
         )}
         {selectedOccupation === 3 && (
-          <div className="w-7/12 grid grid-cols-1 gap-x-6">
+          <div className="w-1/2 grid grid-cols-1 gap-x-6">
             <Image src={hustler} alt="Hustler" className="w-full h-screen object-cover" />
           </div>
         )}
 
-        <div className="w-5/12 h-full pt-24">
+        <div className="w-1/2 h-full pt-24">
           <div className="max-w-2xl mx-auto mt-12">
             <h3 className="text-[32px] font-medium text-black">What are You?</h3>
             <p className="text-[20px] font-medium text-black opacity-70 -mt-2">Decide what you want to be</p>

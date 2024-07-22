@@ -11,15 +11,19 @@ model User {
   id            String        @id @default(uuid()) @map("user_id") @db.Char(36)
   email         String        @unique
   photo_profile String
+  name          String
   role          Role          @default(SISWA)
-  job           Job
+  job           Job           @default(Undefined)
+  biography     String?
   status        Status        @default(Dont_Have_Team)
   linkedin      String?
   github        String?
   instagram     String?
   website       String?
   whatsapp      String?
-  name          String
+  BirthDate     String?
+  religion      Religion?     @default(Islam)
+  gender        Gender?       @default(Male)
   userAuth      UserAuth?
   certificates  certificate[]
   projects      Project[]     @relation("ProjectToUser")
@@ -49,9 +53,10 @@ model Skill {
 }
 
 model Project {
-  id      String @id @unique
+  id      String  @id @unique
   name    String
-  members User[] @relation("ProjectToUser")
+  link    String?
+  members User[]  @relation("ProjectToUser")
 }
 
 model certificate {
@@ -66,10 +71,10 @@ model certificate {
 }
 
 enum Job {
-  UNDEFINED
-  HUSTLER
-  HIPSTER
-  HACKER
+  Undefined
+  Hustler
+  Hipster
+  Hacker
 }
 
 enum Role {
@@ -81,4 +86,18 @@ enum Role {
 enum Status {
   Have_Team
   Dont_Have_Team
+}
+
+enum Gender {
+  Male
+  Female
+}
+
+enum Religion {
+  Islam
+  Kristen_Protestan
+  Kristen_Katolik
+  Budha
+  Hindu
+  Konghucu
 }

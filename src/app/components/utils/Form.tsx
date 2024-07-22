@@ -1,201 +1,125 @@
-"use client";
-import { ReactNode, useState } from "react";
+import clsx from "clsx";
+import { ChangeEvent } from "react";
 
-interface FormProps {
-  variants: "big" | "medium" | "small" | "dropdown";
-  formText: ReactNode;
-  formPlaceholder?: string;
-  formName: string;
-  formType?: string;
+interface InputProps {
+  label?: string;
+  placeholder?: string;
+  required?: boolean;
+  name?: string;
   className?: string;
-  dropvar?: "gender" | "religion" | "mentor";
-  inClassName?: string;
+  value?: string;
+  handleChange?: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  disabled?: boolean;
+}
+interface TextFieldProps extends InputProps {
+  type: "email" | "text" | "password" | "number" | string;
 }
 
-interface DropdownProps {
-  text: string;
-  value: string;
-  id: number;
+interface OptionFieldProps {
+  label: string;
+  required?: boolean;
+  options: { id: string; value: string }[];
+  className?: string;
+  value?: string | Array<string>;
+  name: string;
+  handleChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
+}
+interface SelectFieldProps {
+  label?: string;
+  required?: boolean;
+  options: { value: string; label: string }[];
+  className?: string;
+  value?: string | Array<string>;
+  name: string;
+  handleChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
+  disabled?: boolean;
 }
 
-export default function Form({ formText, formPlaceholder, formType, formName, variants, className, dropvar, inClassName }: FormProps) {
-  const gender: DropdownProps[] = [
-    {
-      text: "Male",
-      value: "Male",
-      id: 1,
-    },
-    {
-      text: "Female",
-      value: "Female",
-      id: 2,
-    },
-  ];
+// const mentor: DropdownProps[] = [
+//   {
+//     text: "M. Chusni Agus",
+//     value: "M. Chusni Agus",
+//     id: 1,
+//   },
+//   {
+//     text: "Muhammad Bagus Arifin S.Pd",
+//     value: "Muhammad Bagus Arifin S.Pd",
+//     id: 2,
+//   },
+//   {
+//     text: "Firmansyah Ayatullah",
+//     value: "Firmansyah Ayatullah",
+//     id: 3,
+//   },
+//   {
+//     text: "More",
+//     value: "More",
+//     id: 4,
+//   },
+// ];
 
-  const religion: DropdownProps[] = [
-    {
-      text: "Islam",
-      value: "Islam",
-      id: 1,
-    },
-    {
-      text: "Kristen Protestan",
-      value: "Kristen Protestan",
-      id: 2,
-    },
-    {
-      text: "Kristen Katolik",
-      value: "Kristen Katolik",
-      id: 3,
-    },
-    {
-      text: "Budha",
-      value: "Budha",
-      id: 4,
-    },
-    {
-      text: "Hindu",
-      value: "Hindu",
-      id: 5,
-    },
-    {
-      text: "Konghucu",
-      value: "Konghucu",
-      id: 6,
-    },
-  ];
-  const mentor: DropdownProps[] = [
-    {
-      text: "M. Chusni Agus",
-      value: "M. Chusni Agus",
-      id: 1,
-    },
-    {
-      text: "Muhammad Bagus Arifin S.Pd",
-      value: "Muhammad Bagus Arifin S.Pd",
-      id: 2,
-    },
-    {
-      text: "Firmansyah Ayatullah",
-      value: "Firmansyah Ayatullah",
-      id: 3,
-    },
-    {
-      text: "More",
-      value: "More",
-      id: 4,
-    },
-  ];
-
-  const [selectedgender, setSelectedgender] = useState<number | null>(null);
-
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedValue = event.target.value;
-    const selectedgender = gender.find((e) => e.value === selectedValue);
-    setSelectedgender(selectedgender ? selectedgender.id : null);
-  };
-
-  const bigForm = variants === "big";
-  const mediumForm = variants === "medium";
-  const smallForm = variants === "small";
-  const dropdownForm = variants === "dropdown";
-
-  if (bigForm) {
-    return (
-      <main className={className}>
-        <label htmlFor="" className="flex flex-col opacity-80">
-          <span className="text-[17px] font-normal mb-[10px]">{formText}</span>
-          <textarea
-            className={`rounded-[8px] py-2.5 w-[575px] mb-6 p-[10px] border border-slate-400 placeholder:text-slate-600 placeholder:font-normal placeholder:tracking-wide`}
-            // type={formType}
-            placeholder={formPlaceholder}
-            name={formName}
-          />
+export function TextField({ required, placeholder, type, name, label, className, value, handleChange, disabled }: Readonly<TextFieldProps>) {
+  return (
+    <main className={clsx("flex flex-col gap-y-2", className)}>
+      {label && (
+        <label htmlFor={name} className={clsx(`text-[17px] font-normal ${required ? "after:text-red-500 after:content-['*']" : ""}`)}>
+          {label}
         </label>
-      </main>
-    );
-  } else if (mediumForm) {
-    return (
-      <main className={className}>
-        <label htmlFor="" className="flex flex-col opacity-80">
-          <span className="text-[17px] font-normal mb-[10px]">{formText}</span>
-          <input
-            className={`rounded-[8px] py-2.5 w-[335px] xl:w-[575px] mb-6 p-[10px] border border-slate-400 placeholder:text-slate-600 placeholder:font-normal placeholder:tracking-wide`}
-            type={formType}
-            placeholder={formPlaceholder}
-            name={formName}
-          />
+      )}
+      <input
+        type={type}
+        name={name}
+        placeholder={placeholder}
+        value={value}
+        onChange={handleChange}
+        className={clsx("rounded-[8px] py-2.5 w-full mb-6 p-[10px] border border-slate-400", "placeholder:text-slate-600 placeholder:font-normal placeholder:tracking-wide")}
+        required={required === true}
+      />
+    </main>
+  );
+}
+
+export function TextArea({ className, handleChange, label, name, placeholder, required, value, disabled }: Readonly<InputProps>) {
+  return (
+    <div className={clsx("flex flex-col gap-y-2", className)}>
+      {label && (
+        <label htmlFor={name} className={clsx(`text-[17px] font-normal ${required ? "after:text-red-500 after:content-['*']" : ""}`)}>
+          {label}
         </label>
-      </main>
-    );
-  } else if (smallForm) {
-    return (
-      <main className={className}>
-        <label htmlFor="" className="flex flex-col opacity-80">
-          <span className="text-[17px] font-normal mb-[10px]">{formText}</span>
-          <input
-            className={`rounded-[8px] py-2.5 w-[335px] xl:w-[260px] mb-6 p-[10px] border border-slate-400 placeholder:text-slate-600 placeholder:font-normal placeholder:tracking-wide`}
-            type={formType}
-            placeholder={formPlaceholder}
-            name={formName}
-          />
+      )}
+      <textarea
+        name={name}
+        className={clsx("rounded-[8px] py-2.5 w-[575px] mb-6 p-[10px] border border-slate-400", "placeholder:text-slate-600 placeholder:font-normal placeholder:tracking-wide")}
+        onChange={handleChange}
+        value={value}
+        placeholder={placeholder}
+        required={required}
+        disabled={disabled}
+      />
+    </div>
+  );
+}
+
+export function DropDown({ name, options, className, disabled, handleChange, label, required, value }: Readonly<SelectFieldProps>) {
+  return (
+    <main className={clsx("flex flex-col gap-y-2", className)}>
+      {label && (
+        <label htmlFor={name} className={clsx(`text-[17px] font-normal ${required ? "after:text-red-500 after:content-['*']" : ""}`)}>
+          {label}
         </label>
-      </main>
-    );
-  } else if (dropdownForm) {
-    const drop1 = dropvar === "gender";
-    const drop2 = dropvar === "religion";
-    const drop3 = dropvar === "mentor";
-    if (drop1) {
-      return (
-        <main className={className}>
-          <label htmlFor="" className="flex flex-col opacity-80">
-            <span className="text-[17px] font-normal mb-[10px]">{formText}</span>
-            <select className="rounded-[8px] py-2.5 w-[335px] xl:w-[575px] mb-6 p-[10px] border border-slate-400">
-              <option selected>Select Gender</option>
-              {gender.map((e, i) => (
-                <option key={i} value={e.value}>
-                  {e.text}
-                </option>
-              ))}
-            </select>
-          </label>
-        </main>
-      );
-    } else if (drop2) {
-      return (
-        <main className={className}>
-          <label htmlFor="" className="flex flex-col opacity-80">
-            <span className="text-[17px] font-normal mb-[10px]">{formText}</span>
-            <select className="rounded-[8px] py-2.5 w-[335px] xl:w-[575px] mb-6 p-[10px] border border-slate-400">
-              <option selected>Select Region</option>
-              {religion.map((e, i) => (
-                <option key={i} value={e.value}>
-                  {e.text}
-                </option>
-              ))}
-            </select>
-          </label>
-        </main>
-      );
-    } else if (drop3) {
-      return (
-        <main className={className}>
-          <label htmlFor="" className="flex flex-col opacity-80">
-            <span className="text-[17px] font-normal mb-[10px]">
-              {formText}
-            </span>
-            <select className="rounded-[8px] h-[56px] w-[335px] xl:w-[575px] mb-6 p-[10px] outline outline-gray-400">
-              <option selected>Select Mentor</option>
-              {mentor.map((e, i) => (
-                <option key={i} value={e.value}>
-                  {e.text}
-                </option>
-              ))}
-            </select>
-          </label>
-        </main>
-      );
-    }
-  }
+      )}
+      <select className="rounded-[8px] py-2.5 w-[335px] xl:w-[575px] mb-6 p-[10px] border border-slate-400" name={name} value={value} onChange={handleChange} disabled={disabled} required={required}>
+        <option value="null" disabled>
+          Select
+        </option>
+        {options &&
+          options.map((opt, i) => (
+            <option key={i} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+      </select>
+    </main>
+  );
 }

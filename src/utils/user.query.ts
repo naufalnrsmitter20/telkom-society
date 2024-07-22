@@ -34,3 +34,4 @@ export const updateUserAuth = async (where: Prisma.UserAuthWhereUniqueInput, upd
 export const deleteUser = async (user_id: string) => {
   return await prisma.user.delete({ where: { id: user_id } });
 };
+
