@@ -1,8 +1,9 @@
 "use client";
-import Form from "@/app/components/utils/Form";
+import { DropDown, TextArea, TextField } from "@/app/components/utils/Form";
 import { FormButton } from "@/app/components/utils/Button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Religion } from "@prisma/client";
 
 export default function CreatePage() {
   const router = useRouter();
@@ -11,16 +12,16 @@ export default function CreatePage() {
       <h1 className="text-[48px] font-bold opacity-60 ml-[78px] mt-32">Create Division</h1>
       <div className="flex mx-auto gap-[80px]">
         <div>
-          <Form variants="medium" formName="divName" formPlaceholder="Insert division name" formText="Division Name" formType="text" />
-          <Form variants="big" formName="divDesc" formText="Division Description" />
+          <TextField name="divName" placeholder="Insert division name" label="Division Name" type="text" />
+          <TextArea name="divDesc" label="Division Description" placeholder="Division Description" />
         </div>
         <div>
-          <Form variants="medium" formName="divLogo" formText="Division Logo" formType="file" />
-          <Form variants="dropdown" dropvar="mentor" formName="divMentor" formText="Mentor" formType="text" />
+          <TextField name="divLogo" label="Division Logo" type="file" />
+          <DropDown name="mentor" label="Mentor" options={Object.values(Religion).map((x) => ({ label: x, value: x }))} />
 
-          <div className="flex gap-[55px]">
-            <Form variants="small" formName="divInstagram" formText="Instagram (link)" />
-            <Form variants="small" formName="divLinkedIn" formText="Linked In (link)" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-4">
+            <TextField name="divInstagram" label="Instagram (link)" type="text" />
+            <TextField name="divLinkedIn" label="Linked In (link)" type="text" />
           </div>
           <div className="justify-between flex mt-24">
             <div></div>

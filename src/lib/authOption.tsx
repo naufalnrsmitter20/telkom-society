@@ -110,7 +110,7 @@ export const authOptions: AuthOptions = {
               email: user.email,
               photo_profile: user.image || "https://res.cloudinary.com/dvwhepqbd/image/upload/v1720580914/pgfrhzaobzcajvugl584.png",
               name: user.name || "",
-              job: "UNDEFINED",
+              job: "Undefined",
               role: "SISWA",
               userAuth: {
                 create: {

@@ -42,12 +42,12 @@ export default function Navbar() {
                     <></>
                   ) : (
                     <div className="">
-                      <FormButton type="button" variant="base" onClick={handleProf} withArrow className="flex justify-center gap-x-2">
-                        <p className="text-xs">{session?.user?.name}</p>
-                        <Image src={session?.user?.image as string} alt="user image" width={25} height={25} className="rounded-full" />
+                      <FormButton type="button" variant="base" onClick={handleProf} withArrow className="flex justify-center gap-x-2 py-2 px-4 ">
+                        {/* <p className="text-xs">{session?.user?.name}</p> */}
+                        <Image src={session?.user?.image as string} alt="user image" width={36} height={36} className="rounded-full" />
                       </FormButton>
                       {prof && (
-                        <div className="w-full p-2 max-w-56 bg-white mt-1 border border-slate-300 rounded-lg absolute inline-block">
+                        <div className="w-full p-2 max-w-56 bg-white mt-1 border border-slate-300 rounded-lg fixed right-12 top-24 inline-block">
                           <LinkButton variant="base" href="/profile" className="w-full">
                             <p className="mx-auto text-sm">Profile</p>
                           </LinkButton>
