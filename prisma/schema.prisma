@@ -10,8 +10,14 @@ datasource db {
 model User {
   id            String        @id @default(uuid()) @map("user_id") @db.Char(36)
   email         String        @unique
-  photo_profile String
+  photo_profile String?
   name          String
+  clasess       String?
+  absent        String?
+  Phone         String?
+  NIS           String?
+  NISN          String?
+  schoolOrigin  String?
   role          Role          @default(SISWA)
   job           Job           @default(Undefined)
   biography     String?
