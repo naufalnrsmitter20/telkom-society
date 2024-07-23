@@ -58,7 +58,7 @@ export default function Signin() {
                 <div className="h-0.5 w-1/3 bg-slate-400"></div>
               </div> */}
               <button
-                onClick={() => signIn("google", { callbackUrl: session?.user?.email === "" ? "/pilihKeahlian" : "/profile" })}
+                onClick={() => signIn("google", { callbackUrl: "/pilihKeahlian" })}
                 type="button"
                 className="focus:outline-none text-white bg-base flex justify-center items-center hover:bg-red-600 focus:ring focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-3 me-2 mb-2 mt-6 w-full"
               >
