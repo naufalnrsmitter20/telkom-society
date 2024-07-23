@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "./components/utils/Navbar";
 import Footer from "./components/utils/Footer";
 import AuthProviders from "@/lib/AuthProvider";
+import { Toaster } from "react-hot-toast";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -27,6 +28,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <Footer variants="red" />
+          <Toaster />
         </AuthProviders>
       </body>
     </html>

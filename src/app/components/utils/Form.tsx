@@ -10,6 +10,8 @@ interface InputProps {
   value?: string;
   handleChange?: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   disabled?: boolean;
+  readOnly?: boolean;
+  defaultValue?: string;
 }
 interface TextFieldProps extends InputProps {
   type: "email" | "text" | "password" | "number" | string;
@@ -59,7 +61,7 @@ interface SelectFieldProps {
 //   },
 // ];
 
-export function TextField({ required, placeholder, type, name, label, className, value, handleChange, disabled }: Readonly<TextFieldProps>) {
+export function TextField({ required, placeholder, type, name, label, className, value, handleChange, disabled, readOnly, defaultValue }: Readonly<TextFieldProps>) {
   return (
     <main className={clsx("flex flex-col gap-y-2", className)}>
       {label && (
@@ -68,6 +70,7 @@ export function TextField({ required, placeholder, type, name, label, className,
         </label>
       )}
       <input
+        defaultValue={defaultValue}
         type={type}
         name={name}
         placeholder={placeholder}
@@ -75,6 +78,7 @@ export function TextField({ required, placeholder, type, name, label, className,
         onChange={handleChange}
         className={clsx("rounded-[8px] py-2.5 w-full mb-6 p-[10px] border border-slate-400", "placeholder:text-slate-600 placeholder:font-normal placeholder:tracking-wide")}
         required={required === true}
+        readOnly={readOnly}
       />
     </main>
   );

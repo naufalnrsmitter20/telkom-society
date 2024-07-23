@@ -10,7 +10,7 @@ import { createUser, findUser, updateUser } from "@/utils/user.query";
 declare module "next-auth" {
   interface Session {
     user?: {
-      id: number;
+      id: string;
       email: string;
       password: string;
       name: string;
@@ -22,7 +22,7 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
-    id: number;
+    id: string;
     name: string;
     email: string;
     password: string;
@@ -132,6 +132,7 @@ export const authOptions: AuthOptions = {
           const userDatabase = await findUser({ email: user.email });
           if (userDatabase) {
             token.email = userDatabase.email;
+            token.id = userDatabase.id;
             token.role = userDatabase.role;
             token.picture = userDatabase.photo_profile;
           }

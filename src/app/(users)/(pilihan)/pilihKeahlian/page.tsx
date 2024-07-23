@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import programmer from "@/../public/img/3.png";
 import hustler from "@/../public/img/2.png";
 import hipster from "@/../public/img/1.png";
@@ -7,41 +7,61 @@ import Image from "next/image";
 import { FormButton } from "@/app/components/utils/Button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { UpdateUserById } from "@/utils/server-action/userGetServerSession";
+import { Job, User } from "@prisma/client";
+import { useSession } from "next-auth/react";
 
-interface occupationProops {
+interface occupationProps {
   occupation: string;
-  value: string;
+  value: Job;
   id: number;
 }
 
 export default function PilihKeahlian() {
-  const occupation: occupationProops[] = [
+  const occupation: occupationProps[] = [
     {
       occupation: "Hipster (Product Innovation & Design)",
-      value: "Hipster (Product Innovation & Design)",
+      value: "Hipster",
       id: 1,
     },
     {
       occupation: "Hacker (Software and Technology)",
-      value: "Hacker (Software and Technology)",
+      value: "Hacker",
       id: 2,
     },
     {
       occupation: "Hustler (Product Presenter and Finance)",
-      value: "Hustler (Product Presenter and Finance)",
+      value: "Hustler",
       id: 3,
     },
   ];
+  const { data: session, status } = useSession();
+  const [selectedOccupation, setSelectedOccupation] = useState<string | null>(null);
+  const router = useRouter();
 
-  const [selectedOccupation, setSelectedOccupation] = useState<number | null>(null);
+  if (status === "unauthenticated") router.push("/signin");
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
-    const selectedOccupation = occupation.find((e) => e.value === selectedValue);
-    setSelectedOccupation(selectedOccupation ? selectedOccupation.id : null);
+    setSelectedOccupation(selectedValue);
   };
 
-  const router = useRouter();
+  const handleSubmit = async () => {
+    if (!selectedOccupation) {
+      alert("Please select an occupation");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("job", selectedOccupation);
+      await UpdateUserById(formData);
+      router.push("/isiIdentitas");
+    } catch (error) {
+      console.error("Failed to update user job:", error);
+      alert("Failed to update user job");
+    }
+  };
 
   return (
     <React.Fragment>
@@ -53,17 +73,17 @@ export default function PilihKeahlian() {
             <Image src={hustler} alt="Hustler" className="w-full h-screen object-cover" />
           </div>
         )}
-        {selectedOccupation === 1 && (
+        {selectedOccupation === "Hipster" && (
           <div className="w-1/2 grid grid-cols-1 gap-x-6">
             <Image src={hipster} alt="Hipster" className="w-full h-screen object-cover" />
           </div>
         )}
-        {selectedOccupation === 2 && (
+        {selectedOccupation === "Hacker" && (
           <div className="w-1/2 grid grid-cols-1 gap-x-6">
             <Image src={programmer} alt="Programmer" className="w-full h-screen object-cover" />
           </div>
         )}
-        {selectedOccupation === 3 && (
+        {selectedOccupation === "Hustler" && (
           <div className="w-1/2 grid grid-cols-1 gap-x-6">
             <Image src={hustler} alt="Hustler" className="w-full h-screen object-cover" />
           </div>
@@ -80,14 +100,14 @@ export default function PilihKeahlian() {
                 className="bg-slate-50 border border-slate-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-slate-200 focus:border-slate-400 block w-full p-2.5 outline-none placeholder:text-slate-300 placeholder:font-light placeholder:tracking-wide"
                 onChange={handleSelectChange}
               >
-                <option selected>Select Occupation</option>
+                <option>Select Occupation</option>
                 {occupation.map((e, i) => (
                   <option key={i} value={e.value}>
                     {e.occupation}
                   </option>
                 ))}
               </select>
-              <FormButton type="button" variant="base" onClick={() => router.push("/isiIdentitas")} className="mt-6 w-full">
+              <FormButton type="button" variant="base" onClick={handleSubmit} className="mt-6 w-full">
                 Continue
               </FormButton>
               <p className="text-[14px] text-slate-500 font-normal text-center mt-6">

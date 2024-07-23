@@ -6,10 +6,11 @@ import Logo from "@/../public/img/logo telkom society big.png";
 import { FormButton } from "@/app/components/utils/Button";
 import google from "@/../public/svg/google.svg";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 export default function Signin() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   return (
     <React.Fragment>
       <main className="min-h-screen-minus-10">
@@ -57,7 +58,7 @@ export default function Signin() {
                 <div className="h-0.5 w-1/3 bg-slate-400"></div>
               </div> */}
               <button
-                onClick={() => signIn("google", { callbackUrl: "/pilihKeahlian" })}
+                onClick={() => signIn("google", { callbackUrl: session?.user?.email === "" ? "/pilihKeahlian" : "/profile" })}
                 type="button"
                 className="focus:outline-none text-white bg-base flex justify-center items-center hover:bg-red-600 focus:ring focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-3 me-2 mb-2 mt-6 w-full"
               >
