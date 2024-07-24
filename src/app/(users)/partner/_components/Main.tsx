@@ -10,7 +10,7 @@ export default async function Main() {
   const getUser = await findAllUsers();
 
   return (
-    <section className="max-w-full mx-48 md:flex gap-x-4 px-4 xl:px-0">
+    <section className="max-w-full mx-auto xl:mx-48 md:flex gap-x-4 px-4 xl:px-0">
       {/* responsive */}
       <div className="block md:hidden mb-4">
         <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
