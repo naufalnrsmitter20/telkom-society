@@ -111,15 +111,12 @@ export const UpdateUserById = async (data: FormData) => {
           photo_profile: photo_profile ?? findUserWithId?.photo_profile,
           religion: religion ?? findUserWithId?.religion,
           certificates: {
-            deleteMany: {},
             create: certificates,
           },
           projects: {
-            deleteMany: {},
             create: projects,
           },
           Skills: {
-            deleteMany: {},
             connectOrCreate: Skills.map((skill) => ({
               where: { SkillName: skill },
               create: {
