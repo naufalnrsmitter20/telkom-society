@@ -1,10 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import Banner from "@/../public/img/banner_profile.png";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { userFullPayload } from "@/utils/relationsip";
-import { Skill } from "@prisma/client";
+import { Gender, Religion, Skill } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import RedirectArrow from "@/app/components/Icons/RedirectArrow";
@@ -14,12 +14,18 @@ import WhatsappIcons from "@/app/components/Icons/WhatsappIcons";
 import InstagramIcons from "@/app/components/Icons/InstagramIcons";
 import { FormButton } from "@/app/components/utils/Button";
 import ModalProfile from "@/app/components/utils/Modal";
-import { TextField } from "@/app/components/utils/Form";
+import { DropDown, TextArea, TextField } from "@/app/components/utils/Form";
+import toast from "react-hot-toast";
+import { UpdateUserById } from "@/utils/server-action/userGetServerSession";
+import { revalidatePath } from "next/cache";
+import { occupation } from "@/types/occupation";
 
 export default function Profile() {
   const { data: session, status } = useSession();
   const [userData, setUserData] = useState<userFullPayload | null>(null);
   const [skills, setSkills] = useState([""]);
+  const [selectedOccupation, setSelectedOccupation] = useState<string | null>(null);
+
   const router = useRouter();
   const [modal, setModal] = useState(false);
 
@@ -43,8 +49,28 @@ export default function Profile() {
 
     fetchUserData();
   }, [session]);
+
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+    setSelectedOccupation(selectedValue);
+  };
   const handleModal = () => {
     setModal(!modal);
+  };
+  const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData(e.target);
+      formData.append("skills", JSON.stringify(skills));
+      await UpdateUserById(formData);
+      toast.success("Sukses Mengisi Data");
+      setModal(false);
+      router.push("/profile");
+      window.location.reload();
+    } catch (error) {
+      console.log((error as Error).message);
+      toast.error("Gagal Mengedit Profil");
+    }
   };
   if (status === "unauthenticated") return router.push("/signin");
   if (status === "loading") return "Loading...";
@@ -197,9 +223,77 @@ export default function Profile() {
       </div>
       {modal && (
         <ModalProfile onClose={() => setModal(false)}>
-          <div>
-            <TextField type="text" label="Class" name="clasess" defaultValue={userData?.clasess as string} />
-          </div>
+          <form onSubmit={handleSubmit}>
+            <TextField type="text" label="Name" readOnly disabled defaultValue={userData?.name as string} />
+            <TextField type="text" label="Email" readOnly disabled defaultValue={userData?.email as string} />
+            <TextArea label="Biography" name="biography" defaultValue={userData?.biography as string} />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3">
+              <TextField type="text" label="Class" name="clasess" defaultValue={userData?.clasess as string} />
+              <TextField type="text" label="Absent" name="absent" defaultValue={userData?.absent as string} />
+              <TextField type="text" label="Phone" name="Phone" defaultValue={userData?.Phone as string} />
+              <TextField type="date" label="Birth Date" name="BirthDate" defaultValue={userData?.BirthDate as string} />
+              <TextField type="text" label="NIS" name="NIS" defaultValue={userData?.NIS as string} />
+              <TextField type="text" label="NISN" name="NISN" defaultValue={userData?.NISN as string} />
+              <TextField type="text" label="school Origin" name="schoolOrigin" defaultValue={userData?.schoolOrigin as string} />
+
+              <DropDown
+                name="gender"
+                handleChange={handleSelectChange}
+                label="Gender"
+                defaultValue={userData?.gender as Gender}
+                options={Object.values(Gender).map((x) => ({
+                  label: x,
+                  value: x,
+                }))}
+              />
+              <DropDown
+                name="religion"
+                handleChange={handleSelectChange}
+                label="Religion"
+                defaultValue={userData?.religion as Religion}
+                options={Object.values(Religion).map((x) => ({
+                  label: x,
+                  value: x,
+                }))}
+              />
+              <DropDown
+                name="job"
+                handleChange={handleSelectChange}
+                label="Occupation"
+                defaultValue={userData?.job}
+                options={occupation.map((e, i) => ({
+                  label: e.occupation,
+                  value: e.value,
+                }))}
+              />
+            </div>
+            <div>
+              <div className="flex gap-x-3 items-center">
+                <WhatsappIcons />
+                <TextField type="text" label="Whatsapp" name="whatsapp" className="w-full" defaultValue={userData?.whatsapp as string} />
+              </div>
+              <div className="flex gap-x-3 items-center">
+                <InstagramIcons />
+                <TextField type="text" label="Instagram" name="instagram" className="w-full" defaultValue={userData?.instagram as string} />
+              </div>
+              <div className="flex gap-x-3 items-center">
+                <LinkedinIcon />
+                <TextField type="text" label="Linkedin" name="linkedin" className="w-full" defaultValue={userData?.linkedin as string} />
+              </div>
+              <div className="flex gap-x-3 items-center">
+                <GithubIcons />
+                <TextField type="text" label="Github" name="github" className="w-full" defaultValue={userData?.github as string} />
+              </div>
+            </div>
+            <div className="flex justify-end w-full gap-x-4 pb-4">
+              <FormButton onClick={() => setModal(false)} variant="white">
+                Close
+              </FormButton>
+              <FormButton type="submit" variant="base">
+                Edit
+              </FormButton>
+            </div>
+          </form>
         </ModalProfile>
       )}
     </div>

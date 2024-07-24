@@ -10,31 +10,9 @@ import { useRouter } from "next/navigation";
 import { UpdateUserById } from "@/utils/server-action/userGetServerSession";
 import { Job, User } from "@prisma/client";
 import { useSession } from "next-auth/react";
-
-interface occupationProps {
-  occupation: string;
-  value: Job;
-  id: number;
-}
+import { occupation } from "@/types/occupation";
 
 export default function PilihKeahlian() {
-  const occupation: occupationProps[] = [
-    {
-      occupation: "Hipster (Product Innovation & Design)",
-      value: "Hipster",
-      id: 1,
-    },
-    {
-      occupation: "Hacker (Software and Technology)",
-      value: "Hacker",
-      id: 2,
-    },
-    {
-      occupation: "Hustler (Product Presenter and Finance)",
-      value: "Hustler",
-      id: 3,
-    },
-  ];
   const { data: session, status } = useSession();
   const [selectedOccupation, setSelectedOccupation] = useState<string | null>(null);
   const router = useRouter();
