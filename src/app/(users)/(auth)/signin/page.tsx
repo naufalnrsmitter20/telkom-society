@@ -1,16 +1,43 @@
 "use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import imageSigIn from "@/../public/img/sigin image.png";
 import Logo from "@/../public/img/logo telkom society big.png";
-import { FormButton } from "@/app/components/utils/Button";
 import google from "@/../public/svg/google.svg";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
+import { userFullPayload } from "@/utils/relationsip";
 
 export default function Signin() {
+  const [userData, setUserData] = useState<userFullPayload | null>(null);
   const router = useRouter();
   const { data: session, status } = useSession();
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (session) {
+        try {
+          const response = await fetch(`/api/user?userId=${session.user?.id}`);
+          if (response.ok) {
+            const { user } = await response.json();
+            setUserData(user);
+          } else {
+            throw new Error("Failed to fetch user data");
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [session]);
+  if (session) {
+    if (userData?.job !== "Undefined") {
+      router.push("/profile");
+    } else {
+      router.push("/pilihKeahlian");
+    }
+  }
   return (
     <React.Fragment>
       <main className="min-h-screen-minus-10">
@@ -58,7 +85,7 @@ export default function Signin() {
                 <div className="h-0.5 w-1/3 bg-slate-400"></div>
               </div> */}
               <button
-                onClick={() => signIn("google", { callbackUrl: "/pilihKeahlian" })}
+                onClick={() => signIn("google", { callbackUrl: userData?.job !== "Undefined" ? "/profile" : "/pilihKeahlian" })}
                 type="button"
                 className="focus:outline-none text-white bg-base flex justify-center items-center hover:bg-red-600 focus:ring focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-3 me-2 mb-2 mt-6 w-full"
               >

@@ -36,6 +36,7 @@ interface SelectFieldProps {
   name: string;
   handleChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
   disabled?: boolean;
+  defaultValue?: string;
 }
 
 // const mentor: DropdownProps[] = [
@@ -76,7 +77,7 @@ export function TextField({ required, placeholder, type, name, label, className,
         placeholder={placeholder}
         value={value}
         onChange={handleChange}
-        className={clsx("rounded-[8px] py-2.5 w-full mb-6 p-[10px] border border-slate-400", "placeholder:text-slate-600 placeholder:font-normal placeholder:tracking-wide")}
+        className={clsx("rounded-[8px] py-2.5 w-full mb-6 p-[10px] border border-slate-400", "placeholder:text-slate-600 placeholder:font-normal placeholder:tracking-wide", `${disabled && "bg-slate-100"}`)}
         required={required === true}
         readOnly={readOnly}
       />
@@ -84,7 +85,7 @@ export function TextField({ required, placeholder, type, name, label, className,
   );
 }
 
-export function TextArea({ className, handleChange, label, name, placeholder, required, value, disabled }: Readonly<InputProps>) {
+export function TextArea({ className, handleChange, label, name, placeholder, required, value, disabled, defaultValue }: Readonly<InputProps>) {
   return (
     <div className={clsx("flex flex-col gap-y-2", className)}>
       {label && (
@@ -94,18 +95,19 @@ export function TextArea({ className, handleChange, label, name, placeholder, re
       )}
       <textarea
         name={name}
-        className={clsx("rounded-[8px] py-2.5 w-[575px] mb-6 p-[10px] border border-slate-400", "placeholder:text-slate-600 placeholder:font-normal placeholder:tracking-wide")}
+        className={clsx("rounded-[8px] w-full py-2.5 mb-6 p-[10px] border border-slate-400", "placeholder:text-slate-600 placeholder:font-normal placeholder:tracking-wide")}
         onChange={handleChange}
         value={value}
         placeholder={placeholder}
         required={required}
         disabled={disabled}
+        defaultValue={defaultValue}
       />
     </div>
   );
 }
 
-export function DropDown({ name, options, className, disabled, handleChange, label, required, value }: Readonly<SelectFieldProps>) {
+export function DropDown({ name, options, className, disabled, handleChange, label, required, value, defaultValue }: Readonly<SelectFieldProps>) {
   return (
     <main className={clsx("flex flex-col gap-y-2", className)}>
       {label && (
@@ -113,7 +115,7 @@ export function DropDown({ name, options, className, disabled, handleChange, lab
           {label}
         </label>
       )}
-      <select className="rounded-[8px] py-2.5 w-[335px] xl:w-[575px] mb-6 p-[10px] border border-slate-400" name={name} value={value} onChange={handleChange} disabled={disabled} required={required}>
+      <select defaultValue={defaultValue} className="rounded-[8px] py-2.5 w-auto xl:w-auto mb-6 p-[10px] border border-slate-400" name={name} value={value} onChange={handleChange} disabled={disabled} required={required}>
         <option value="null" disabled>
           Select
         </option>
