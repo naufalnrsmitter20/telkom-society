@@ -13,12 +13,15 @@ import GithubIcons from "@/app/components/Icons/GithubIcons";
 import WhatsappIcons from "@/app/components/Icons/WhatsappIcons";
 import InstagramIcons from "@/app/components/Icons/InstagramIcons";
 import { FormButton } from "@/app/components/utils/Button";
+import ModalProfile from "@/app/components/utils/Modal";
+import { TextField } from "@/app/components/utils/Form";
 
-export default function Page() {
+export default function Profile() {
   const { data: session, status } = useSession();
   const [userData, setUserData] = useState<userFullPayload | null>(null);
   const [skills, setSkills] = useState([""]);
   const router = useRouter();
+  const [modal, setModal] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -41,7 +44,7 @@ export default function Page() {
     fetchUserData();
   }, [session]);
   const handleModal = () => {
-    console.log("handle modal");
+    setModal(!modal);
   };
   if (status === "unauthenticated") return router.push("/signin");
   if (status === "loading") return "Loading...";
@@ -192,6 +195,13 @@ export default function Page() {
           </div>
         </div>
       </div>
+      {modal && (
+        <ModalProfile onClose={() => setModal(false)}>
+          <div>
+            <TextField type="text" label="Class" name="clasess" defaultValue={userData?.clasess as string} />
+          </div>
+        </ModalProfile>
+      )}
     </div>
   );
 }

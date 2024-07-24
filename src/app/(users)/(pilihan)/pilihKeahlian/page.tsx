@@ -97,6 +97,7 @@ export default function PilihKeahlian() {
               <select
                 title="occupation"
                 id="occupation"
+                name="job"
                 className="bg-slate-50 border border-slate-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-slate-200 focus:border-slate-400 block w-full p-2.5 outline-none placeholder:text-slate-300 placeholder:font-light placeholder:tracking-wide"
                 onChange={handleSelectChange}
               >

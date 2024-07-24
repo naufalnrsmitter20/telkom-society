@@ -66,7 +66,7 @@ export default function PersonalData() {
       toast.error("Gagal Mengisi Data");
     }
   };
-  if (status === "unauthenticated") return router.push("/");
+  if (status === "unauthenticated") return router.push("/signin");
   else if (status === "loading") return "Loading...";
 
   return (
