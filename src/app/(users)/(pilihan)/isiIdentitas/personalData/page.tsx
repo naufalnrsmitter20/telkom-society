@@ -1,10 +1,12 @@
 "use client";
+import PlusIcon from "@/app/components/Icons/PlusIcon";
+import XIcon from "@/app/components/Icons/XIcon";
 import { FormButton, LinkButton } from "@/app/components/utils/Button";
 import { DropDown, TextField } from "@/app/components/utils/Form";
 import { userFullPayload, userWithLastLogin } from "@/utils/relationsip";
 import { UpdateUserById } from "@/utils/server-action/userGetServerSession";
 import { findAllUsers, findUser } from "@/utils/user.query";
-import { Gender, Religion, Skill } from "@prisma/client";
+import { Gender, Project, Religion, Skill } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useEffect, useState } from "react";
@@ -12,7 +14,10 @@ import toast from "react-hot-toast";
 
 export default function PersonalData() {
   const router = useRouter();
-  const [skills, setSkills] = useState([""]);
+  const [skills, setSkills] = useState<string[]>([]);
+  const [currentSkill, setCurrentSkill] = useState<string>("");
+  const [project, setProject] = useState<Project[]>([]);
+
   const [userData, setUserData] = useState<userFullPayload | null>(null);
 
   const { data: session, status } = useSession();
@@ -28,6 +33,7 @@ export default function PersonalData() {
             const { user } = await response.json();
             setUserData(user);
             setSkills(user?.Skills.map((x: Skill) => x.SkillName) || [""]);
+            setProject(user?.projects || [""]);
           } else {
             throw new Error("Failed to fetch user data");
           }
@@ -41,23 +47,32 @@ export default function PersonalData() {
   }, [session]);
 
   const addSkill = () => {
-    setSkills([...skills, ""]);
+    const existingSkill = skills.find((skil) => skil.trim().toLowerCase() === currentSkill.trim().toLowerCase());
+    if (existingSkill) {
+      toast.error("Keahlian sudah ada");
+      return;
+    } else if (currentSkill.trim() !== "") {
+      setSkills([...skills, currentSkill]);
+      setCurrentSkill("");
+    }
   };
   const removeSkill = (index: number) => {
     setSkills(skills.filter((_, i) => i !== index));
   };
 
-  const handleSkillChange = (index: number, value: string) => {
-    const newSkill = [...skills];
-    newSkill[index] = value;
-    setSkills(newSkill);
-  };
+  // const handleSkillChange = (index: number, value: string) => {
+  //   const newSkills = skills.slice();
+  //   newSkills[index] = value;
+  //   setSkills(newSkills);
+  // };
 
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const formData = new FormData(e.target);
       formData.append("Skills", JSON.stringify(skills));
+      formData.append("projects", JSON.stringify(project));
+
       await UpdateUserById(formData);
       toast.success("Sukses Mengisi Data");
       router.push("/isiIdentitas/achievement");
@@ -75,7 +90,7 @@ export default function PersonalData() {
         <div className="mx-auto h-auto">
           <p className="opacity-80 font-[400] text-[18px]">Isi Identitas</p>
           <h1 className="text-[48px] font-[700] opacity-60">Personal Data</h1>
-          <form onSubmit={handleSubmit} className="mt-[40px] grid gap-0 xl:gap-[105px] grid-cols-1 lg:grid-cols-2">
+          <form onSubmit={handleSubmit} className="mt-[40px] grid gap-0 xl:gap-[105px] grid-cols-1 lg:grid-cols-2 max-w-7xl">
             <div>
               <TextField defaultValue={user?.name} readOnly placeholder="Insert your name" label="Name" type="text" required />
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-0 xl:gap-x-[55px]">
@@ -112,7 +127,7 @@ export default function PersonalData() {
               <div className="mb-6">
                 <label className="text-[17px] font-normal">Skills</label>
               </div>
-              {skills.map((exp, i) => (
+              {/* {skills.map((exp, i) => (
                 <div key={i} className="flex items-center gap-x-3">
                   <TextField value={exp} handleChange={(e) => handleSkillChange(i, e.target.value)} label={`skill ${i + 1}`} name={`skills[${i}]`} type="text" placeholder="Insert your Skills" className="w-full" />
                   <button type="button" onClick={() => removeSkill(i)} className="text-red-500">
@@ -122,7 +137,24 @@ export default function PersonalData() {
               ))}
               <FormButton type="button" variant="base" onClick={addSkill}>
                 Add
-              </FormButton>
+              </FormButton> */}
+              <div className="flex items-center gap-x-3">
+                <TextField value={currentSkill} handleChange={(e) => setCurrentSkill(e.target.value)} type="text" placeholder="Insert your Skills" name="skill" className="w-full" />
+                <FormButton type="button" variant="base" onClick={addSkill} className="mb-5">
+                  <PlusIcon />
+                </FormButton>
+              </div>
+              <div className="flex items-center gap-x-3 gap-y-3 flex-wrap">
+                {skills.map((exp, i) => (
+                  <div key={i} className="flex items-center gap-x-2 py-2 px-3 rounded-[8px] bg-base text-white">
+                    <p>{exp}</p>
+                    <button type="button" onClick={() => removeSkill(i)} className="">
+                      <XIcon />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
               <div className="flex justify-between my-6 xl:my-12">
                 <div className="flex gap-[45px] items-center justify-end w-full">
                   <LinkButton variant="white" href="/profile">

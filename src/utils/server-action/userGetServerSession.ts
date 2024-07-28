@@ -34,8 +34,8 @@ export const UpdateUserById = async (data: FormData) => {
     const BirthDate = data.get("BirthDate") as string;
     const religion = data.get("religion") as Religion;
     const gender = data.get("gender") as Gender;
-    const certificates = JSON.parse((data.get("certificates") as string) || "[]") as { id: string; name: string; description: string; link: string }[];
-    const projects = JSON.parse((data.get("projects") as string) || "[]") as { id: string; name: string; link: string }[];
+    const certificates = JSON.parse((data.get("certificates") as string) || "[]") as { CertificateName: string; img: string; link: string }[];
+    const projects = JSON.parse((data.get("projects") as string) || "[]") as { ProjeectName: string; link: string }[];
     const Skills = JSON.parse((data.get("Skills") as string) || "[]") as string[];
 
     if (!id) {
@@ -63,16 +63,14 @@ export const UpdateUserById = async (data: FormData) => {
         gender,
         certificates: {
           create: certificates.map((certificate) => ({
-            id: certificate.id,
-            name: certificate.name,
-            description: certificate.description,
+            CertificateName: certificate.CertificateName,
+            img: certificate.img,
             link: certificate.link,
           })),
         },
         projects: {
           create: projects.map((project) => ({
-            id: project.id,
-            name: project.name,
+            ProjeectName: project.ProjeectName,
             link: project.link,
           })),
         },
@@ -84,7 +82,10 @@ export const UpdateUserById = async (data: FormData) => {
       });
       if (!create) throw new Error("Failed to create");
     } else if (id) {
-      const findUserWithId = await prisma.user.findUnique({ where: { id } });
+      const findUserWithId = await prisma.user.findUnique({ where: { id }, include: { certificates: true, Skills: true, projects: true } });
+      const skillsToDisconnect = findUserWithId?.Skills.filter((existingSkill) => !Skills.includes(existingSkill.SkillName)) || [];
+      const certificatesToDisconnect = findUserWithId?.certificates.filter((existingCertificate) => !certificates.some((cert) => cert.CertificateName === existingCertificate.CertificateName));
+      const projectsToDisconnect = findUserWithId?.projects.filter((existingProject) => !projects.some((proj) => proj.ProjeectName === existingProject.ProjeectName));
 
       const update = await updateUser(
         { id: id ?? findUserWithId?.id },
@@ -111,10 +112,29 @@ export const UpdateUserById = async (data: FormData) => {
           photo_profile: photo_profile ?? findUserWithId?.photo_profile,
           religion: religion ?? findUserWithId?.religion,
           certificates: {
-            create: certificates,
+            connectOrCreate: certificates.map((certificate) => ({
+              where: { CertificateName: certificate.CertificateName, img: certificate.img, link: certificate.link },
+              create: {
+                CertificateName: certificate.CertificateName,
+                img: certificate.img,
+                link: certificate.link,
+              },
+            })),
+            disconnect: certificatesToDisconnect?.map((certificate) => ({
+              CertificateName: certificate.CertificateName,
+            })),
           },
           projects: {
-            create: projects,
+            connectOrCreate: projects.map((project) => ({
+              where: { ProjeectName: project.ProjeectName, link: project.link },
+              create: {
+                ProjeectName: project.ProjeectName,
+                link: project.link,
+              },
+            })),
+            disconnect: projectsToDisconnect?.map((project) => ({
+              ProjeectName: project.ProjeectName,
+            })),
           },
           Skills: {
             connectOrCreate: Skills.map((skill) => ({
@@ -122,6 +142,9 @@ export const UpdateUserById = async (data: FormData) => {
               create: {
                 SkillName: skill,
               },
+            })),
+            disconnect: skillsToDisconnect.map((skill) => ({
+              SkillName: skill.SkillName,
             })),
           },
         }
