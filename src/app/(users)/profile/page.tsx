@@ -4,7 +4,7 @@ import Banner from "@/../public/img/banner_profile.png";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { userFullPayload } from "@/utils/relationsip";
-import { Gender, Religion, Skill } from "@prisma/client";
+import { Gender, Project, Religion, Skill } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import RedirectArrow from "@/app/components/Icons/RedirectArrow";
@@ -24,10 +24,12 @@ export default function Profile() {
   const { data: session, status } = useSession();
   const [userData, setUserData] = useState<userFullPayload | null>(null);
   const [skills, setSkills] = useState([""]);
+  const [project, setProject] = useState<Project[]>([]);
   const [selectedOccupation, setSelectedOccupation] = useState<string | null>(null);
 
   const router = useRouter();
   const [modal, setModal] = useState(false);
+  console.log(userData?.projects);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -38,6 +40,7 @@ export default function Profile() {
             const { user } = await response.json();
             setUserData(user);
             setSkills(user?.Skills.map((x: Skill) => x.SkillName) || [""]);
+            setProject(user?.projects || []);
           } else {
             throw new Error("Failed to fetch user data");
           }
@@ -62,6 +65,7 @@ export default function Profile() {
     try {
       const formData = new FormData(e.target);
       formData.append("skills", JSON.stringify(skills));
+      formData.append("projects", JSON.stringify(project));
       await UpdateUserById(formData);
       toast.success("Sukses Mengisi Data");
       setModal(false);
@@ -115,47 +119,75 @@ export default function Profile() {
                 clip-rule="evenodd"
               />
             </svg>
-            <p className="text-left text-gray-800 text-lg sm:text-lg md:text-xl lg:text-xl">udefined</p>
+            <p className="text-left text-gray-800 text-lg sm:text-lg md:text-xl lg:text-xl">Belum Memiliki Tim</p>
           </div>
         </div>
 
         <div className="relative z-10 flex flex-col items-start mt-8">
           <h2 className="font-normal text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl mb-4">Skill</h2>
           <div className="flex flex-wrap justify-start gap-x-4 gap-y-2 mb-8 mt-4">
-            {userData?.Skills.map((skill, i) => (
-              <div key={i} className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl px-4 py-2 bg-red-500 text-white rounded-full">
-                {skill.SkillName}
-              </div>
-            ))}
+            {userData && userData?.Skills.length != 0 ? (
+              <>
+                {userData?.Skills.map((skill, i) => (
+                  <div key={i} className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl px-4 py-2 bg-red-500 text-white rounded-full">
+                    {skill.SkillName}
+                  </div>
+                ))}
+              </>
+            ) : (
+              <>
+                <p className="font-medium text-lg">Belum Ada Skill Yang Ditambahkan</p>
+              </>
+            )}
           </div>
         </div>
 
         <div className="relative z-10 flex flex-col items-start mt-8">
           <h2 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal mb-4">Certificate</h2>
           <div className="flex flex-wrap justify-start gap-x-4 gap-y-2 mb-8 mt-4">
-            <span className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl px-4 py-2 bg-red-500 text-white rounded-full">Telkom DigiUp: Data Science</span>
-            <span className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl px-4 py-2 bg-red-500 text-white rounded-full">ITS: ExploIT Event</span>
-            <span className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl px-4 py-2 bg-red-500 text-white rounded-full">UHT: Bussines Plan</span>
+            {userData && userData.certificates.length != 0 ? (
+              <>
+                {userData.certificates.map((x, i) => (
+                  <span key={i} className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl px-4 py-2 bg-red-500 text-white rounded-full">
+                    {x.CertificateName}
+                  </span>
+                ))}
+              </>
+            ) : (
+              <p className="font-medium text-lg">Belum Ada Sertifikat Yang Ditambahkan</p>
+            )}
           </div>
         </div>
 
         <div className="relative z-10 flex flex-col items-start my-8 mt-8">
           <h2 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal mb-4">My Project</h2>
           <ul className="space-y-2">
-            <li>
-              <Link href="#" className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800 flex items-center gap-x-3">
-                <p>NexaLab</p>
-                <svg className="w-6 h-6 text-slate-800 hover:text-[#F45846]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M18 14v4.833A1.166 1.166 0 0 1 16.833 20H5.167A1.167 1.167 0 0 1 4 18.833V7.167A1.166 1.166 0 0 1 5.167 6h4.618m4.447-2H20v5.768m-7.889 2.121 7.778-7.778"
-                  />
-                </svg>
-              </Link>
-            </li>
+            {userData && userData?.projects.length !== 0 ? (
+              <>
+                {userData?.projects.map((x, i) => (
+                  <li key={i}>
+                    <div className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800 flex items-center gap-x-3">
+                      <p className="font-medium text-lg">
+                        {i + 1}. {x.ProjeectName}
+                      </p>
+                      <Link href={x.link as string} target="_blank">
+                        <svg className="w-6 h-6 text-slate-800 hover:text-[#F45846]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M18 14v4.833A1.166 1.166 0 0 1 16.833 20H5.167A1.167 1.167 0 0 1 4 18.833V7.167A1.166 1.166 0 0 1 5.167 6h4.618m4.447-2H20v5.768m-7.889 2.121 7.778-7.778"
+                          />
+                        </svg>
+                      </Link>
+                    </div>
+                  </li>
+                ))}
+              </>
+            ) : (
+              <p className="font-medium text-lg">Belum Ada Project Yang Ditambahkan</p>
+            )}
           </ul>
         </div>
 

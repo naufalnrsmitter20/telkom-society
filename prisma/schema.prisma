@@ -31,7 +31,7 @@ model User {
   religion      Religion?     @default(Islam)
   gender        Gender?       @default(Male)
   userAuth      UserAuth?
-  certificates  certificate[]
+  certificates  certificate[] @relation("CertificateToUser")
   projects      Project[]     @relation("ProjectToUser")
   Skills        Skill[]       @relation("SkillToUser")
   timMembers    Tim[]         @relation("TimToUser")
@@ -59,21 +59,16 @@ model Skill {
 }
 
 model Project {
-  id      String  @id @unique
-  name    String
-  link    String?
-  members User[]  @relation("ProjectToUser")
+  ProjeectName String  @id @unique
+  link         String?
+  members      User[]  @relation("ProjectToUser")
 }
 
 model certificate {
-  id          String @id @unique
-  name        String
-  description String
-  link        String
-  userid      String
-  user        User   @relation(fields: [userid], references: [id])
-
-  @@index([userid], map: "certificate_userid_fkey")
+  CertificateName String  @id @unique
+  img             String
+  link            String?
+  user            User[]  @relation("CertificateToUser")
 }
 
 enum Job {

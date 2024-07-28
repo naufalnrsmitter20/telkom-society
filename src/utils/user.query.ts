@@ -11,7 +11,7 @@ export const findAllUsers = async (filter?: Prisma.UserWhereInput) => {
 export const findUser = async (filter: Prisma.UserWhereInput) => {
   return await prisma.user.findFirst({
     where: filter,
-    include: { userAuth: { select: { last_login: true } }, Skills: true },
+    include: { userAuth: { select: { last_login: true } }, Skills: true, projects: true, certificates: true, timMembers: true },
   });
 };
 

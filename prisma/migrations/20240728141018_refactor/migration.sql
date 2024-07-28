@@ -2,15 +2,26 @@
 CREATE TABLE `User` (
     `user_id` CHAR(36) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
-    `photo_profile` VARCHAR(191) NOT NULL,
+    `photo_profile` VARCHAR(191) NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `clasess` VARCHAR(191) NULL,
+    `absent` VARCHAR(191) NULL,
+    `Phone` VARCHAR(191) NULL,
+    `NIS` VARCHAR(191) NULL,
+    `NISN` VARCHAR(191) NULL,
+    `schoolOrigin` VARCHAR(191) NULL,
     `role` ENUM('SISWA', 'GURU', 'ADMIN') NOT NULL DEFAULT 'SISWA',
-    `job` ENUM('HUSTLER', 'HIPSTER', 'HACKER') NOT NULL,
+    `job` ENUM('Undefined', 'Hustler', 'Hipster', 'Hacker') NOT NULL DEFAULT 'Undefined',
+    `biography` VARCHAR(191) NULL,
     `status` ENUM('Have_Team', 'Dont_Have_Team') NOT NULL DEFAULT 'Dont_Have_Team',
     `linkedin` VARCHAR(191) NULL,
     `github` VARCHAR(191) NULL,
     `instagram` VARCHAR(191) NULL,
     `website` VARCHAR(191) NULL,
     `whatsapp` VARCHAR(191) NULL,
+    `BirthDate` VARCHAR(191) NULL,
+    `religion` ENUM('Islam', 'Kristen_Protestan', 'Kristen_Katolik', 'Budha', 'Hindu', 'Konghucu') NULL DEFAULT 'Islam',
+    `gender` ENUM('Male', 'Female') NULL DEFAULT 'Male',
 
     UNIQUE INDEX `User_email_key`(`email`),
     PRIMARY KEY (`user_id`)
@@ -48,23 +59,30 @@ CREATE TABLE `Skill` (
 
 -- CreateTable
 CREATE TABLE `Project` (
-    `id` VARCHAR(191) NOT NULL,
-    `name` VARCHAR(191) NOT NULL,
+    `ProjeectName` VARCHAR(191) NOT NULL,
+    `link` VARCHAR(191) NULL,
 
-    UNIQUE INDEX `Project_id_key`(`id`),
-    PRIMARY KEY (`id`)
+    UNIQUE INDEX `Project_ProjeectName_key`(`ProjeectName`),
+    PRIMARY KEY (`ProjeectName`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `certificate` (
-    `id` VARCHAR(191) NOT NULL,
-    `name` VARCHAR(191) NOT NULL,
-    `description` VARCHAR(191) NOT NULL,
-    `link` VARCHAR(191) NOT NULL,
-    `userid` VARCHAR(191) NOT NULL,
+    `CertificateName` VARCHAR(191) NOT NULL,
+    `img` VARCHAR(191) NOT NULL,
+    `link` VARCHAR(191) NULL,
 
-    UNIQUE INDEX `certificate_id_key`(`id`),
-    PRIMARY KEY (`id`)
+    UNIQUE INDEX `certificate_CertificateName_key`(`CertificateName`),
+    PRIMARY KEY (`CertificateName`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `_CertificateToUser` (
+    `A` CHAR(36) NOT NULL,
+    `B` VARCHAR(191) NOT NULL,
+
+    UNIQUE INDEX `_CertificateToUser_AB_unique`(`A`, `B`),
+    INDEX `_CertificateToUser_B_index`(`B`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -98,7 +116,10 @@ CREATE TABLE `_ProjectToUser` (
 ALTER TABLE `UserAuth` ADD CONSTRAINT `UserAuth_userEmail_fkey` FOREIGN KEY (`userEmail`) REFERENCES `User`(`email`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `certificate` ADD CONSTRAINT `certificate_userid_fkey` FOREIGN KEY (`userid`) REFERENCES `User`(`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `_CertificateToUser` ADD CONSTRAINT `_CertificateToUser_A_fkey` FOREIGN KEY (`A`) REFERENCES `User`(`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `_CertificateToUser` ADD CONSTRAINT `_CertificateToUser_B_fkey` FOREIGN KEY (`B`) REFERENCES `certificate`(`CertificateName`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `_TimToUser` ADD CONSTRAINT `_TimToUser_A_fkey` FOREIGN KEY (`A`) REFERENCES `Tim`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -113,7 +134,7 @@ ALTER TABLE `_SkillToUser` ADD CONSTRAINT `_SkillToUser_A_fkey` FOREIGN KEY (`A`
 ALTER TABLE `_SkillToUser` ADD CONSTRAINT `_SkillToUser_B_fkey` FOREIGN KEY (`B`) REFERENCES `User`(`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `_ProjectToUser` ADD CONSTRAINT `_ProjectToUser_A_fkey` FOREIGN KEY (`A`) REFERENCES `Project`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `_ProjectToUser` ADD CONSTRAINT `_ProjectToUser_A_fkey` FOREIGN KEY (`A`) REFERENCES `Project`(`ProjeectName`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `_ProjectToUser` ADD CONSTRAINT `_ProjectToUser_B_fkey` FOREIGN KEY (`B`) REFERENCES `User`(`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
