@@ -5,6 +5,7 @@ import Navbar from "./components/utils/Navbar";
 import Footer from "./components/utils/Footer";
 import AuthProviders from "@/lib/AuthProvider";
 import { Toaster } from "react-hot-toast";
+import ProgressBarProvider from "@/lib/ProgressBar";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -25,10 +26,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={poppins.className}>
         <AuthProviders>
-          <Navbar />
-          {children}
-          <Footer variants="red" />
-          <Toaster />
+          <ProgressBarProvider>
+            <Navbar />
+            {children}
+            <Footer variants="red" />
+            <Toaster />
+          </ProgressBarProvider>
         </AuthProviders>
       </body>
     </html>
