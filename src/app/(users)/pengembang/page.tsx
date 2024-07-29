@@ -2,12 +2,12 @@ import React from "react";
 
 export default function Pengembang() {
   const developers = [
-    { job: "Project Manager", name: "Muhammad Chusni Agus, M.Pd., Gr." },
-    { job: "CIO Grounded", name: "Naufal Nabil Ramadhan" },
-    { job: "CTO The Next Way", name: "Muhammad Zuhair Zuhdi" },
-    { job: "CTO Grounded", name: "Fahrell Sandy Zhariif Widiatmoko" },
-    { job: "CFO Grounded", name: "Haza Nasrullah Kuswantoro" },
-    { job: "CMO Grounded", name: "Ryo Hariyono Angwyn" },
+    { job: "General Manager", name: "Muhammad Chusni Agus, M.Pd., Gr." },
+    { job: "Project Manager - Grounded", name: "Naufal Nabil Ramadhan" },
+    { job: "Backend Developer - The Next Way", name: "Muhammad Zuhair Zuhdi" },
+    { job: "Frontend Developer - Grounded", name: "Fahrell Sandy Zhariif Widiatmoko" },
+    { job: "Frontend Developer - Grounded", name: "Haza Nasrullah Kuswantoro" },
+    { job: "UI/UX Designer - Grounded", name: "Ryo Hariyono Angwyn" },
   ];
 
   return (
@@ -15,7 +15,7 @@ export default function Pengembang() {
       <div className="flex-grow mt-[100px] p-10 max-w-5xl mx-auto">
         <div className="mb-10">
           <h1 className="text-[29px] font-medium text-[#F45846] mb-5">Developer Credit</h1>
-          <div className="grid grid-cols-2 gap-y-2 gap-x-3 max-w-3xl">
+          <div className="grid grid-cols-2 gap-y-2 gap-x-16 max-w-3xl">
             {developers.map((developer, index) => (
               <React.Fragment key={index}>
                 <p className="xl:text-[18px] lg:text-[17px] md:text-[16px] sm:text-[15px] text-[14px] font-semibold text-black opacity-70">{developer.job}</p>
