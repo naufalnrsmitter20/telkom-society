@@ -9,7 +9,6 @@ import Image from "next/image";
 import banner from "@/../public/img/banner ryo.png";
 
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 export default function Asides() {
   const { data: session, status } = useSession();

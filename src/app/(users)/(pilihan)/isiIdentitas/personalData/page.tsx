@@ -61,12 +61,6 @@ export default function PersonalData() {
     setSkills(skills.filter((_, i) => i !== index));
   };
 
-  // const handleSkillChange = (index: number, value: string) => {
-  //   const newSkills = skills.slice();
-  //   newSkills[index] = value;
-  //   setSkills(newSkills);
-  // };
-
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);

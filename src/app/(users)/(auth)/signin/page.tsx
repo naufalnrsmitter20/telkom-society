@@ -7,6 +7,7 @@ import google from "@/../public/svg/google.svg";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { userFullPayload } from "@/utils/relationsip";
+import toast from "react-hot-toast";
 
 export default function Signin() {
   const [userData, setUserData] = useState<userFullPayload | null>(null);
@@ -31,6 +32,22 @@ export default function Signin() {
 
     fetchUserData();
   }, [session]);
+
+  useEffect(() => {
+    if (session && userData) {
+      if (userData.job === "Undefined") {
+        toast.success("Berhasil Login!");
+        router.push("/pilihKeahlian");
+      } else if (["Hacker", "Hipster", "Hustler"].includes(userData.job)) {
+        toast.success("Berhasil Login!");
+        router.push("/profile");
+      }
+    }
+  }, [session, userData, router]);
+
+  const handleLogin = async () => {
+    await signIn("google");
+  };
 
   return (
     <React.Fragment>
@@ -79,7 +96,7 @@ export default function Signin() {
                 <div className="h-0.5 w-1/3 bg-slate-400"></div>
               </div> */}
               <button
-                onClick={() => signIn("google", { callbackUrl: userData?.job === "Undefined" ? "/pilihKeahlian" : "/pilihKeahlian" })}
+                onClick={handleLogin}
                 type="button"
                 className="focus:outline-none text-white bg-base flex justify-center items-center hover:bg-red-600 focus:ring focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-3 me-2 mb-2 mt-6 w-full"
               >

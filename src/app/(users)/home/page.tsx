@@ -104,9 +104,9 @@ export default function Home() {
             Join the Telkom Society and find your dream
             <br /> team for you school competition!
           </h1>
-          <LinkButton href="/signin" variant="base" className="scale-125 mb-[215px] mt-[20px]">
+          <FormButton onClick={() => signIn()} variant="base" className="scale-125 mb-[215px] mt-[20px]">
             Join Us Now!
-          </LinkButton>
+          </FormButton>
         </div>
       </div>
     </main>
