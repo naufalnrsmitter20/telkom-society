@@ -1,7 +1,8 @@
 export const getData = async () => {
   try {
     const res = await fetch(`/api/data/`, {
-      cache: "no-store",
+      cache: "no-cache",
+      method: "GET",
     });
     const data = await res.json();
 
