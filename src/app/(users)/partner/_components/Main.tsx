@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import banner from "@/../public/img/banner ryo.png";
 import Image from "next/image";
 
 import { LinkButton } from "@/app/components/utils/Button";
 import Asides from "./Aside";
-import { findAllUsers } from "@/utils/user.query";
+import prisma from "@/lib/prisma";
 
 export default async function Main() {
-  const getUser = await findAllUsers();
+  const getUser = await prisma.user.findMany();
 
   return (
     <section className="max-w-full mx-auto xl:mx-48 md:flex gap-x-4 px-4 xl:px-0">
@@ -26,7 +26,7 @@ export default async function Main() {
             type="search"
             id="default-search"
             className="block w-full p-4 ps-10 text-sm text-gray-900 border rounded-full border-gray-100  bg-white focus:ring-red-100 focus:ring-2 outline-none focus:border-base"
-            placeholder="Search Mockups, Logos..."
+            placeholder="Search Name or Job"
             required
           />
           <button type="submit" className="absolute end-0 bottom-0 focus:outline-none text-white bg-base hover:bg-red-600 focus:ring-4 focus:ring-red-400 font-medium  text-sm px-5 py-2.5 me-2 mb-2 flex w-fit items-center rounded-full">
@@ -52,7 +52,7 @@ export default async function Main() {
               type="search"
               id="default-search"
               className="block w-full p-4 ps-10 text-sm text-gray-900 border rounded-full border-gray-100  bg-white focus:ring-red-100 focus:ring-2 outline-none focus:border-base"
-              placeholder="Search Mockups, Logos..."
+              placeholder="Search Name or Job"
               required
             />
             <button type="submit" className="absolute end-0 bottom-0 focus:outline-none text-white bg-base hover:bg-red-600 focus:ring-4 focus:ring-red-400 font-medium  text-sm px-5 py-2.5 me-2 mb-2 flex w-fit items-center rounded-full">
@@ -77,7 +77,7 @@ export default async function Main() {
                   <LinkButton variant="white" href="#" className="bg-transparent border rounded-full">
                     Profil
                   </LinkButton>
-                  <LinkButton variant="white" href="#" className="bg-transparent border rounded-full">
+                  <LinkButton variant="white" href={`https://wa.me/${user.whatsapp}`} target="_blank" className="bg-transparent border rounded-full">
                     Chat
                   </LinkButton>
                 </div>
