@@ -19,7 +19,7 @@ export default function Main() {
   const [selected, setSelected] = useState("All");
 
   const { data: response, error } = useSWR("/api/data", fetcher, {
-    refreshInterval: 5000, // Refresh every 5 seconds
+    refreshInterval: 1000,
   });
 
   const userData = response?.dataUser || [];
