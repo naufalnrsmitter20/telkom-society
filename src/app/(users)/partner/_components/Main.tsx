@@ -10,27 +10,24 @@ import { LinkButton } from "@/app/components/utils/Button";
 import { userWithLastLogin } from "@/utils/relationsip";
 import { getData } from "@/lib/FetchData";
 import { useSession } from "next-auth/react";
+import { fetcher } from "@/utils/server-action/Fetcher";
+import useSWR from "swr";
 
 export default function Main() {
-  const [users, setUsers] = useState<userWithLastLogin[]>([]);
-
-  const [filteredUser, setFilteredUser] = useState<userWithLastLogin[]>([]);
+  const { data: session } = useSession();
   const [searchInput, setSearchInput] = useState<string>("");
-  const { data: session, status } = useSession();
   const [selected, setSelected] = useState("All");
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const response = await getData();
-      const user = response.dataUser || [];
-      setUsers(user);
-      setFilteredUser(user);
-    };
-    fetchUsers();
-  }, []);
+  const { data: response, error } = useSWR("/api/data", fetcher, {
+    refreshInterval: 5000, // Refresh every 5 seconds
+  });
+
+  const userData = response?.dataUser || [];
+  const [filteredUser, setFilteredUser] = useState<userWithLastLogin[]>(userData);
+
   useEffect(() => {
     const filterUsers = () => {
-      const filteredByName = users.filter((userData: userWithLastLogin) => userData.name.toString().toLowerCase().includes(searchInput.toLowerCase()));
+      const filteredByName = userData.filter((userData: userWithLastLogin) => userData.name.toLowerCase().includes(searchInput.toLowerCase()));
 
       const finalFilteredUsers = selected === "All" ? filteredByName : filteredByName.filter((dataUser: userWithLastLogin) => dataUser.job === selected);
 
@@ -38,7 +35,7 @@ export default function Main() {
     };
 
     filterUsers();
-  }, [searchInput, selected, users]);
+  }, [searchInput, selected, userData]);
 
   const handleSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
@@ -47,6 +44,9 @@ export default function Main() {
   const handleButtonFilter = (data: string) => {
     setSelected(data);
   };
+
+  if (error) return <div>Data Tidak Ditemukan</div>;
+  if (!response) return <div>Loading...</div>;
 
   return (
     <section className="max-w-full mx-auto xl:mx-48 md:flex  gap-x-4 px-4 xl:px-0">

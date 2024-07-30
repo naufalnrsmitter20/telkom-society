@@ -8,30 +8,23 @@ import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { userFullPayload } from "@/utils/relationsip";
 import toast from "react-hot-toast";
+import useSWR from "swr";
+import { fetcher } from "@/utils/server-action/Fetcher";
 
 export default function Signin() {
   const [userData, setUserData] = useState<userFullPayload | null>(null);
   const router = useRouter();
   const { data: session, status } = useSession();
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (session) {
-        try {
-          const response = await fetch(`/api/user?userId=${session.user?.id}`);
-          if (response.ok) {
-            const { user } = await response.json();
-            setUserData(user);
-          } else {
-            throw new Error("Failed to fetch user data");
-          }
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        }
-      }
-    };
+  const [loading, setIsLoading] = useState(false);
 
-    fetchUserData();
-  }, [session]);
+  const { data, error } = useSWR(session ? `/api/user?userId=${session.user?.id}` : null, fetcher, {
+    refreshInterval: 1000,
+  });
+  useEffect(() => {
+    if (data) {
+      setUserData(data.user);
+    }
+  }, [data]);
 
   useEffect(() => {
     if (session && userData) {
