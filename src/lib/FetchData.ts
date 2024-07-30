@@ -1,6 +1,7 @@
 export const getData = async () => {
   try {
-    const res = await fetch(`/api/data/`, {
+    const timestamp = new Date().getTime();
+    const res = await fetch(`/api/data?t=${timestamp}`, {
       cache: "no-cache",
       method: "GET",
     });
