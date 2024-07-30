@@ -6,6 +6,7 @@ import type { DefaultJWT } from "next-auth/jwt";
 import client from "./prisma";
 import { compareSync } from "bcrypt";
 import { createUser, findUser, updateUser } from "@/utils/user.query";
+import { revalidatePath } from "next/cache";
 
 declare module "next-auth" {
   interface Session {
@@ -118,6 +119,8 @@ export const authOptions: AuthOptions = {
                 },
               },
             });
+            revalidatePath("/partner");
+            revalidatePath("/api/data");
           }
         }
         return true;
