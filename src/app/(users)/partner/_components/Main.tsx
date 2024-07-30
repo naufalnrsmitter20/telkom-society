@@ -63,7 +63,6 @@ export default function Main() {
           </div>
           <input
             type="search"
-            id="default-search"
             className="block w-full p-4 ps-10 text-sm text-gray-900 border rounded-full border-gray-100  bg-white focus:ring-red-100 focus:ring-2 outline-none focus:border-base"
             placeholder="Search Name or Job"
             value={searchInput}
@@ -126,7 +125,6 @@ export default function Main() {
             </div>
             <input
               type="search"
-              id="default-search"
               className="block w-full p-4 ps-10 text-sm text-gray-900 border rounded-full border-gray-100  bg-white focus:ring-red-100 focus:ring-2 outline-none focus:border-base"
               placeholder="Search Name or Job"
               value={searchInput}
