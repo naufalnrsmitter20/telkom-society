@@ -120,6 +120,7 @@ export const authOptions: AuthOptions = {
               },
             });
             revalidatePath("/partner");
+            revalidatePath("/api/data");
           }
         }
         return true;
