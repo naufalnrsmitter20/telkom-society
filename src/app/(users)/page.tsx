@@ -1,8 +1,6 @@
 "use client";
 import Image from "next/image";
 
-import { FormButton, LinkButton } from "./../../components/utils/Button";
-
 import { Archivo_Black } from "next/font/google";
 const archivo_black = Archivo_Black({ weight: "400", subsets: ["latin"] });
 
@@ -15,6 +13,7 @@ import Hijau from "@/../public/ui/Group_fill.png";
 import Piala from "@/../public/ui/piala.png";
 import Merah from "@/../public/ui/User_alt_fill.png";
 import { signIn } from "next-auth/react";
+import { FormButton } from "../components/utils/Button";
 
 export default function Home() {
   return (
