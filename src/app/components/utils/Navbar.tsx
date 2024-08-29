@@ -4,6 +4,7 @@ import Image from "next/image";
 import { FormButton, LinkButton } from "./Button";
 
 import Logo from "@/../public/Telkom Society 1.png";
+import portalku from "@/../public/img/portalku.png";
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
@@ -43,7 +44,6 @@ export default function Navbar() {
                   ) : (
                     <div className="">
                       <FormButton type="button" variant="base" onClick={handleProf} withArrow className="flex justify-center gap-x-2 py-2 px-4 ">
-                        {/* <p className="text-xs">{session?.user?.name}</p> */}
                         <Image src={session?.user?.image as string} alt="user image" width={36} height={36} className="rounded-full" />
                       </FormButton>
                       {prof && (
@@ -77,8 +77,8 @@ export default function Navbar() {
             </button>
             <div>
               {modal && (
-                <div className="flex mt-10 text-center">
-                  <ul className="fixed left-0 mt-4 w-screen border-y bg-white border-slate-300 bg-primary-1000 py-2">
+                <div className="flex mt-10 text-center md:hidden">
+                  <ul className="fixed left-0 mt-4 w-screen border-y bg-white border-slate-300 bg-primary-1000 py-14 space-y-14">
                     <li>
                       <Link href="/" className={`${pathName === "/" ? "text-red-400" : "text-black"} rounded md:bg-transparent hover:text-red-600`}>
                         Home
@@ -102,6 +102,11 @@ export default function Navbar() {
                     <li>
                       <Link href="/pengembang" className={`${pathName === "/pengembang" ? "text-red-400" : "text-black"} rounded md:hover:bg-transparent hover:text-red-600`}>
                         Developers
+                      </Link>
+                    </li>
+                    <li className="flex justify-center">
+                      <Link href="https://portalku.benspace.xyz/">
+                        <Image src={portalku} width={78} alt="Portalku" />
                       </Link>
                     </li>
                   </ul>
@@ -135,6 +140,11 @@ export default function Navbar() {
               <li>
                 <Link href="/pengembang" className={`${pathName === "/pengembang" ? "text-red-400" : "text-black"} rounded md:hover:bg-transparent hover:text-red-600 duration-500`}>
                   Developers
+                </Link>
+              </li>
+              <li>
+                <Link target="_blank" href="https://portalku.benspace.xyz/">
+                  <Image src={portalku} width={78} alt="Portalku" />
                 </Link>
               </li>
             </ul>
