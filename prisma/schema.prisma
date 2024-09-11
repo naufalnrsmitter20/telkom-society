@@ -84,7 +84,6 @@ model TeamRequest {
   receiver   User           @relation("RequestReceiver", fields: [receiverId], references: [id])
   sender     User           @relation("RequestSender", fields: [senderId], references: [id])
   team       Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
 }
 
 model Skill {
