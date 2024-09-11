@@ -33,6 +33,7 @@ export const CreateTeam = async (data: FormData) => {
       throw new Error("Gagal Membuat Tim!");
     }
     revalidatePath("/division/profile");
+    return CreateTeam;
   } catch (error) {
     console.log(error as Error);
     throw error;
@@ -145,11 +146,15 @@ export const AcceptInviteMember = async (id: string) => {
           role: "MEMBER",
         },
       });
+      await prisma.teamRequest.delete({
+        where: { id: id },
+      });
     }
     if (!acc) {
       throw new Error("Failed to Accept!");
     }
     revalidatePath("/profile/notification");
+    return acc;
   } catch (error) {
     console.log(error as Error);
     throw new Error("Internal Server Error!");
@@ -162,16 +167,20 @@ export const DeniedInviteMember = async (id: string) => {
     if (!session?.user?.email) {
       throw new Error("Auth Required!");
     }
-    const acc = await prisma.teamRequest.update({
+    const den = await prisma.teamRequest.update({
       where: { id: id, receiverId: memberId },
       data: {
         status: "DENIED",
       },
     });
-    if (!acc) {
+    if (!den) {
       throw new Error("Failed to Denied!");
     }
+    const del = await prisma.teamRequest.delete({
+      where: { id: id },
+    });
     revalidatePath("/profile/notification");
+    return del;
   } catch (error) {
     console.log(error as Error);
     throw new Error("Internal Server Error!");
@@ -188,6 +197,7 @@ export const RequestTeam = async (teamId: string) => {
 
     const findOwner = await prisma.team.findFirst({
       where: { id: teamId },
+      include: { member: true },
     });
 
     const request = await prisma.teamRequest.create({
@@ -232,11 +242,15 @@ export const AcceptRequest = async (id: string) => {
           role: "MEMBER",
         },
       });
+      await prisma.teamRequest.delete({
+        where: { id: id },
+      });
     }
     if (!acc) {
       throw new Error("Failed Accept!");
     }
     revalidatePath("/division/join");
+    return acc;
   } catch (error) {
     console.log(error as Error);
     throw new Error("Internal Server Error!");
@@ -251,49 +265,57 @@ export const DeniedRequest = async (id: string) => {
       throw new Error("Auth Required!");
     }
 
-    const acc = await prisma.teamRequest.update({
+    const den = await prisma.teamRequest.update({
       where: { id, senderId: onwerId },
       data: {
         status: "DENIED",
       },
     });
-    if (!acc) {
+    if (!den) {
       throw new Error("Failed Denied!");
     }
 
+    await prisma.teamRequest.delete({
+      where: { id: id },
+    });
+
     revalidatePath("/division/join");
+    return den;
   } catch (error) {
     console.log(error as Error);
     throw new Error("Internal Server Error!");
   }
 };
 
-// export const AddTeamMember = async (id: string, data: FormData) => {
-//   try {
-//     const session = await nextGetServerSession();
-//     const userId = session?.user?.id;
-//     if (!session?.user?.email) {
-//       throw new Error("Auth Required!");
-//     }
-
-//     const role = data.get("role") as TeamRole;
-
-//     const findInvitation = await prisma.teamRequest.findFirst({
-//       where: { id },
-//     });
-//     const findTeam = await prisma.team.findFirst({
-//       where: {},
-//     });
-//     if (findInvitation?.status === "VERIFIED") {
-//       await prisma.teamMember.create({
-//         data: {
-//           userId: userId,
-//           role: role as TeamRole,
-//         },
-//       });
-//     }
-//   } catch (error) {
-//     console.log(error as Error);
-//     throw new Error("Internal Server Error!");
-//   }
-// };
+export const CancelInviteMember = async (id: string) => {
+  try {
+    const session = await nextGetServerSession();
+    if (!session?.user?.email) {
+      throw new Error("Auth Required!");
+    }
+    const del = await prisma.teamRequest.delete({
+      where: { id: id },
+    });
+    revalidatePath("/profile/notification");
+    return del;
+  } catch (error) {
+    console.log(error as Error);
+    throw new Error("Internal Server Error!");
+  }
+};
+export const KickMember = async (id: string) => {
+  try {
+    const session = await nextGetServerSession();
+    if (!session?.user?.email) {
+      throw new Error("Auth Required!");
+    }
+    const del = await prisma.teamMember.delete({
+      where: { id: id },
+    });
+    revalidatePath("/division/profile");
+    return del;
+  } catch (error) {
+    console.log(error as Error);
+    throw new Error("Internal Server Error!");
+  }
+};

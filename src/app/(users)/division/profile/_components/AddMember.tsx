@@ -4,7 +4,6 @@ import { DropDown, TextField } from "@/app/components/utils/Form";
 import ModalProfile from "@/app/components/utils/Modal";
 import { InviteMember } from "@/utils/server-action/teamsActions";
 import { Prisma } from "@prisma/client";
-import prisma from "@/lib/prisma";
 import React, { ChangeEvent, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -33,7 +32,7 @@ export default function AddMember({ onClose, data }: { onClose: () => void; data
             value={member}
             handleChange={(e) => setMember(e.target.value)}
             options={data.map((x, i) => ({
-              label: x.name,
+              label: `${x.name} - ${x.job}`,
               value: x.id,
             }))}
           />

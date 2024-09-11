@@ -17,7 +17,7 @@ export default function Popup(props: any) {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [props.triggers]);
+  }, [props, props.triggers]);
 
   return props.triggers ? (
     <div className="">
@@ -26,10 +26,7 @@ export default function Popup(props: any) {
           {props.children}
         </div>
       </div>
-      <button
-        onClick={() => props.setTriggers(false)} 
-        className="w-[100px] h-[100px] text-white text-lg font-medium text-center items-center flex justify-center rounded-full fixed z-[10000] right-10 bottom-10 bg-[#F45846]"
-      >
+      <button onClick={() => props.setTriggers(false)} className="w-[100px] h-[100px] text-white text-lg font-medium text-center items-center flex justify-center rounded-full fixed z-[10000] right-10 bottom-10 bg-[#F45846]">
         Close
       </button>
     </div>

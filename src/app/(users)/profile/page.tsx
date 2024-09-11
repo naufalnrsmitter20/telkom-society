@@ -104,9 +104,14 @@ export default function Profile() {
             <h1 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal">
               {userData?.name} {`${userData?.job ? `(${userData?.job})` : "Loading..."}` as string}
             </h1>
-            <FormButton variant="base" onClick={handleModal}>
-              Edit Profile
-            </FormButton>
+            <div className="flex gap-x-2">
+              <FormButton variant="base" onClick={handleModal}>
+                Edit Profile
+              </FormButton>
+              <FormButton variant="base" onClick={() => router.push("/profile/notification")}>
+                Notification
+              </FormButton>
+            </div>
           </div>
           <div className="h-2"></div>
           <p className="text-gray-500 text-lg sm:text-lg md:text-xl lg:text-xl">{userData?.clasess}</p>

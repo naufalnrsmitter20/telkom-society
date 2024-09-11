@@ -119,9 +119,7 @@ export function DropDown({ name, options, className, disabled, handleChange, lab
         </label>
       )}
       <select defaultValue={defaultValue} className="rounded-[8px] py-2.5 w-auto xl:w-auto mb-6 p-[10px] border border-slate-400" name={name} value={value} onChange={handleChange} disabled={disabled} required={required}>
-        <option value="null" disabled>
-          Select
-        </option>
+        <option value="null">Select</option>
         {options &&
           options.map((opt, i) => (
             <option onChange={onChangeOption} key={i} value={opt.value}>

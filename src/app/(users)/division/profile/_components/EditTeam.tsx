@@ -28,20 +28,20 @@ export default function EditTeam({ onClose, teamId, data }: { onClose: () => voi
     <ModalProfile onClose={onClose} title="Edit Team">
       <form onSubmit={HandleSubmit}>
         <div className="gap-x-6 w-full">
-          <TextField defaultValue={data.name} name="name" placeholder="Insert division name" label="Division Name" type="text" />
-          <TextArea defaultValue={data.description} name="description" label="Division Description" placeholder="Division Description" />
-          <TextField defaultValue={data.logo} name="logo" label="Division Logo" type="text" />
+          <TextField defaultValue={data?.name} name="name" placeholder="Insert division name" label="Division Name" type="text" />
+          <TextArea defaultValue={data?.description} name="description" label="Division Description" placeholder="Division Description" />
+          <TextField defaultValue={data?.logo} name="logo" label="Division Logo" type="text" />
           <DropDown
             name="mentor"
             label="Mentor"
-            defaultValue={data.mentor}
+            defaultValue={data?.mentor}
             options={mentor.map((x, i) => ({
               label: x.name,
               value: x.name,
             }))}
           />
-          <TextField defaultValue={data.instagram} name="instagram" label="Instagram (link)" type="text" />
-          <TextField defaultValue={data.linkedin} name="linkedin" label="Linked In (link)" type="text" />
+          <TextField defaultValue={data?.instagram} name="instagram" label="Instagram (link)" type="text" />
+          <TextField defaultValue={data?.linkedin} name="linkedin" label="Linked In (link)" type="text" />
         </div>
         <div className="flex justify-end w-full gap-x-4 pb-4 mt-12">
           <FormButton onClick={onClose} variant="white">

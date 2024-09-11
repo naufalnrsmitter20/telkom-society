@@ -1,6 +1,14 @@
 import { LinkButton } from "@/app/components/utils/Button";
+import { nextGetServerSession } from "@/lib/authOption";
+import prisma from "@/lib/prisma";
+import { redirect } from "next/navigation";
 
-export default function Division() {
+export default async function Division() {
+  const session = await nextGetServerSession();
+  const findTeam = await prisma.team.findFirst({ where: { ownerId: session?.user?.id } });
+  if (findTeam) {
+    redirect(`/division/profile/${findTeam.id}`);
+  }
   return (
     <main className=" flex w-full flex-col h-screen ">
       <h1 className="text-[48px] font-bold opacity-60 ml-[78px] mt-32">Choose Between</h1>
