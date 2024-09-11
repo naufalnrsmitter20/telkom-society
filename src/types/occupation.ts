@@ -22,9 +22,4 @@ export const occupation: occupationProps[] = [
     value: "Hustler",
     id: 3,
   },
-  // {
-  //   occupation: "Undefined",
-  //   value: "Undefined",
-  //   id: 4,
-  // },
 ];

@@ -1,7 +1,7 @@
 import { getToken } from "next-auth/jwt";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
-export default async function middleware(req: NextRequest, nex: NextFetchEvent) {
+export default async function middleware(req: NextRequest, res: NextResponse, next: NextFetchEvent) {
   const requireAuthToken = ["/partner", "/profile", "/profile/edit", "/isiIdentitas", "/isiIdentitas/personalData", "/isiIdentitas/achievement"];
   const pathname = req.nextUrl.pathname;
 
