@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import AdminHeaders from "./components/main/AdminHeaders";
 import { findAllUsers } from "@/utils/user.query";
 import { Prisma } from "@prisma/client";
+import Hero from "@/app/(admin)/admin/components/Hero/page";
+
 
 interface cardProps {
   title: string;
@@ -61,14 +63,10 @@ export default async function AdminPage() {
       </section>
       <section className="w-full m-[10px]">
         <section className="max-w-[1440px] mx-auto w-full bg-[#F6F6F6] p-4">
-          <h5 className="text-[24px] font-semibold text-[#F45846]">Admin</h5>
+          <h5 className="text-[40px] border-b-2 border-black font-bold mx-5 text-[#F45846] ">Admin</h5>
           <div className="grid grid-cols-1 grid-rows-3 p-4 gap-y-4">
             {datas.map((i,x) => (
-              <div key={x} className=" flex items-center justify-between p-6 bg-white drop-shadow rounded-[12px]">
-                <p className="text-[12px] font-normal mx-5">{i.name}</p>
-                <h6 className="text-[12px] font-normal mx-5">SMK Telkom Malang</h6>
-                <p className="text-[12px] font-normal mx-5">{i.email}</p>
-              </div>
+                <Hero datas={datas} key={i}/>
             ))}
           </div>
         </section>

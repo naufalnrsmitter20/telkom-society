@@ -34,9 +34,16 @@ export const UpdateUserById = async (data: FormData) => {
     const BirthDate = data.get("BirthDate") as string;
     const religion = data.get("religion") as Religion;
     const gender = data.get("gender") as Gender;
-    const certificates = JSON.parse((data.get("certificates") as string) || "[]") as { CertificateName: string; img: string; link: string }[];
-    const projects = JSON.parse((data.get("projects") as string) || "[]") as { ProjeectName: string; link: string }[];
-    const Skills = JSON.parse((data.get("Skills") as string) || "[]") as string[];
+    const certificates = JSON.parse(
+      (data.get("certificates") as string) || "[]"
+    ) as { CertificateName: string; img: string; link: string }[];
+    const projects = JSON.parse((data.get("projects") as string) || "[]") as {
+      ProjeectName: string;
+      link: string;
+    }[];
+    const Skills = JSON.parse(
+      (data.get("Skills") as string) || "[]"
+    ) as string[];
 
     if (!id) {
       const create = await createUser({
@@ -82,10 +89,27 @@ export const UpdateUserById = async (data: FormData) => {
       });
       if (!create) throw new Error("Failed to create");
     } else if (id) {
-      const findUserWithId = await prisma.user.findUnique({ where: { id }, include: { certificates: true, Skills: true, projects: true } });
-      const skillsToDisconnect = findUserWithId?.Skills.filter((existingSkill) => !Skills.includes(existingSkill.SkillName)) || [];
-      const certificatesToDisconnect = findUserWithId?.certificates.filter((existingCertificate) => !certificates.some((cert) => cert.CertificateName === existingCertificate.CertificateName));
-      const projectsToDisconnect = findUserWithId?.projects.filter((existingProject) => !projects.some((proj) => proj.ProjeectName === existingProject.ProjeectName));
+      const findUserWithId = await prisma.user.findUnique({
+        where: { id },
+        include: { certificates: true, Skills: true, projects: true },
+      });
+      const skillsToDisconnect =
+        findUserWithId?.Skills.filter(
+          (existingSkill) => !Skills.includes(existingSkill.SkillName)
+        ) || [];
+      const certificatesToDisconnect = findUserWithId?.certificates.filter(
+        (existingCertificate) =>
+          !certificates.some(
+            (cert) =>
+              cert.CertificateName === existingCertificate.CertificateName
+          )
+      );
+      const projectsToDisconnect = findUserWithId?.projects.filter(
+        (existingProject) =>
+          !projects.some(
+            (proj) => proj.ProjeectName === existingProject.ProjeectName
+          )
+      );
 
       const update = await updateUser(
         { id: id ?? findUserWithId?.id },
@@ -113,7 +137,11 @@ export const UpdateUserById = async (data: FormData) => {
           religion: religion ?? findUserWithId?.religion,
           certificates: {
             connectOrCreate: certificates.map((certificate) => ({
-              where: { CertificateName: certificate.CertificateName, img: certificate.img, link: certificate.link },
+              where: {
+                CertificateName: certificate.CertificateName,
+                img: certificate.img,
+                link: certificate.link,
+              },
               create: {
                 CertificateName: certificate.CertificateName,
                 img: certificate.img,
@@ -157,6 +185,28 @@ export const UpdateUserById = async (data: FormData) => {
   } catch (error) {
     console.error("Error updating user:", error);
     throw error;
+  }
+};
+
+export const updateRole = async (id: string, data: FormData) => {
+  try {
+    const session = await nextGetServerSession();
+    if (!session) {
+      throw new Error("eror");
+    }
+
+    const role = data.get("role") as Role;
+    const update = await prisma.user.update({where: {id: id} , data:{
+      role
+    }});
+    if(!update){
+      throw new Error("eror");
+
+    }
+    revalidatePath("/admin/studentData")
+    return update
+  } catch (error) {
+    throw new Error((error as Error).message)
   }
 };
 
@@ -214,7 +264,10 @@ export const UpdateGeneralProfileById = async (data: FormData) => {
       });
       if (!create) throw new Error("Failed to create");
     } else if (id) {
-      const findUserWithId = await prisma.user.findUnique({ where: { id }, include: { certificates: true, Skills: true, projects: true } });
+      const findUserWithId = await prisma.user.findUnique({
+        where: { id },
+        include: { certificates: true, Skills: true, projects: true },
+      });
 
       const update = await updateUser(
         { id: id ?? findUserWithId?.id },
@@ -262,7 +315,9 @@ export const UpdateUserSkillById = async (data: FormData) => {
     const email = data.get("email") as string;
     const name = data.get("name") as string;
 
-    const Skills = JSON.parse((data.get("Skills") as string) || "[]") as string[];
+    const Skills = JSON.parse(
+      (data.get("Skills") as string) || "[]"
+    ) as string[];
 
     if (!id) {
       const create = await createUser({
@@ -277,8 +332,14 @@ export const UpdateUserSkillById = async (data: FormData) => {
       });
       if (!create) throw new Error("Failed to create");
     } else if (id) {
-      const findUserWithId = await prisma.user.findUnique({ where: { id }, include: { certificates: true, Skills: true, projects: true } });
-      const skillsToDisconnect = findUserWithId?.Skills.filter((existingSkill) => !Skills.includes(existingSkill.SkillName)) || [];
+      const findUserWithId = await prisma.user.findUnique({
+        where: { id },
+        include: { certificates: true, Skills: true, projects: true },
+      });
+      const skillsToDisconnect =
+        findUserWithId?.Skills.filter(
+          (existingSkill) => !Skills.includes(existingSkill.SkillName)
+        ) || [];
 
       const update = await updateUser(
         { id: id ?? findUserWithId?.id },
@@ -319,7 +380,10 @@ export const UpdateUserProjectById = async (data: FormData) => {
     const email = data.get("email") as string;
     const name = data.get("name") as string;
 
-    const projects = JSON.parse((data.get("projects") as string) || "[]") as { ProjeectName: string; link: string }[];
+    const projects = JSON.parse((data.get("projects") as string) || "[]") as {
+      ProjeectName: string;
+      link: string;
+    }[];
 
     if (!id) {
       const create = await createUser({
@@ -335,8 +399,16 @@ export const UpdateUserProjectById = async (data: FormData) => {
       });
       if (!create) throw new Error("Failed to create");
     } else if (id) {
-      const findUserWithId = await prisma.user.findUnique({ where: { id }, include: { certificates: true, Skills: true, projects: true } });
-      const projectsToDisconnect = findUserWithId?.projects.filter((existingProject) => !projects.some((proj) => proj.ProjeectName === existingProject.ProjeectName));
+      const findUserWithId = await prisma.user.findUnique({
+        where: { id },
+        include: { certificates: true, Skills: true, projects: true },
+      });
+      const projectsToDisconnect = findUserWithId?.projects.filter(
+        (existingProject) =>
+          !projects.some(
+            (proj) => proj.ProjeectName === existingProject.ProjeectName
+          )
+      );
 
       const update = await updateUser(
         { id: id ?? findUserWithId?.id },
