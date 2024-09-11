@@ -20,7 +20,7 @@ export default async function Division({ params }: { params: { id: string } }) {
   const findRequestMember = teamRequest?.find((x) => x.receiverId);
   const user = await prisma.user.findMany({
     include: { Team: true, invitation: true, teamRequest: true },
-    where: { NOT: [{ id: session?.user?.id }, { job: findCurrentUser?.job }, { Team: { userId: findMember?.userId } }, { teamRequest: { every: { receiverId: findRequestMember?.receiverId } } }] },
+    where: { NOT: [{ id: session?.user?.id }, { job: findCurrentUser?.job }, { Team: { userId: findMember?.userId } }] },
   });
   return (
     <main className="mt-20 lg:mt-32 mb-20 min-h-screen">
