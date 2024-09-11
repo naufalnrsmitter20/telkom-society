@@ -30,13 +30,13 @@ model User {
   BirthDate     String?
   religion      Religion?     @default(Islam)
   gender        Gender?       @default(Male)
+  Team          TeamMember?
+  invitation    TeamRequest[] @relation("RequestReceiver")
+  teamRequest   TeamRequest[] @relation("RequestSender")
   userAuth      UserAuth?
   certificates  certificate[] @relation("CertificateToUser")
   projects      Project[]     @relation("ProjectToUser")
   Skills        Skill[]       @relation("SkillToUser")
-  Team          TeamMember?
-  teamRequest   TeamRequest[] @relation("RequestSender")
-  invitation    TeamRequest[] @relation("RequestReceiver")
 }
 
 model UserAuth {
@@ -56,21 +56,21 @@ model Team {
   instagram   String?
   linkedin    String?
   ownerId     String
+  createAt    DateTime      @default(now())
   member      TeamMember[]
   requests    TeamRequest[]
-  createAt    DateTime      @default(now())
 }
 
 model TeamMember {
   id       String   @id @default(uuid())
   teamId   String
-  team     Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  userId   String
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   String   @unique
   role     TeamRole
   joinedAt DateTime @default(now())
+  team     Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([userId])
+  @@index([teamId], map: "TeamMember_teamId_fkey")
 }
 
 model TeamRequest {
@@ -78,12 +78,13 @@ model TeamRequest {
   teamId     String
   senderId   String
   receiverId String
-  team       Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  sender     User           @relation("RequestSender", fields: [senderId], references: [id])
-  receiver   User           @relation("RequestReceiver", fields: [receiverId], references: [id])
   type       InvitationType
   status     RequestStatus  @default(PENDING)
   createAt   DateTime       @default(now())
+  receiver   User           @relation("RequestReceiver", fields: [receiverId], references: [id])
+  sender     User           @relation("RequestSender", fields: [senderId], references: [id])
+  team       Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
 }
 
 model Skill {

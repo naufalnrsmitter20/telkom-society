@@ -7,6 +7,7 @@ export default function Pengembang() {
     { job: "Backend Developer - The Next Way", name: "Muhammad Zuhair Zuhdi" },
     { job: "Frontend Developer - Grounded", name: "Fahrell Sandy Zhariif Widiatmoko" },
     { job: "Frontend Developer - Grounded", name: "Haza Nasrullah Kuswantoro" },
+    { job: "Frontend Developer", name: "Jean Richnerd Rantabaratrahjaga" },
     { job: "UI/UX Designer - Grounded", name: "Ryo Hariyono Angwyn" },
   ];
 

@@ -15,6 +15,13 @@ const config: Config = {
       },
       colors: {
         base: "#F45846",
+        'moklet': "#B7292E",
+        "highlight":"#e0331f",
+        "secondary":"#88898852",
+        "hijauBorder":"#75B5A6",
+        "hijauText":"#5C8F86",
+        "inputCodeHijau":"#8CA19E",
+        "baseHijau":"#F3F9F7",
       },
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
