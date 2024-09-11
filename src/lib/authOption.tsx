@@ -100,9 +100,9 @@ export const authOptions: AuthOptions = {
             return true;
           }
         }
-        if (account?.provider === "google" && !profile?.email?.endsWith("smktelkom-mlg.sch.id")) {
-          return false;
-        }
+        // if (account?.provider === "google" && !profile?.email?.endsWith("smktelkom-mlg.sch.id")) {
+        //   return false;
+        // }
 
         if (user.email) {
           const userDatabase = await findUser({ email: user.email });

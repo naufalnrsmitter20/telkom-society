@@ -15,13 +15,15 @@ export default function CreatePage() {
     try {
       e.preventDefault();
       const formData = new FormData(e.target);
-      await CreateTeam(formData);
-      const toastId = toast.loading("Loading...");
-      toast.success("Sukses membuat Tim!", { id: toastId });
-      router.push(`/division/profile/${formData.get("name")}`);
+      const create = await CreateTeam(formData);
+      if (create) {
+        const toastId = toast.loading("Loading...");
+        toast.success("Sukses membuat Tim!", { id: toastId });
+        router.push(`/division/profile/${create.id}`);
+      }
     } catch (error) {
       console.error(error);
-      toast.error("Gagal membuat Tim!");
+      toast.error((error as Error).message);
     }
   };
   return (
