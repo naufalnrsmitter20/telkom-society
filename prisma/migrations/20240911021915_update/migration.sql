@@ -39,13 +39,43 @@ CREATE TABLE `UserAuth` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Tim` (
+CREATE TABLE `Team` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NOT NULL,
-    `photo` VARCHAR(191) NOT NULL,
+    `logo` VARCHAR(191) NULL,
+    `mentor` VARCHAR(191) NOT NULL,
+    `instagram` VARCHAR(191) NULL,
+    `linkedin` VARCHAR(191) NULL,
+    `ownerId` VARCHAR(191) NOT NULL,
+    `createAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    UNIQUE INDEX `Tim_id_key`(`id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `TeamMember` (
+    `id` VARCHAR(191) NOT NULL,
+    `teamId` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `role` ENUM('OWNER', 'MEMBER') NOT NULL,
+    `joinedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    UNIQUE INDEX `TeamMember_userId_key`(`userId`),
+    INDEX `TeamMember_teamId_fkey`(`teamId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `TeamRequest` (
+    `id` VARCHAR(191) NOT NULL,
+    `teamId` VARCHAR(191) NOT NULL,
+    `senderId` VARCHAR(191) NOT NULL,
+    `receiverId` VARCHAR(191) NOT NULL,
+    `type` ENUM('INVITE', 'REQUEST') NOT NULL,
+    `status` ENUM('PENDING', 'VERIFIED', 'DENIED') NOT NULL DEFAULT 'PENDING',
+    `createAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -86,15 +116,6 @@ CREATE TABLE `_CertificateToUser` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `_TimToUser` (
-    `A` VARCHAR(191) NOT NULL,
-    `B` CHAR(36) NOT NULL,
-
-    UNIQUE INDEX `_TimToUser_AB_unique`(`A`, `B`),
-    INDEX `_TimToUser_B_index`(`B`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `_SkillToUser` (
     `A` VARCHAR(191) NOT NULL,
     `B` CHAR(36) NOT NULL,
@@ -116,16 +137,25 @@ CREATE TABLE `_ProjectToUser` (
 ALTER TABLE `UserAuth` ADD CONSTRAINT `UserAuth_userEmail_fkey` FOREIGN KEY (`userEmail`) REFERENCES `User`(`email`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `TeamMember` ADD CONSTRAINT `TeamMember_teamId_fkey` FOREIGN KEY (`teamId`) REFERENCES `Team`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `TeamMember` ADD CONSTRAINT `TeamMember_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `TeamRequest` ADD CONSTRAINT `TeamRequest_receiverId_fkey` FOREIGN KEY (`receiverId`) REFERENCES `User`(`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `TeamRequest` ADD CONSTRAINT `TeamRequest_senderId_fkey` FOREIGN KEY (`senderId`) REFERENCES `User`(`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `TeamRequest` ADD CONSTRAINT `TeamRequest_teamId_fkey` FOREIGN KEY (`teamId`) REFERENCES `Team`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `_CertificateToUser` ADD CONSTRAINT `_CertificateToUser_A_fkey` FOREIGN KEY (`A`) REFERENCES `User`(`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `_CertificateToUser` ADD CONSTRAINT `_CertificateToUser_B_fkey` FOREIGN KEY (`B`) REFERENCES `certificate`(`CertificateName`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `_TimToUser` ADD CONSTRAINT `_TimToUser_A_fkey` FOREIGN KEY (`A`) REFERENCES `Tim`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `_TimToUser` ADD CONSTRAINT `_TimToUser_B_fkey` FOREIGN KEY (`B`) REFERENCES `User`(`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `_SkillToUser` ADD CONSTRAINT `_SkillToUser_A_fkey` FOREIGN KEY (`A`) REFERENCES `Skill`(`SkillName`) ON DELETE CASCADE ON UPDATE CASCADE;
