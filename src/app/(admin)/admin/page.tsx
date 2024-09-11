@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import AdminHeaders from "./components/main/AdminHeaders";
 import { findAllUsers } from "@/utils/user.query";
 import { Prisma } from "@prisma/client";
-import Hero from "@/app/(admin)/admin/components/Hero/page";
-
 
 interface cardProps {
   title: string;
@@ -15,7 +13,7 @@ export default async function AdminPage() {
   const datas = await findAllUsers({
     NOT: { role: "SISWA" },
   });
-  
+
   const CardItem: cardProps[] = [
     {
       title: "Number of student",
@@ -43,17 +41,13 @@ export default async function AdminPage() {
       <section className="w-full">
         <AdminHeaders data="Dashboard" />
         <section className="max-w-[1440px] mx-auto w-full bg-[#F6F6F6] p-4">
-          <h5 className="text-[24px] font-semibold text-[#F45846]">
-            Statistik Data
-          </h5>
+          <h5 className="text-[24px] font-semibold text-[#F45846]">Statistik Data</h5>
           <div className="grid grid-cols-4 p-4 gap-x-4">
             {CardItem.map((x, i) => (
               <div key={i} className="p-6 bg-white drop-shadow rounded-[12px]">
                 <p className="text-[16px] font-normal">{x.title}</p>
                 <div className="mt-6">
-                  <h6 className="text-[40px] font-medium text-[#F45846]">
-                    {x.data}
-                  </h6>
+                  <h6 className="text-[40px] font-medium text-[#F45846]">{x.data}</h6>
                   <p className="text-[14px] font-normal">{x.desc}</p>
                 </div>
               </div>
@@ -65,9 +59,9 @@ export default async function AdminPage() {
         <section className="max-w-[1440px] mx-auto w-full bg-[#F6F6F6] p-4">
           <h5 className="text-[40px] border-b-2 border-black font-bold mx-5 text-[#F45846] ">Admin</h5>
           <div className="grid grid-cols-1 grid-rows-3 p-4 gap-y-4">
-            {datas.map((i,x) => (
+            {/* {datas.map((i,x) => (
                 <Hero datas={datas} key={i}/>
-            ))}
+            ))} */}
           </div>
         </section>
       </section>
