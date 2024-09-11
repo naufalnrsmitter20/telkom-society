@@ -34,7 +34,9 @@ model User {
   certificates  certificate[] @relation("CertificateToUser")
   projects      Project[]     @relation("ProjectToUser")
   Skills        Skill[]       @relation("SkillToUser")
-  timMembers    Tim[]         @relation("TimToUser")
+  Team          TeamMember?
+  teamRequest   TeamRequest[] @relation("RequestSender")
+  invitation    TeamRequest[] @relation("RequestReceiver")
 }
 
 model UserAuth {
@@ -45,12 +47,43 @@ model UserAuth {
   user       User      @relation(fields: [userEmail], references: [email], onDelete: Cascade)
 }
 
-model Tim {
-  id          String @id @unique
+model Team {
+  id          String        @id @default(uuid())
   name        String
   description String
-  photo       String
-  members     User[] @relation("TimToUser")
+  logo        String?
+  mentor      String
+  instagram   String?
+  linkedin    String?
+  ownerId     String
+  member      TeamMember[]
+  requests    TeamRequest[]
+  createAt    DateTime      @default(now())
+}
+
+model TeamMember {
+  id       String   @id @default(uuid())
+  teamId   String
+  team     Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role     TeamRole
+  joinedAt DateTime @default(now())
+
+  @@unique([userId])
+}
+
+model TeamRequest {
+  id         String         @id @default(uuid())
+  teamId     String
+  senderId   String
+  receiverId String
+  team       Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  sender     User           @relation("RequestSender", fields: [senderId], references: [id])
+  receiver   User           @relation("RequestReceiver", fields: [receiverId], references: [id])
+  type       InvitationType
+  status     RequestStatus  @default(PENDING)
+  createAt   DateTime       @default(now())
 }
 
 model Skill {
@@ -101,4 +134,20 @@ enum Religion {
   Budha
   Hindu
   Konghucu
+}
+
+enum RequestStatus {
+  PENDING
+  VERIFIED
+  DENIED
+}
+
+enum InvitationType {
+  INVITE
+  REQUEST
+}
+
+enum TeamRole {
+  OWNER
+  MEMBER
 }
