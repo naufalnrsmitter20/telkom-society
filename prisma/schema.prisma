@@ -78,7 +78,7 @@ model TeamRequest {
   teamId     String
   senderId   String
   receiverId String
-  team       Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  team       Team?          @relation(fields: [teamId], references: [id], onDelete: Cascade)
   sender     User           @relation("RequestSender", fields: [senderId], references: [id])
   receiver   User           @relation("RequestReceiver", fields: [receiverId], references: [id])
   type       InvitationType

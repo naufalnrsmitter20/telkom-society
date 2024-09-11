@@ -38,6 +38,7 @@ interface SelectFieldProps {
   handleChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
   disabled?: boolean;
   defaultValue?: string;
+  onChangeOption?: (event: ChangeEvent<HTMLOptionElement>) => void;
 }
 
 // const mentor: DropdownProps[] = [
@@ -109,7 +110,7 @@ export function TextArea({ className, handleChange, label, name, placeholder, re
   );
 }
 
-export function DropDown({ name, options, className, disabled, handleChange, label, required, value, defaultValue }: Readonly<SelectFieldProps>) {
+export function DropDown({ name, options, className, disabled, handleChange, label, required, value, defaultValue, onChangeOption }: Readonly<SelectFieldProps>) {
   return (
     <main className={clsx("flex flex-col gap-y-2", className)}>
       {label && (
@@ -123,7 +124,7 @@ export function DropDown({ name, options, className, disabled, handleChange, lab
         </option>
         {options &&
           options.map((opt, i) => (
-            <option key={i} value={opt.value}>
+            <option onChange={onChangeOption} key={i} value={opt.value}>
               {opt.label}
             </option>
           ))}

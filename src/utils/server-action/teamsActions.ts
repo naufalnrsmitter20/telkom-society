@@ -1,5 +1,7 @@
+"use server";
 import { nextGetServerSession } from "@/lib/authOption";
 import { revalidatePath } from "next/cache";
+import prisma from "@/lib/prisma";
 
 export const CreateTeam = async (data: FormData) => {
   try {
@@ -7,9 +9,7 @@ export const CreateTeam = async (data: FormData) => {
     if (!session?.user?.email) {
       throw new Error("Auth Required!");
     }
-
     const UserId = session.user.id;
-
     const name = data.get("name") as string;
     const description = data.get("description") as string;
     const logo = data.get("logo") as string;
@@ -25,7 +25,7 @@ export const CreateTeam = async (data: FormData) => {
         instagram: instagram ?? "",
         linkedin: linkedin ?? "",
         logo: logo ?? "",
-        ownerId: UserId,
+        ownerId: UserId as string,
         createAt: new Date(),
       },
     });
@@ -35,7 +35,7 @@ export const CreateTeam = async (data: FormData) => {
     revalidatePath("/division/profile");
   } catch (error) {
     console.log(error as Error);
-    throw new Error("Internal Server Error!");
+    throw error;
   }
 };
 
@@ -48,14 +48,6 @@ export const UpdateTeam = async (id: string, data: FormData) => {
 
     if (!id) {
       throw new Error("Team Not Found!");
-    }
-    const userId = session.user.id;
-
-    const findOwner = await prisma.team.findFirst({
-      where: { id: userId },
-    });
-    if (!findOwner?.id) {
-      throw new Error("Unauthorize!");
     }
 
     const name = data.get("name") as string;
@@ -92,32 +84,42 @@ export const UpdateTeam = async (id: string, data: FormData) => {
 export const InviteMember = async (memberId: string) => {
   try {
     const session = await nextGetServerSession();
-    const ownerId = session?.user?.id;
+    const ownerId = session?.user?.id!;
     if (!session?.user?.email) {
       throw new Error("Auth Required!");
     }
 
     const findTeam = await prisma.team.findFirst({
-      where: { ownerId },
+      where: { ownerId: ownerId as string },
     });
 
-    const invite = await prisma.teamRequest.create({
-      data: {
-        senderId: ownerId as string,
-        receiverId: memberId,
-        teamId: findTeam?.id as string,
-        type: "INVITE",
-        status: "PENDING",
-        createAt: new Date(),
-      },
+    const findCurrentInvite = await prisma.teamRequest.findFirst({
+      where: { receiverId: memberId },
     });
-    if (!invite) {
-      throw new Error("Failed Invitations!");
+
+    if (findCurrentInvite?.receiverId === memberId) {
+      throw new Error("User Already Invited!");
     }
-    revalidatePath("/profile");
+    if (memberId) {
+      const invite = await prisma.teamRequest.create({
+        data: {
+          senderId: ownerId as string,
+          receiverId: memberId,
+          teamId: findTeam?.id as string,
+          type: "INVITE",
+          status: "PENDING",
+          createAt: new Date(),
+        },
+      });
+      if (!invite) {
+        throw new Error("Failed Invitations!");
+      }
+      revalidatePath("/profile");
+      return invite;
+    }
   } catch (error) {
     console.log(error as Error);
-    throw new Error("Internal Server Error!");
+    throw new Error((error as Error).message);
   }
 };
 
@@ -134,6 +136,16 @@ export const AcceptInviteMember = async (id: string) => {
         status: "VERIFIED",
       },
     });
+    if (acc.status === "VERIFIED") {
+      await prisma.teamMember.create({
+        data: {
+          joinedAt: new Date(),
+          userId: memberId as string,
+          teamId: acc.teamId,
+          role: "MEMBER",
+        },
+      });
+    }
     if (!acc) {
       throw new Error("Failed to Accept!");
     }
@@ -211,6 +223,16 @@ export const AcceptRequest = async (id: string) => {
         status: "VERIFIED",
       },
     });
+    if (acc.status === "VERIFIED") {
+      await prisma.teamMember.create({
+        data: {
+          joinedAt: new Date(),
+          userId: acc.receiverId,
+          teamId: acc.teamId,
+          role: "MEMBER",
+        },
+      });
+    }
     if (!acc) {
       throw new Error("Failed Accept!");
     }
@@ -245,3 +267,33 @@ export const DeniedRequest = async (id: string) => {
     throw new Error("Internal Server Error!");
   }
 };
+
+// export const AddTeamMember = async (id: string, data: FormData) => {
+//   try {
+//     const session = await nextGetServerSession();
+//     const userId = session?.user?.id;
+//     if (!session?.user?.email) {
+//       throw new Error("Auth Required!");
+//     }
+
+//     const role = data.get("role") as TeamRole;
+
+//     const findInvitation = await prisma.teamRequest.findFirst({
+//       where: { id },
+//     });
+//     const findTeam = await prisma.team.findFirst({
+//       where: {},
+//     });
+//     if (findInvitation?.status === "VERIFIED") {
+//       await prisma.teamMember.create({
+//         data: {
+//           userId: userId,
+//           role: role as TeamRole,
+//         },
+//       });
+//     }
+//   } catch (error) {
+//     console.log(error as Error);
+//     throw new Error("Internal Server Error!");
+//   }
+// };
