@@ -63,8 +63,7 @@ export default function ContentProfile({ userData, session }: { userData: userFu
       toast.error("Gagal Mengedit Profil");
     }
   };
-  //   const findTeam = userData.Team.find((x) => x.userId === userData.id)
-
+  const currentTeam = userData.Team.find((x) => x.userId === session.user?.id);
   return (
     <div className="bg-slate-100 p-0 sm:p-5 md:p-10 lg:p-15 xl:p-20">
       <div className="mt-24 bg-white rounded-3xl p-10 sm:p-10 md:p-15 lg:p-20 xl:p-24 relative overflow-hidden">
@@ -194,27 +193,28 @@ export default function ContentProfile({ userData, session }: { userData: userFu
         <div className="relative z-10 flex justify-between items-start">
           <div>
             <h2 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal mb-4">Partner List</h2>
+            <p className="font-semibold text-xl">
+              Team Name :{" "}
+              {currentTeam?.team ? (
+                <span className="className='text-[#F45846]'">{currentTeam?.team.name}</span>
+              ) : (
+                <span className="text-slate-500 font-medium">
+                  <i>Dont Have Team</i>
+                </span>
+              )}
+            </p>
             <ul className="space-y-2">
-              <li>
-                <Link href="#" className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800">
-                  Naufal Nabil Ramadhan - Hacker
-                </Link>
-              </li>
-              <li>
-                <a href="#" className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800">
-                  Haza - Hacker
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800">
-                  Fahrell - Hacker
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800">
-                  Dviki - Hustler
-                </a>
-              </li>
+              {currentTeam ? (
+                currentTeam.team.member.map((x, i) => (
+                  <li key={i}>
+                    <Link href="#" className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800">
+                      {x.user.name} - {x.user.job}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <></>
+              )}
             </ul>
           </div>
 
@@ -273,7 +273,7 @@ export default function ContentProfile({ userData, session }: { userData: userFu
               <TextField type="date" label="Birth Date" name="BirthDate" defaultValue={userData?.BirthDate as string} />
               <TextField type="text" label="NIS" name="NIS" defaultValue={userData?.NIS as string} />
               <TextField type="text" label="NISN" name="NISN" defaultValue={userData?.NISN as string} />
-              <TextField type="text" label="school Origin" name="schoolOrigin" defaultValue={userData?.schoolOrigin as string} />
+              <TextField type="text" label="school Origin" name="schoolOrigin" disabled readOnly defaultValue={userData?.schoolOrigin as string} />
 
               <DropDown
                 label="Gender"
@@ -296,7 +296,7 @@ export default function ContentProfile({ userData, session }: { userData: userFu
               <DropDown
                 name="job"
                 handleChange={handleSelectChange}
-                label="Occupation"
+                label="Job"
                 value={selectedOccupation || userData?.job}
                 options={occupation.map((e) => ({
                   label: e.occupation,

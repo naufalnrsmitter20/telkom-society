@@ -1,12 +1,35 @@
 "use client";
 import { FormButton, LinkButton } from "@/app/components/utils/Button";
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import EditTeam from "./EditTeam";
 import ViewTeam from "./ViewTeam";
+import { Prisma } from "@prisma/client";
+import toast from "react-hot-toast";
+import { deleteTeam } from "@/utils/server-action/teamsActions";
+import { useRouter } from "next/navigation";
 
-export default function General({ profile, teamId, userId }: { profile: any; teamId: string; userId: string }) {
+export default function General({ profile, teamId, userId }: { profile: Prisma.TeamGetPayload<{ include: { member: true; requests: true } }>; teamId: string; userId: string }) {
   const [modal, setModal] = useState(false);
   const [view, setView] = useState(false);
+  const router = useRouter();
+  const delTeam = async (e: ChangeEvent<any>) => {
+    e.preventDefault();
+    try {
+      const confirmation = confirm("Are you sure you want to delete this team?");
+      const toastId = toast.loading("Deleting Team...");
+      if (confirmation) {
+        const del = await deleteTeam(teamId);
+        if (!del) {
+          toast.error(del, { id: toastId });
+        }
+        toast.success(del.message, { id: toastId });
+        router.push("/division");
+      }
+    } catch (error) {
+      toast.error((error as Error).message);
+      console.error("Error deleting team:", error);
+    }
+  };
   return (
     <div>
       <div className="tracking-wide font-semibold text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-black">{profile?.name}</div>
@@ -27,7 +50,7 @@ export default function General({ profile, teamId, userId }: { profile: any; tea
             </FormButton>
           )}
           {userId === profile?.ownerId ? (
-            <FormButton variant="base" onClick={() => setModal(true)}>
+            <FormButton variant="base" onClick={delTeam}>
               Delete
             </FormButton>
           ) : (
