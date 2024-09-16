@@ -93,7 +93,7 @@ export const authOptions: AuthOptions = {
     async redirect({ url, baseUrl }) {
       return url.startsWith("/") ? new URL(url, baseUrl).toString() : url;
     },
-    async signIn({ user, profile, account }) {
+    async signIn({ user, account }) {
       try {
         if (account?.provider === "credentials") {
           if (user.email) {
@@ -118,6 +118,7 @@ export const authOptions: AuthOptions = {
                   last_login: new Date(),
                 },
               },
+              schoolOrigin: user.email.endsWith("smktelkom-mlg.sch.id") ? "SMK Telkom Malang" : "Sekolah Tidak Terdaftar",
             });
             revalidatePath("/partner");
             revalidatePath("/api/data");

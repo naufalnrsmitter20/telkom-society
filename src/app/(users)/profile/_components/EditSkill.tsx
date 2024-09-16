@@ -6,44 +6,15 @@ import { TextField } from "@/app/components/utils/Form";
 import ModalProfile from "@/app/components/utils/Modal";
 import { userFullPayload } from "@/utils/relationsip";
 import { UpdateUserSkillById } from "@/utils/server-action/userGetServerSession";
-import { Skill } from "@prisma/client";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { Session } from "next-auth";
+
 import React, { ChangeEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-export default function EditSkill({ onClose }: { onClose: () => void }) {
-  const router = useRouter();
-  const [skills, setSkills] = useState<string[]>([]);
+export default function EditSkill({ onClose, userData, session }: { onClose: () => void; userData: userFullPayload; session: Session }) {
+  const [skills, setSkills] = useState<string[]>(userData.Skills.map((x) => x.SkillName));
   const [currentSkill, setCurrentSkill] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const [userData, setUserData] = useState<userFullPayload | null>(null);
-
-  const { data: session, status } = useSession();
-
-  const user = session?.user;
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (session) {
-        try {
-          const response = await fetch(`/api/user?userId=${session.user?.id}`);
-          if (response.ok) {
-            const { user } = await response.json();
-            setUserData(user);
-            setSkills(user?.Skills.map((x: Skill) => x.SkillName) || [""]);
-          } else {
-            throw new Error("Failed to fetch user data");
-          }
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        }
-      }
-    };
-
-    fetchUserData();
-  }, [session]);
 
   const addSkill = () => {
     const existingSkill = skills.find((skil) => skil.trim().toLowerCase() === currentSkill.trim().toLowerCase());
@@ -51,13 +22,14 @@ export default function EditSkill({ onClose }: { onClose: () => void }) {
       toast.error("Keahlian sudah ada");
       return;
     } else if (currentSkill.trim() !== "") {
-      setSkills([...skills, currentSkill]);
+      setSkills([...skills.map((x) => x), currentSkill]);
       setCurrentSkill("");
     }
   };
   const removeSkill = (index: number) => {
     setSkills(skills.filter((_, i) => i !== index));
   };
+  console.log(removeSkill);
 
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -66,7 +38,6 @@ export default function EditSkill({ onClose }: { onClose: () => void }) {
     try {
       const formData = new FormData(e.target);
       formData.append("Skills", JSON.stringify(skills));
-
       await UpdateUserSkillById(formData);
       toast.success("Sukses Mengisi Data");
       setIsLoading(false);

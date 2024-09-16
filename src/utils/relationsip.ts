@@ -5,5 +5,5 @@ export type userWithLastLogin = Prisma.UserGetPayload<{
 }>;
 
 export type userFullPayload = Prisma.UserGetPayload<{
-  include: { Skills: true; certificates: true; projects: true; timMembers: true };
+  include: { certificates: true; invitation: true; projects: true; Skills: true; Team: true; teamRequest: true; userAuth: true };
 }>;

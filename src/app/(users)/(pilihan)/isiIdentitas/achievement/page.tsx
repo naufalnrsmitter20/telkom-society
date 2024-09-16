@@ -122,7 +122,7 @@ export default function Achievement() {
           <form onSubmit={handleSubmit} className="mt-[40px] grid gap-0 xl:gap-[105px] grid-cols-1 lg:grid-cols-2">
             <div>
               <TextArea defaultValue={userData?.biography as string} name="biography" placeholder="type your Biography" label="Biography" />
-              <div className="mt-5 flex items-center gap-x-5 w-fit justify-center">
+              {/* <div className="mt-5 flex items-center gap-x-5 w-fit justify-center">
                 <div className="w-full">
                   <TextField
                     value={currentCertificate.CertificateName}
@@ -160,13 +160,13 @@ export default function Achievement() {
                     <PlusIcon />
                   </FormButton>
                 </div>
-              </div>
+              </div> */}
               {/* {imagePreviews.map((preview, index) => (
                 <div key={index} className="">
                   <Image src={preview} width={200} height={300} alt={`Current Certificate Preview ${index}`} className="rounded object-cover" />
                 </div>
               ))} */}
-              <div className="">
+              {/* <div className="">
                 {certificates.map((x, i) => (
                   <div key={i} className="flex gap-x-1">
                     <div className="flex-col items-center gap-x-2">
@@ -193,7 +193,7 @@ export default function Achievement() {
                     </button>
                   </div>
                 ))}
-              </div>
+              </div> */}
             </div>
             <div>
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-0 xl:gap-x-[55px]">

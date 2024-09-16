@@ -97,10 +97,10 @@ export default function PersonalData() {
           <h1 className="text-[48px] font-[700] opacity-60">Personal Data</h1>
           <form onSubmit={handleSubmit} className="mt-[40px] grid gap-0 xl:gap-[105px] grid-cols-1 lg:grid-cols-2 max-w-7xl">
             <div>
-              <TextField defaultValue={user?.name} readOnly placeholder="Insert your name" label="Name" type="text" required />
+              <TextField defaultValue={user?.name} readOnly disabled placeholder="Insert your name" label="Name" type="text" required />
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-0 xl:gap-x-[55px]">
                 <TextField defaultValue={userData?.clasess as string} name="clasess" placeholder="Insert your class" label="Class" type="text" required />
-                <TextField defaultValue={userData?.absent as string} name="absent" placeholder="Insert your absent" label="Absent" type="text" required />
+                <TextField defaultValue={userData?.generation as string} name="generation" placeholder="Insert your generation" label="Generation" type="number" required />
               </div>
               <TextField name="BirthDate" defaultValue={userData?.BirthDate as string} placeholder="Insert your Birth Date" label="Birth Date" type="date" required />
               <DropDown
@@ -127,22 +127,11 @@ export default function PersonalData() {
             <div id="1">
               <TextField defaultValue={userData?.NIS as string} label="NIS" name="NIS" type="text" placeholder="Insert your NIS" />
               <TextField defaultValue={userData?.NISN as string} label="NISN" name="NISN" type="text" placeholder="Insert your NISN" />
-              <TextField defaultValue={userData?.Phone as string} label="Phone" name="Phone" type="number" placeholder="Insert your Phone Number" />
-              <TextField defaultValue={userData?.schoolOrigin as string} label="School origin" name="schoolOrigin" type="text" placeholder="Insert your School origin" />
+              <TextField defaultValue={userData?.Phone as string} label="Phone" name="Phone" type="number" placeholder="Insert your Phone Number" required />
+              <TextField defaultValue={userData?.schoolOrigin as string} disabled readOnly label="School origin" name="schoolOrigin" type="text" placeholder="Insert your School origin" />
               <div className="mb-6">
                 <label className="text-[17px] font-normal">Skills</label>
               </div>
-              {/* {skills.map((exp, i) => (
-                <div key={i} className="flex items-center gap-x-3">
-                  <TextField value={exp} handleChange={(e) => handleSkillChange(i, e.target.value)} label={`skill ${i + 1}`} name={`skills[${i}]`} type="text" placeholder="Insert your Skills" className="w-full" />
-                  <button type="button" onClick={() => removeSkill(i)} className="text-red-500">
-                    Remove
-                  </button>
-                </div>
-              ))}
-              <FormButton type="button" variant="base" onClick={addSkill}>
-                Add
-              </FormButton> */}
               <div className="flex items-center gap-x-3">
                 <TextField onKeyDown={handleKeyDown} value={currentSkill} handleChange={(e) => setCurrentSkill(e.target.value)} type="text" placeholder="Insert your Skills" name="skill" className="w-full" />
                 <FormButton type="button" variant="base" onClick={addSkill} className="mb-5">

@@ -8,7 +8,6 @@ import hacker from "@/../public/svg/hackerP.png";
 import setting from "@/../public/svg/settingsP.png";
 import { LinkButton } from "@/app/components/utils/Button";
 import { userWithLastLogin } from "@/utils/relationsip";
-import { getData } from "@/lib/FetchData";
 import { useSession } from "next-auth/react";
 import { fetcher } from "@/utils/server-action/Fetcher";
 import useSWR from "swr";

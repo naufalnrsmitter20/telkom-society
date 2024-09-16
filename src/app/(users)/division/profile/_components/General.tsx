@@ -26,10 +26,17 @@ export default function General({ profile, teamId, userId }: { profile: any; tea
               View
             </FormButton>
           )}
+          {userId === profile?.ownerId ? (
+            <FormButton variant="base" onClick={() => setModal(true)}>
+              Delete
+            </FormButton>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
       {modal && <EditTeam data={profile} teamId={profile?.id} onClose={() => setModal(false)} />}
-      {view && <ViewTeam data={profile} teamId={profile?.id} onClose={() => setModal(false)} />}
+      {view && <ViewTeam data={profile} teamId={profile?.id} onClose={() => setView(false)} />}
     </div>
   );
 }
