@@ -12,7 +12,7 @@ import LinkedinIcon from "@/app/components/Icons/LinkedinIcon";
 import GithubIcons from "@/app/components/Icons/GithubIcons";
 import WhatsappIcons from "@/app/components/Icons/WhatsappIcons";
 import InstagramIcons from "@/app/components/Icons/InstagramIcons";
-import { FormButton } from "@/app/components/utils/Button";
+import { FormButton, LinkButton } from "@/app/components/utils/Button";
 import ModalProfile from "@/app/components/utils/Modal";
 import { DropDown, TextArea, TextField } from "@/app/components/utils/Form";
 import toast from "react-hot-toast";
@@ -82,9 +82,9 @@ export default function ContentProfile({ userData, session }: { userData: userFu
               <FormButton variant="base" onClick={handleModal}>
                 Edit Profile
               </FormButton>
-              <FormButton variant="base" onClick={() => router.push("/profile/notification")}>
+              <LinkButton href="/profile/notification" variant="base">
                 Notification
-              </FormButton>
+              </LinkButton>
             </div>
           </div>
           <div className="h-2"></div>
