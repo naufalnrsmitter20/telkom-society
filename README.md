@@ -42,12 +42,10 @@ Coming soon
 
 ### Developer
 
-- Naufal Nabil Ramadhan (XI RPL)
-- Muhammad Zuhair Zuhdi (XI RPL)
-- Arsyad Ali Mahardika (XI RPL)
-- Fahrell Sandy Zhariif Widiatmoko (XI RPL)
-- Haza Nashrullah Kuswantoro (XI RPL)
+- Naufal Nabil Ramadhan (32nd Gen. RPL)
+- Haza Nashrullah Kuswantoro (32nd Gen. RPL)
+- Jean Richnerd Rantabaratrahjaga (33rd Gen. RPL)
 
 ### UI/UX Designer
 
-- Ryo Hariyono Angwyn (XI RPL)
+- Ryo Hariyono Angwyn (32nd Gen. RPL)
