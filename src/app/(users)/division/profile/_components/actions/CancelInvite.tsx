@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { ChangeEvent } from "react";
 import toast from "react-hot-toast";
 
-export default function CancelInvite({ reqId }: { reqId: string }) {
+export default function CancelInvite({ reqId, title }: { reqId: string; title: string }) {
   const router = useRouter();
   const HandleCancel = async (e: ChangeEvent<any>) => {
     e.preventDefault();
@@ -23,8 +23,8 @@ export default function CancelInvite({ reqId }: { reqId: string }) {
     }
   };
   return (
-    <button onClick={HandleCancel} type="button" className="bg-red-500  w-full scale-75 sm:scale-75 lg:scale-100 text-white py-1 px-2 rounded-lg hover:bg-red-600 transition duration-300">
-      Cancel
+    <button onClick={HandleCancel} type="button" className="bg-red-500 w-full scale-75 sm:scale-75 lg:scale-100 text-white py-1 px-2 rounded-lg hover:bg-red-600 transition duration-300">
+      {title}
     </button>
   );
 }

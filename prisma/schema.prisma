@@ -8,8 +8,8 @@ datasource db {
 }
 
 model User {
-  id            String        @id @default(uuid()) @map("user_id") @db.Char(36)
-  email         String        @unique
+  id            String         @id @default(uuid()) @map("user_id") @db.Char(36)
+  email         String         @unique
   photo_profile String?
   name          String
   clasess       String?
@@ -18,25 +18,27 @@ model User {
   NIS           String?
   NISN          String?
   schoolOrigin  String?
-  role          Role          @default(SISWA)
-  job           Job           @default(Undefined)
+  generation    String?
+  role          Role           @default(SISWA)
+  job           Job            @default(Undefined)
   biography     String?
-  status        Status        @default(Dont_Have_Team)
+  status        Status         @default(Dont_Have_Team)
   linkedin      String?
   github        String?
   instagram     String?
   website       String?
   whatsapp      String?
   BirthDate     String?
-  religion      Religion?     @default(Islam)
-  gender        Gender?       @default(Male)
-  Team          TeamMember?
-  invitation    TeamRequest[] @relation("RequestReceiver")
-  teamRequest   TeamRequest[] @relation("RequestSender")
+  religion      Religion?      @default(Islam)
+  gender        Gender?        @default(Male)
+  Team          TeamMember[]
+  invitation    TeamRequest[]  @relation("RequestReceiver")
+  teamRequest   TeamRequest[]  @relation("RequestSender")
   userAuth      UserAuth?
-  certificates  certificate[] @relation("CertificateToUser")
-  projects      Project[]     @relation("ProjectToUser")
-  Skills        Skill[]       @relation("SkillToUser")
+  certificates  certificate[]  @relation("CertificateToUser")
+  projects      Project[]      @relation("ProjectToUser")
+  Skills        Skill[]        @relation("SkillToUser")
+  notiification Notification[]
 }
 
 model UserAuth {
@@ -50,7 +52,7 @@ model UserAuth {
 model Team {
   id          String        @id @default(uuid())
   name        String
-  description String
+  description String        @db.LongText()
   logo        String?
   mentor      String
   instagram   String?
@@ -64,26 +66,36 @@ model Team {
 model TeamMember {
   id       String   @id @default(uuid())
   teamId   String
-  userId   String   @unique
+  userId   String   @map("user_id")
   role     TeamRole
   joinedAt DateTime @default(now())
   team     Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([teamId], map: "TeamMember_teamId_fkey")
 }
 
 model TeamRequest {
-  id         String         @id @default(uuid())
-  teamId     String
-  senderId   String
-  receiverId String
-  type       InvitationType
-  status     RequestStatus  @default(PENDING)
-  createAt   DateTime       @default(now())
-  receiver   User           @relation("RequestReceiver", fields: [receiverId], references: [id])
-  sender     User           @relation("RequestSender", fields: [senderId], references: [id])
-  team       Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  id             String         @id @default(uuid())
+  teamId         String
+  senderId       String
+  receiverId     String
+  type           InvitationType
+  status         RequestStatus  @default(PENDING)
+  createAt       DateTime       @default(now())
+  receiver       User           @relation("RequestReceiver", fields: [receiverId], references: [id])
+  sender         User           @relation("RequestSender", fields: [senderId], references: [id])
+  team           Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  Notification   Notification?  @relation(fields: [notificationId], references: [id])
+  notificationId String?
+}
+
+model Notification {
+  id          String        @id @default(uuid())
+  title       String
+  message     String
+  receiverId  String
+  createAt    DateTime      @default(now())
+  receiver    User          @relation(fields: [receiverId], references: [id], onDelete: Cascade)
+  teamRequest TeamRequest[]
 }
 
 model Skill {

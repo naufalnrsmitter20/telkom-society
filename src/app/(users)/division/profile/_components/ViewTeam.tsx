@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 export default function ViewTeam({ onClose, teamId, data }: { onClose: () => void; teamId: string; data: any }) {
   return (
     <ModalProfile onClose={onClose} title="View Team">
-      <form>
+      <>
         <div className="gap-x-6 w-full">
           <TextField readOnly disabled defaultValue={data?.name} name="name" placeholder="Insert division name" label="Division Name" type="text" />
           <TextArea readOnly disabled defaultValue={data?.description} name="description" label="Division Description" placeholder="Division Description" />
@@ -24,7 +24,7 @@ export default function ViewTeam({ onClose, teamId, data }: { onClose: () => voi
             Close
           </FormButton>
         </div>
-      </form>
+      </>
     </ModalProfile>
   );
 }

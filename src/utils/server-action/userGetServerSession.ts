@@ -20,6 +20,7 @@ export const UpdateUserById = async (data: FormData) => {
     const job = data.get("job") as Job;
     const clasess = data.get("clasess") as string;
     const absent = data.get("absent") as string;
+    const generation = data.get("generation") as string;
     const Phone = data.get("Phone") as string;
     const NIS = data.get("NIS") as string;
     const NISN = data.get("NISN") as string;
@@ -34,16 +35,12 @@ export const UpdateUserById = async (data: FormData) => {
     const BirthDate = data.get("BirthDate") as string;
     const religion = data.get("religion") as Religion;
     const gender = data.get("gender") as Gender;
-    const certificates = JSON.parse(
-      (data.get("certificates") as string) || "[]"
-    ) as { CertificateName: string; img: string; link: string }[];
+    const certificates = JSON.parse((data.get("certificates") as string) || "[]") as { CertificateName: string; img: string; link: string }[];
     const projects = JSON.parse((data.get("projects") as string) || "[]") as {
       ProjeectName: string;
       link: string;
     }[];
-    const Skills = JSON.parse(
-      (data.get("Skills") as string) || "[]"
-    ) as string[];
+    const Skills = JSON.parse((data.get("Skills") as string) || "[]") as string[];
 
     if (!id) {
       const create = await createUser({
@@ -67,6 +64,7 @@ export const UpdateUserById = async (data: FormData) => {
         whatsapp,
         BirthDate,
         religion,
+        generation,
         gender,
         certificates: {
           create: certificates.map((certificate) => ({
@@ -93,23 +91,9 @@ export const UpdateUserById = async (data: FormData) => {
         where: { id },
         include: { certificates: true, Skills: true, projects: true },
       });
-      const skillsToDisconnect =
-        findUserWithId?.Skills.filter(
-          (existingSkill) => !Skills.includes(existingSkill.SkillName)
-        ) || [];
-      const certificatesToDisconnect = findUserWithId?.certificates.filter(
-        (existingCertificate) =>
-          !certificates.some(
-            (cert) =>
-              cert.CertificateName === existingCertificate.CertificateName
-          )
-      );
-      const projectsToDisconnect = findUserWithId?.projects.filter(
-        (existingProject) =>
-          !projects.some(
-            (proj) => proj.ProjeectName === existingProject.ProjeectName
-          )
-      );
+      const skillsToDisconnect = findUserWithId?.Skills.filter((existingSkill) => !Skills.includes(existingSkill.SkillName)) || [];
+      const certificatesToDisconnect = findUserWithId?.certificates.filter((existingCertificate) => !certificates.some((cert) => cert.CertificateName === existingCertificate.CertificateName));
+      const projectsToDisconnect = findUserWithId?.projects.filter((existingProject) => !projects.some((proj) => proj.ProjeectName === existingProject.ProjeectName));
 
       const update = await updateUser(
         { id: id ?? findUserWithId?.id },
@@ -132,6 +116,7 @@ export const UpdateUserById = async (data: FormData) => {
           gender: gender ?? findUserWithId?.gender,
           role: role ?? findUserWithId?.role,
           job: job ?? findUserWithId?.job,
+          generation: generation ?? findUserWithId?.generation,
           status: status ?? findUserWithId?.status,
           photo_profile: photo_profile ?? findUserWithId?.photo_profile,
           religion: religion ?? findUserWithId?.religion,
@@ -196,17 +181,19 @@ export const updateRole = async (id: string, data: FormData) => {
     }
 
     const role = data.get("role") as Role;
-    const update = await prisma.user.update({where: {id: id} , data:{
-      role
-    }});
-    if(!update){
+    const update = await prisma.user.update({
+      where: { id: id },
+      data: {
+        role,
+      },
+    });
+    if (!update) {
       throw new Error("eror");
-
     }
-    revalidatePath("/admin/studentData")
-    return update
+    revalidatePath("/admin/studentData");
+    return update;
   } catch (error) {
-    throw new Error((error as Error).message)
+    throw new Error((error as Error).message);
   }
 };
 
@@ -223,6 +210,7 @@ export const UpdateGeneralProfileById = async (data: FormData) => {
     const job = data.get("job") as Job;
     const clasess = data.get("clasess") as string;
     const absent = data.get("absent") as string;
+    const generation = data.get("generation") as string;
     const Phone = data.get("Phone") as string;
     const NIS = data.get("NIS") as string;
     const NISN = data.get("NISN") as string;
@@ -247,6 +235,7 @@ export const UpdateGeneralProfileById = async (data: FormData) => {
         job,
         clasess,
         absent,
+        generation,
         NIS,
         NISN,
         Phone,
@@ -275,6 +264,7 @@ export const UpdateGeneralProfileById = async (data: FormData) => {
           email: email ?? findUserWithId?.email,
           name: name ?? findUserWithId?.name,
           absent: absent ?? findUserWithId?.absent,
+          generation: generation ?? findUserWithId?.generation,
           clasess: clasess ?? findUserWithId?.clasess,
           NIS: NIS ?? findUserWithId?.NIS,
           NISN: NISN ?? findUserWithId?.NISN,
@@ -315,9 +305,7 @@ export const UpdateUserSkillById = async (data: FormData) => {
     const email = data.get("email") as string;
     const name = data.get("name") as string;
 
-    const Skills = JSON.parse(
-      (data.get("Skills") as string) || "[]"
-    ) as string[];
+    const Skills = JSON.parse((data.get("Skills") as string) || "[]") as string[];
 
     if (!id) {
       const create = await createUser({
@@ -336,10 +324,7 @@ export const UpdateUserSkillById = async (data: FormData) => {
         where: { id },
         include: { certificates: true, Skills: true, projects: true },
       });
-      const skillsToDisconnect =
-        findUserWithId?.Skills.filter(
-          (existingSkill) => !Skills.includes(existingSkill.SkillName)
-        ) || [];
+      const skillsToDisconnect = findUserWithId?.Skills.filter((existingSkill) => !Skills.includes(existingSkill.SkillName)) || [];
 
       const update = await updateUser(
         { id: id ?? findUserWithId?.id },
@@ -385,36 +370,31 @@ export const UpdateUserProjectById = async (data: FormData) => {
       link: string;
     }[];
 
-    if (!id) {
-      const create = await createUser({
-        email,
-        name,
-
-        projects: {
-          create: projects.map((project) => ({
-            ProjeectName: project.ProjeectName,
-            link: project.link,
-          })),
-        },
-      });
+    if (!id && !data) {
+      const create = await updateUser(
+        { id },
+        {
+          projects: {
+            create: projects.map((project) => ({
+              ProjeectName: project.ProjeectName,
+              link: project.link,
+            })),
+          },
+        }
+      );
       if (!create) throw new Error("Failed to create");
     } else if (id) {
       const findUserWithId = await prisma.user.findUnique({
         where: { id },
-        include: { certificates: true, Skills: true, projects: true },
+        include: { projects: true },
       });
-      const projectsToDisconnect = findUserWithId?.projects.filter(
-        (existingProject) =>
-          !projects.some(
-            (proj) => proj.ProjeectName === existingProject.ProjeectName
-          )
-      );
+      const projectsToDisconnect = findUserWithId?.projects.filter((existingProject) => !projects.some((proj) => proj.ProjeectName === existingProject.ProjeectName));
 
       const update = await updateUser(
         { id: id ?? findUserWithId?.id },
         {
-          email: email ?? findUserWithId?.email,
-          name: name ?? findUserWithId?.name,
+          // email: email ?? findUserWithId?.email,
+          // name: name ?? findUserWithId?.name,
 
           projects: {
             connectOrCreate: projects.map((project) => ({
@@ -431,12 +411,11 @@ export const UpdateUserProjectById = async (data: FormData) => {
         }
       );
       if (!update) throw new Error("Update failed");
-    } else {
-      throw new Error("Email already exists");
+      revalidatePath("/profile");
+      return update;
     }
-    revalidatePath("/profile");
   } catch (error) {
-    console.error("Error updating user:", error);
+    console.error("Error updating projects:", error);
     throw error;
   }
 };

@@ -7,42 +7,18 @@ import ModalProfile from "@/app/components/utils/Modal";
 import { userFullPayload } from "@/utils/relationsip";
 import { UpdateUserProjectById } from "@/utils/server-action/userGetServerSession";
 import { Project } from "@prisma/client";
-import { useSession } from "next-auth/react";
+import { Session } from "next-auth";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-export default function EditProject({ onClose }: { onClose: () => void }) {
-  const router = useRouter();
-  const [userData, setUserData] = useState<userFullPayload | null>(null);
-  const { data: session, status } = useSession();
-  const [project, setProject] = useState<Project[]>([]);
+export default function EditProject({ onClose, userData, session }: { onClose: () => void; userData: userFullPayload; session: Session }) {
+  const [project, setProject] = useState<Project[]>(userData.projects);
   const [currentProject, setCurrentProject] = useState<Project>({ link: "", ProjeectName: "" });
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (session) {
-        try {
-          const response = await fetch(`/api/user?userId=${session.user?.id}`);
-          if (response.ok) {
-            const { user } = await response.json();
-            setUserData(user);
-            setProject(user?.projects || [""]);
-          } else {
-            throw new Error("Failed to fetch user data");
-          }
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        }
-      }
-    };
-
-    fetchUserData();
-  }, [session]);
 
   const addProject = () => {
-    const exixtingProject = project?.find((p) => p.ProjeectName.trim().toLowerCase() === currentProject.ProjeectName?.trim().toLowerCase());
+    const exixtingProject = project?.find((p) => p.ProjeectName.trim().toLowerCase() === currentProject.ProjeectName?.trim().toLowerCase() || p.link?.trim().toLowerCase() === currentProject.link?.trim().toLowerCase());
     if (exixtingProject) {
       toast.error("Project Sudah Ada!");
       return;
@@ -63,7 +39,13 @@ export default function EditProject({ onClose }: { onClose: () => void }) {
     try {
       const formData = new FormData(e.target);
       formData.append("projects", JSON.stringify(project));
-      await UpdateUserProjectById(formData);
+      const update = await UpdateUserProjectById(formData);
+      if (!update) {
+        toast.error("Gagal Mengisi Data");
+        console.log(formData);
+        setIsLoading(false);
+        return;
+      }
       toast.success("Sukses Mengisi Data");
       setIsLoading(false);
       window.location.reload();

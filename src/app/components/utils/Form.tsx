@@ -79,7 +79,7 @@ export function TextField({ required, placeholder, type, name, label, className,
         placeholder={placeholder}
         value={value}
         onChange={handleChange}
-        className={clsx("rounded-[8px] py-2.5 w-full mb-6 p-[10px] border border-slate-400", "placeholder:text-slate-600 placeholder:font-normal placeholder:tracking-wide", `${disabled && "bg-slate-100"}`)}
+        className={clsx("rounded-[8px] py-2.5 w-full mb-6 p-[10px] border border-slate-400", "placeholder:text-slate-600 placeholder:font-normal placeholder:tracking-wide", `${disabled && "bg-slate-100 hover:cursor-not-allowed"}`)}
         required={required === true}
         readOnly={readOnly}
         onKeyDown={onKeyDown}
@@ -98,7 +98,7 @@ export function TextArea({ className, handleChange, label, name, placeholder, re
       )}
       <textarea
         name={name}
-        className={clsx("rounded-[8px] w-full py-2.5 mb-6 p-[10px] border border-slate-400", "placeholder:text-slate-600 placeholder:font-normal placeholder:tracking-wide")}
+        className={clsx("rounded-[8px] w-full py-2.5 mb-6 p-[10px] border border-slate-400", "placeholder:text-slate-600 placeholder:font-normal placeholder:tracking-wide", `${disabled && "bg-slate-100 hover:cursor-not-allowed"}`)}
         onChange={handleChange}
         value={value}
         placeholder={placeholder}

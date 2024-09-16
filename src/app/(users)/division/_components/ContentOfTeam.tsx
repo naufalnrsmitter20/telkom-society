@@ -10,14 +10,14 @@ import { getData } from "@/lib/FetchData";
 import { useSession } from "next-auth/react";
 import { fetcher } from "@/utils/server-action/Fetcher";
 import useSWR from "swr";
-import Popup from "./_components/Popup";
+import Popup from "./Popup";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { nextGetServerSession } from "@/lib/authOption";
 import { FormButton, LinkButton } from "@/app/components/utils/Button";
-import JoinTeam from "./_components/JoinTeam";
+import JoinTeam from "./JoinTeam";
 
-export default async function Main() {
+export default async function ContentOfTeam() {
   // const { data: session } = useSession();
   // const [searchInput, setSearchInput] = useState<string>("");
   // const [selected, setSelected] = useState("All");
@@ -46,9 +46,13 @@ export default async function Main() {
   // if (error) return <div>Data Tidak Ditemukan</div>;
   // if (!response) return <div>Loading...</div>;
 
-  const getTeams = await prisma.team.findMany({ include: { _count: true, member: true, requests: true } });
+  const getTeams = await prisma.team.findMany({ include: { _count: true, member: { include: { team: true, user: true } }, requests: true } });
   const getOwner = getTeams.find((x) => x.ownerId);
   const Owner = await prisma.user.findFirst({ where: { id: getOwner?.ownerId }, include: { _count: true } });
+  // const getUser = await prisma.user.findMany({ where: { Team: { some: { teamId:  } } } });
+  // const getRole = getUser.filter((x) => x.job);
+  // console.log(getRole.map((x) => x.job));
+  const availableJobs = ["Hacker", "Hipster", "Hustler"];
 
   return (
     <>
@@ -58,7 +62,7 @@ export default async function Main() {
           <Link href=""></Link>
         </div>
       </Popup> */}
-      <section className="max-w-full mx-auto xl:mx-48 pt-32 md:flex mb-56 gap-x-4 px-4 xl:px-0">
+      <section className="max-w-full min-h-screen mx-auto xl:mx-48 pt-32 md:flex mb-56 gap-x-4 px-4 xl:px-0">
         <div className="block md:hidden mb-4">
           <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
             Search
@@ -130,9 +134,11 @@ export default async function Main() {
               </button>
             </div>
           </div>
+          <LinkButton href="/division/create" variant="base" className="mt-4 mb-6">
+            Add Team
+          </LinkButton>
 
-          {/* ! */}
-          <div className="grid grid-cols-1 gap-4 bg-white rounded-xl p-8 mt-4 w-full">
+          <div className="grid grid-cols-1 bg-white rounded-xl w-full">
             <>
               {getTeams.map((x, i) => (
                 <div key={i} className="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row w-full hover:bg-gray-100 ">
@@ -140,12 +146,17 @@ export default async function Main() {
                   <div className="flex flex-col justify-between p-4 leading-normal w-full">
                     <h5 className=" text-2xl font-bold tracking-tight text-black">{x.name}</h5>
                     <h5 className="mb-2 text-sm font-medium tracking-tight text-black">
-                      Create by <span className="font-semibold">{Owner?.name}</span>
+                      Create by <span className="font-semibold">{Owner?.name === session?.user?.name ? "You" : Owner?.name}</span>
+                    </h5>
+                    <h5 className="mb-2 text-[1rem] font-medium tracking-tight text-black">
+                      {/* Existing Job <span className="font-semibold">{x.member.map((n) => n.user.job.concat(", "))}</span> */}
+                      Available Job : <span className="font-semibold">{availableJobs.filter((job) => !x.member.some((member) => member.user.job === job)).join(" & ")}</span>
                     </h5>
                     <h5 className="text-xl font-semibold tracking-tight text-black">Jumlah Anggota : {x._count.member}</h5>
                     <h5 className="mb-2 text-lg font-semibold tracking-tight text-black">Mentor : {x.mentor}</h5>
+                    <p className="text-lg font-medium text-black ">Description</p>
                     <p className="mb-3 font-normal text-slate-600 ">{x.description}</p>
-                    <div className="flex justify-end gap-x-3 mt-10">
+                    <div className="flex justify-end gap-x-3">
                       <JoinTeam teamId={x.id} />
                       <LinkButton href={`/division/profile/${x.id}`} variant="base">
                         Details
