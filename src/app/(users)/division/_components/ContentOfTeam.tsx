@@ -16,8 +16,19 @@ import prisma from "@/lib/prisma";
 import { nextGetServerSession } from "@/lib/authOption";
 import { FormButton, LinkButton } from "@/app/components/utils/Button";
 import JoinTeam from "./JoinTeam";
+import { Prisma } from "@prisma/client";
+import { DefaultArgs } from "@prisma/client/runtime/library";
+import { Session } from "next-auth";
 
-export default async function ContentOfTeam() {
+export default function ContentOfTeam({
+  teams,
+  Owner,
+  session,
+}: {
+  teams: Prisma.TeamGetPayload<{ include: { _count: true; member: { include: { team: true; user: true } }; requests: true } }>[];
+  Owner: Prisma.UserGetPayload<{ include: { _count: true } }>;
+  session: Session;
+}) {
   // const { data: session } = useSession();
   // const [searchInput, setSearchInput] = useState<string>("");
   // const [selected, setSelected] = useState("All");
@@ -25,8 +36,6 @@ export default async function ContentOfTeam() {
   // const { data: response, error } = useSWR("/api/data", fetcher, {
   //   refreshInterval: 1000,
   // });
-
-  const session = await nextGetServerSession();
 
   // const userData = response?.dataUser || [];
   // console.log(userData);
@@ -46,9 +55,6 @@ export default async function ContentOfTeam() {
   // if (error) return <div>Data Tidak Ditemukan</div>;
   // if (!response) return <div>Loading...</div>;
 
-  const getTeams = await prisma.team.findMany({ include: { _count: true, member: { include: { team: true, user: true } }, requests: true } });
-  const getOwner = getTeams.find((x) => x.ownerId);
-  const Owner = await prisma.user.findFirst({ where: { id: getOwner?.ownerId }, include: { _count: true } });
   // const getUser = await prisma.user.findMany({ where: { Team: { some: { teamId:  } } } });
   // const getRole = getUser.filter((x) => x.job);
   // console.log(getRole.map((x) => x.job));
@@ -134,23 +140,28 @@ export default async function ContentOfTeam() {
               </button>
             </div>
           </div>
-          <LinkButton href="/division/create" variant="base" className="mt-4 mb-6">
-            Add Team
-          </LinkButton>
+          <div className="flex items-center justify-between">
+            <LinkButton href="/division/create" variant="base" className="mt-4 mb-6">
+              Create Team
+            </LinkButton>
+            <div className="font-semibold text-lg">
+              Total All Teams : <span>{teams.length}</span>
+            </div>
+          </div>
 
-          <div className="grid grid-cols-1 bg-white rounded-xl w-full">
+          <div className="grid grid-cols-1 bg-white rounded-xl gap-y-4 w-full">
             <>
-              {getTeams.map((x, i) => (
+              {teams.map((x, i) => (
                 <div key={i} className="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row w-full hover:bg-gray-100 ">
                   <Image className="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-full border-2 border-black m-5" width={200} height={100} src={x.logo as string} alt={x.name} />
                   <div className="flex flex-col justify-between p-4 leading-normal w-full">
                     <h5 className=" text-2xl font-bold tracking-tight text-black">{x.name}</h5>
                     <h5 className="mb-2 text-sm font-medium tracking-tight text-black">
-                      Create by <span className="font-semibold">{Owner?.name === session?.user?.name ? "You" : Owner?.name}</span>
+                      Create by <span className="font-semibold">{x.ownerId === session?.user?.id ? "You" : x.member.find((y) => y.role === "OWNER")?.user.name}</span>
                     </h5>
-                    <h5 className="mb-2 text-[1rem] font-medium tracking-tight text-black">
+                    <h5 className="mb-2 text-[1rem] font-semibold tracking-tight text-green-400">
                       {/* Existing Job <span className="font-semibold">{x.member.map((n) => n.user.job.concat(", "))}</span> */}
-                      Available Job : <span className="font-semibold">{availableJobs.filter((job) => !x.member.some((member) => member.user.job === job)).join(" & ")}</span>
+                      Available Job : <span className="font-semibold text-black">{availableJobs.filter((job) => !x.member.some((member) => member.user.job === job)).join(" & ")}</span>
                     </h5>
                     <h5 className="text-xl font-semibold tracking-tight text-black">Jumlah Anggota : {x._count.member}</h5>
                     <h5 className="mb-2 text-lg font-semibold tracking-tight text-black">Mentor : {x.mentor}</h5>

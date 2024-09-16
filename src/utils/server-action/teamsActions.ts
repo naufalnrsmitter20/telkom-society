@@ -262,6 +262,21 @@ export const RequestTeam = async (teamId: string) => {
     if (!request) {
       throw new Error("Failed Request!");
     }
+    await prisma.user.update({
+      where: { id: memberId },
+      data: {
+        notiification: {
+          create: {
+            title: "Request to Join Team",
+            message: "You are Request to join the team",
+            createAt: new Date(),
+            teamRequest: {
+              connect: { id: request?.id },
+            },
+          },
+        },
+      },
+    });
 
     revalidatePath("/division/join");
   } catch (error) {
@@ -294,7 +309,19 @@ export const AcceptRequest = async (id: string) => {
       });
       await prisma.user.update({
         where: { id: acc.receiverId },
-        data: { status: "Have_Team" },
+        data: {
+          status: "Have_Team",
+          notiification: {
+            create: {
+              title: "Request to Join Team",
+              message: "You have been approved to join the team",
+              createAt: new Date(),
+              teamRequest: {
+                connect: { id: acc?.id },
+              },
+            },
+          },
+        },
       });
       // await prisma.teamRequest.delete({
       //   where: { id: id },
@@ -330,7 +357,19 @@ export const DeniedRequest = async (id: string) => {
     }
     await prisma.user.update({
       where: { id: den.receiverId },
-      data: { status: "Dont_Have_Team" },
+      data: {
+        status: "Dont_Have_Team",
+        notiification: {
+          create: {
+            title: "Request to Join Team",
+            message: "You have been rejected to join the team",
+            createAt: new Date(),
+            teamRequest: {
+              connect: { id: den?.id },
+            },
+          },
+        },
+      },
     });
     // await prisma.teamRequest.delete({
     //   where: { id: id },
@@ -355,7 +394,19 @@ export const CancelInviteMember = async (id: string) => {
     });
     await prisma.user.update({
       where: { id: del.receiverId },
-      data: { status: "Dont_Have_Team" },
+      data: {
+        status: "Dont_Have_Team",
+        notiification: {
+          create: {
+            title: "Cancel Invitation",
+            message: "Invitation Canceled",
+            createAt: new Date(),
+            teamRequest: {
+              connect: { id: del?.id },
+            },
+          },
+        },
+      },
     });
     if (!del) {
       throw new Error("Failed to Cancel Invite!");
@@ -381,7 +432,16 @@ export const KickMember = async (id: string) => {
     }
     await prisma.user.update({
       where: { id: del.userId },
-      data: { status: "Dont_Have_Team" },
+      data: {
+        status: "Dont_Have_Team",
+        notiification: {
+          create: {
+            title: "Kick Member",
+            message: "You have been kicked from the team",
+            createAt: new Date(),
+          },
+        },
+      },
     });
     revalidatePath("/division/profile");
     return del;
