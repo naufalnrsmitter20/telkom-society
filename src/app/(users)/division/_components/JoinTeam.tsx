@@ -23,7 +23,7 @@ export default function JoinTeam({ teamId }: { teamId: string }) {
   return (
     <div>
       <FormButton onClick={HandleJoin} variant="base">
-        Join
+        Request
       </FormButton>
     </div>
   );

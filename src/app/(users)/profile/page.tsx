@@ -11,7 +11,7 @@ export default async function Profile() {
   }
   const findUser = await prisma.user.findUnique({
     where: { email: session.user.email },
-    include: { certificates: true, invitation: true, projects: true, Skills: true, Team: true, teamRequest: true, userAuth: true },
+    include: { certificates: true, invitation: true, projects: true, Skills: true, Team: { include: { team: { include: { member: { include: { user: true } } } }, user: true } }, teamRequest: true, userAuth: true },
   });
 
   return (

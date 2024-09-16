@@ -46,7 +46,7 @@ export default async function Division({ params }: { params: { id: string } }) {
             <Image src={profile?.logo as string} width={192} height={192} alt="logo" className="h-48 w-full object-cover md:w-48" />
           </div>
           <div className="p-8 w-full">
-            <General profile={profile} teamId={params.id} userId={session?.user?.id as string} />
+            <General profile={profile!} teamId={params.id} userId={session?.user?.id as string} />
             <MemberTable teamOwner={teamOwner!} teamMember={teamMember} data={user} teamRequest={teamRequest} session={session!} />
             <div className="mt-8 flex space-x-4">
               <Link target="_blank" href={`https://www.linkedin.com/${profile?.linkedin}`} className="text-blue-500 hover:underline">

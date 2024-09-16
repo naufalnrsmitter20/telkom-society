@@ -86,7 +86,7 @@ export const UpdateTeam = async (id: string, data: FormData) => {
     }
   } catch (error) {
     console.log(error as Error);
-    throw new Error("Internal Server Error!");
+    throw new Error((error as Error).message);
   }
 };
 
@@ -193,7 +193,7 @@ export const AcceptInviteMember = async (id: string) => {
     return acc;
   } catch (error) {
     console.log(error as Error);
-    throw new Error("Internal Server Error!");
+    throw new Error((error as Error).message);
   }
 };
 export const DeniedInviteMember = async (id: string) => {
@@ -232,7 +232,7 @@ export const DeniedInviteMember = async (id: string) => {
     return den;
   } catch (error) {
     console.log(error as Error);
-    throw new Error("Internal Server Error!");
+    throw new Error((error as Error).message);
   }
 };
 
@@ -281,7 +281,7 @@ export const RequestTeam = async (teamId: string) => {
     revalidatePath("/division/join");
   } catch (error) {
     console.log(error as Error);
-    throw new Error("Internal Server Error!");
+    throw new Error((error as Error).message);
   }
 };
 
@@ -334,7 +334,7 @@ export const AcceptRequest = async (id: string) => {
     return acc;
   } catch (error) {
     console.log(error as Error);
-    throw new Error("Internal Server Error!");
+    throw new Error((error as Error).message);
   }
 };
 
@@ -379,7 +379,7 @@ export const DeniedRequest = async (id: string) => {
     return den;
   } catch (error) {
     console.log(error as Error);
-    throw new Error("Internal Server Error!");
+    throw new Error((error as Error).message);
   }
 };
 
@@ -415,7 +415,7 @@ export const CancelInviteMember = async (id: string) => {
     return del;
   } catch (error) {
     console.log(error as Error);
-    throw new Error("Internal Server Error!");
+    throw new Error((error as Error).message);
   }
 };
 export const KickMember = async (id: string) => {
@@ -447,6 +447,48 @@ export const KickMember = async (id: string) => {
     return del;
   } catch (error) {
     console.log(error as Error);
-    throw new Error("Internal Server Error!");
+    throw new Error((error as Error).message);
+  }
+};
+
+export const deleteTeam = async (teamId: string) => {
+  try {
+    const session = await nextGetServerSession();
+    if (!session?.user?.email) {
+      throw new Error("Auth Required!");
+    }
+    const findTeam = await prisma.team.findFirst({
+      where: { id: teamId },
+    });
+    if (findTeam?.ownerId != session.user.id) {
+      return { status: 401, message: "Unauthorize" };
+    }
+    const del = await prisma.team.delete({
+      where: { id: teamId },
+    });
+    if (!del) {
+      return { status: 400, message: "Failed to Delete Team!" };
+    }
+
+    const updateOwner = await prisma.user.update({
+      where: { id: session.user.id },
+      data: { status: "Dont_Have_Team" },
+    });
+    const updateUser = await prisma.user.updateMany({
+      where: { Team: { every: { teamId: teamId } } },
+      data: { status: "Dont_Have_Team" },
+    });
+    if (!updateOwner || !updateUser) {
+      return { status: 400, message: "Failed to Delete User from Team!" };
+    }
+    await prisma.notification.deleteMany({
+      where: { teamRequest: { every: { teamId: teamId } } },
+    });
+
+    revalidatePath("/division/profile");
+    return { status: 200, message: "Success Delete Team!" };
+  } catch (error) {
+    console.log(error as Error);
+    throw new Error((error as Error).message);
   }
 };
