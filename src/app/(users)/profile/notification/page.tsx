@@ -23,76 +23,124 @@ export default async function Notification() {
       createAt: "desc",
     },
   });
+  const NotificationUser = await prisma.notification.findMany({
+    where: { receiverId: session?.user?.id },
+    include: { receiver: true },
+    orderBy: {
+      createAt: "desc",
+    },
+  });
 
   return (
-    <div className="w-screen min-h-screen pt-40 justify-center">
-      {currentNotif.length !== 0 ? (
-        currentNotif?.map((x, i) => (
-          <div key={i} className="w-5/6 h-3/5 mx-auto mt-4">
-            {x.teamRequest.map((y, e) => (
-              <>
-                {y.type === "INVITE" ? (
-                  <div key={e} className="p-6 bg-white justify-between items-center flex drop-shadow-md rounded-[12px]">
-                    <div className="flex flex-col">
-                      <p className="text-xl font-semibold">{y.Notification?.title}</p>
-                      {y.status === "PENDING" && <p className="text-sm text-slate-600 font-normal">{y.Notification?.message}</p>}
-                      {y.status === "VERIFIED" && <p className="text-sm text-green-400 font-normal">{y.Notification?.message}</p>}
-                      {y.status === "DENIED" && <p className="text-sm text-red-400 font-normal">{y.Notification?.message}</p>}
-                      <p className="text-[16px] text-slate-800 font-normal">
-                        {y.Notification?.createAt.toDateString()} at {y.Notification?.createAt.getHours()}.{y.Notification?.createAt.getMinutes().toLocaleString()}
-                      </p>
-                    </div>
-                    <div>
-                      <h1 className="font-semibold text-lg ">Sender :</h1>
-                      <p>{y.sender.name}</p>
-                      <p>Job : {y.sender.job}</p>
-                    </div>
-                    <div>
-                      <Link href={`/division/profile/${y.teamId}`} className="text-[1rem] font-bold text-highlight border-2 border-moklet w-fit p-3 rounded-xl">
-                        Invite You In {y.team?.name} as {y.receiver.job}
-                      </Link>
-                    </div>
-                    {y.status === "PENDING" ? (
-                      <div className="flex items-center">
-                        <Accept teamId={y.teamId} reqId={y.id} />
-                        <Decline teamId={y.teamId} reqId={y.id} />
+    <div className="w-screen min-h-screen pt-40 justify-center pb-10">
+      {NotificationUser.length !== 0 ? (
+        currentNotif?.map((x, i) =>
+          x.teamRequest.length !== 0 ? (
+            <div key={i} className="w-5/6 h-3/5 mx-auto mt-4">
+              {x.teamRequest.map((y, e) => (
+                <>
+                  {y.type === "INVITE" ? (
+                    <div key={e} className="p-6 bg-white justify-between items-center flex drop-shadow-md rounded-[12px]">
+                      <div className="flex flex-col">
+                        <p className="text-xl font-semibold">{y.Notification?.title}</p>
+                        {y.status === "PENDING" && <p className="text-sm text-slate-600 font-normal">{y.Notification?.message}</p>}
+                        {y.status === "VERIFIED" && <p className="text-sm text-green-400 font-normal">{y.Notification?.message}</p>}
+                        {y.status === "DENIED" && <p className="text-sm text-red-400 font-normal">{y.Notification?.message}</p>}
+                        <p className="text-[16px] text-slate-800 font-normal">
+                          {y.Notification?.createAt.toDateString()} at {y.Notification?.createAt.getHours()}.{y.Notification?.createAt.getMinutes().toLocaleString()}
+                        </p>
                       </div>
-                    ) : (
-                      <>{y.status === "VERIFIED" ? <p className="text-[16px] text-green-400 font-medium m-6">You {y.status} this Team</p> : <p className="text-[16px] text-red-400 font-medium m-6">You {y.status} this Team</p>}</>
-                    )}
-                  </div>
+                      <div>
+                        <h1 className="font-semibold text-lg ">Sender :</h1>
+                        <p>
+                          {y.sender.name} - {y.sender.job}
+                        </p>
+                        <p>
+                          Owner of : <span className="font-medium text-highlight">{y.team.name}</span>
+                        </p>
+                      </div>
+                      <div>
+                        <Link href={`/division/profile/${y.teamId}`} className="text-[1rem] font-bold text-highlight border-2 border-moklet w-fit p-3 rounded-xl">
+                          Invite You In {y.team?.name} as {y.receiver.job}
+                        </Link>
+                      </div>
+                      {y.status === "PENDING" ? (
+                        <div className="flex items-center">
+                          <Accept teamId={y.teamId} reqId={y.id} />
+                          <Decline teamId={y.teamId} reqId={y.id} />
+                        </div>
+                      ) : (
+                        <>{y.status === "VERIFIED" ? <p className="text-[16px] text-green-400 font-medium m-6">You {y.status} this Team</p> : <p className="text-[16px] text-red-400 font-medium m-6">You {y.status} this Team</p>}</>
+                      )}
+                      {/* <div>
+                        <FormButton variant="base" className="w-full text-center">
+                          Back to Profile
+                        </FormButton>
+                      </div> */}
+                    </div>
+                  ) : (
+                    <>
+                      {y.type === "REQUEST" ? (
+                        <div key={e} className="p-6 bg-white justify-between items-center flex drop-shadow-md rounded-[12px]">
+                          <div className="flex flex-col">
+                            <p className="text-xl font-semibold">{y.Notification?.title}</p>
+                            {y.status === "PENDING" && <p className="text-sm text-slate-600 font-normal">{y.Notification?.message}</p>}
+                            {y.status === "VERIFIED" && <p className="text-sm text-green-400 font-normal">{y.Notification?.message}</p>}
+                            {y.status === "DENIED" && <p className="text-sm text-red-400 font-normal">{y.Notification?.message}</p>}
+                            <p className="text-[16px] text-slate-800 font-normal">
+                              {y.Notification?.createAt.toDateString()} at {y.Notification?.createAt.getHours()}.{y.Notification?.createAt.getMinutes().toLocaleString()}
+                            </p>
+                          </div>
+                          <div>
+                            <h1 className="font-semibold text-lg ">Send to :</h1>
+                            <p>
+                              {y.sender.name} - {y.sender.job}
+                            </p>
+                            <p>
+                              Owner of : <span className="font-medium text-highlight">{y.team.name}</span>
+                            </p>
+                          </div>
+                          <div>
+                            <Link href={`/division/profile/${y.teamId}`} className="text-[1rem] font-bold text-highlight border-2 border-moklet w-fit p-3 rounded-xl">
+                              Request to Join {y.team?.name} as {y.receiver.job}
+                            </Link>
+                          </div>
+                          {y.status === "PENDING" ? (
+                            <p className="text-[16px] text-slate-400 font-medium m-6">{y.status}</p>
+                          ) : (
+                            <>{y.status === "VERIFIED" ? <p className="text-[16px] text-green-400 font-medium m-6">{y.status}</p> : <p className="text-[16px] text-red-400 font-medium m-6">{y.status}</p>}</>
+                          )}
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                    </>
+                  )}
+                </>
+              ))}
+            </div>
+          ) : (
+            <div key={i} className="w-5/6 h-3/5 mx-auto mt-4">
+              <div className="p-6 bg-white justify-between items-center flex drop-shadow-md rounded-[12px]">
+                <div className="flex flex-col">
+                  <p className="text-xl font-semibold">{x.title}</p>
+
+                  {/* <p className="text-sm text-red-400 font-normal">{x.}</p> */}
+                  <p className="text-[16px] text-slate-800 font-normal">
+                    {x.createAt.toDateString()} at {x.createAt.getHours()}.{x.createAt.getMinutes().toLocaleString()}
+                  </p>
+                </div>
+                {x.title.includes("You have been removed from") ? (
+                  <p className="text-[16px] text-red-400 font-medium m-6">{x.message}</p>
+                ) : x.title.includes("Invitation Canceled") ? (
+                  <p className="text-[16px] text-red-400 font-medium m-6">{x.message}</p>
                 ) : (
-                  <div key={e} className="p-6 bg-white justify-between items-center flex drop-shadow-md rounded-[12px]">
-                    <div className="flex flex-col">
-                      <p className="text-xl font-semibold">{y.Notification?.title}</p>
-                      {y.status === "PENDING" && <p className="text-sm text-slate-600 font-normal">{y.Notification?.message}</p>}
-                      {y.status === "VERIFIED" && <p className="text-sm text-green-400 font-normal">{y.Notification?.message}</p>}
-                      {y.status === "DENIED" && <p className="text-sm text-red-400 font-normal">{y.Notification?.message}</p>}
-                      <p className="text-[16px] text-slate-800 font-normal">
-                        {y.Notification?.createAt.toDateString()} at {y.Notification?.createAt.getHours()}.{y.Notification?.createAt.getMinutes().toLocaleString()}
-                      </p>
-                    </div>
-                    <div>
-                      <h1 className="font-semibold text-lg ">Send to :</h1>
-                      <p>{y.sender.name}</p>
-                      <p>Job : {y.sender.job}</p>
-                    </div>
-                    <div>
-                      <Link href={`/division/profile/${y.teamId}`} className="text-[1rem] font-bold text-highlight border-2 border-moklet w-fit p-3 rounded-xl">
-                        Request to Join {y.team?.name} as {y.receiver.job}
-                      </Link>
-                    </div>
-                    {y.status === "PENDING" ? (
-                      <p className="text-[16px] text-slate-400 font-medium m-6">{y.status}</p>
-                    ) : (
-                      <>{y.status === "VERIFIED" ? <p className="text-[16px] text-green-400 font-medium m-6">{y.status}</p> : <p className="text-[16px] text-red-400 font-medium m-6">{y.status}</p>}</>
-                    )}
-                  </div>
+                  <p className="text-[16px] text-slate-400 font-medium m-6">{x.message}</p>
                 )}
-              </>
-            ))}
-          </div>
-        ))
+              </div>
+            </div>
+          )
+        )
       ) : (
         <>
           <div className="flex flex-col w-full">

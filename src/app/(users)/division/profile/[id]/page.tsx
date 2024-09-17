@@ -40,7 +40,7 @@ export default async function Division({ params }: { params: { id: string } }) {
   }
   return (
     <main className="mt-20 lg:mt-32 mb-20 min-h-screen max-w-full">
-      <div className="max-w-7xl w-full mx-auto bg-white shadow-md lg:rounded-[20px] overflow-hidden">
+      <div className="max-w-7xl w-full mx-auto bg-white shadow-md outline outline-1 outline-slate-200 lg:rounded-[20px] overflow-hidden">
         <div className="md:flex w-full mx-auto">
           <div className="p-10">
             <Image src={profile?.logo as string} width={192} height={192} alt="logo" className="h-48 w-full object-cover md:w-48" />

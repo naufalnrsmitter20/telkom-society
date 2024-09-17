@@ -168,7 +168,7 @@ export default function ContentOfTeam({
                     <p className="text-lg font-medium text-black ">Description</p>
                     <p className="mb-3 font-normal text-slate-600 ">{x.description}</p>
                     <div className="flex justify-end gap-x-3">
-                      <JoinTeam teamId={x.id} />
+                      {x.ownerId === session.user?.id || (x.member.find((y) => y.userId === session.user?.id) ? <></> : <JoinTeam teamId={x.id} />)}
                       <LinkButton href={`/division/profile/${x.id}`} variant="base">
                         Details
                       </LinkButton>

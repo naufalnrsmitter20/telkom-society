@@ -1,5 +1,5 @@
 "use client";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, use, useEffect, useState } from "react";
 import banner from "@/../public/img/banner ryo.png";
 import Image from "next/image";
 import hipster from "@/../public/svg/hipsterP.png";
@@ -7,28 +7,22 @@ import hustler from "@/../public/svg/hustlerP.svg";
 import hacker from "@/../public/svg/hackerP.png";
 import setting from "@/../public/svg/settingsP.png";
 import { LinkButton } from "@/app/components/utils/Button";
-import { userWithLastLogin } from "@/utils/relationsip";
-import { useSession } from "next-auth/react";
 import { fetcher } from "@/utils/server-action/Fetcher";
 import useSWR from "swr";
+import { Prisma } from "@prisma/client";
+import { Session } from "next-auth";
 
-export default function Main() {
-  const { data: session } = useSession();
+export default function Main({ userData, session }: { userData: Prisma.UserGetPayload<{}>[]; session: Session }) {
   const [searchInput, setSearchInput] = useState<string>("");
   const [selected, setSelected] = useState("All");
 
-  const { data: response, error } = useSWR("/api/data", fetcher, {
-    refreshInterval: 1000,
-  });
-
-  const userData = response?.dataUser || [];
-  const [filteredUser, setFilteredUser] = useState<userWithLastLogin[]>(userData);
+  const [filteredUser, setFilteredUser] = useState<Prisma.UserGetPayload<{}>[]>(userData);
 
   useEffect(() => {
     const filterUsers = () => {
-      const filteredByName = userData.filter((userData: userWithLastLogin) => userData.name.toLowerCase().includes(searchInput.toLowerCase()));
+      const filteredByName = userData.filter((userData: Prisma.UserGetPayload<{}>) => userData.name.toLowerCase().includes(searchInput.toLowerCase()));
 
-      const finalFilteredUsers = selected === "All" ? filteredByName : filteredByName.filter((dataUser: userWithLastLogin) => dataUser.job === selected);
+      const finalFilteredUsers = selected === "All" ? filteredByName : filteredByName.filter((dataUser: Prisma.UserGetPayload<{}>) => dataUser.job === selected);
 
       setFilteredUser(finalFilteredUsers);
     };
@@ -43,9 +37,6 @@ export default function Main() {
   const handleButtonFilter = (data: string) => {
     setSelected(data);
   };
-
-  if (error) return <div>Data Tidak Ditemukan</div>;
-  if (!response) return <div>Loading...</div>;
 
   return (
     <section className="max-w-full mx-auto xl:mx-48 md:flex  gap-x-4 px-4 xl:px-0">
@@ -151,7 +142,7 @@ export default function Main() {
                       Status: {user?.status}
                     </p>
                     <div className="mt-6 justify-start">
-                      <LinkButton variant="white" href="#" className="bg-transparent border rounded-full">
+                      <LinkButton variant="white" href={`/partner/user/profile/${user.id}`} className="bg-transparent border rounded-full">
                         Profil
                       </LinkButton>
                       <LinkButton variant="white" href={`https://wa.me/${user.whatsapp}`} target="_blank" className="bg-transparent border rounded-full">

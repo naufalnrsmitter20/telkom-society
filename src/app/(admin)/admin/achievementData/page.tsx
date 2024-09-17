@@ -2,10 +2,11 @@ import React from "react";
 import AdminHeaders from "../components/main/AdminHeaders";
 
 export default function achievementData() {
-  return (<>
-    <AdminHeaders data="Achievement Data" />
-    <div className="flex flex-col w-screen justify-center items-center h-screen">
-      <div className="bg-secondary flex justify-center rounded-xl w-3/4 h-1/2 mt-28">
+  return (
+    <>
+      <AdminHeaders data="Achievement Data" />
+      <div className="flex flex-col w-screen justify-center items-center h-screen">
+        {/* <div className="bg-secondary flex justify-center rounded-xl w-3/4 h-1/2 mt-28">
         <div className="flex justify-between">
           <div className="m-5">
             <h1 className="m-2">Ranking Siswa</h1>
@@ -29,8 +30,8 @@ export default function achievementData() {
           </div>
           
         </div>
+      </div> */}
       </div>
-    </div>
-  </>
+    </>
   );
 }

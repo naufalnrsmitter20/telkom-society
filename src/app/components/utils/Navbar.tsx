@@ -8,6 +8,7 @@ import portalku from "@/../public/img/portalku.png";
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
+import Bell from "../Icons/Bell";
 
 export default function Navbar() {
   const [modal, setModal] = useState<boolean>(false);
@@ -31,6 +32,7 @@ export default function Navbar() {
           <Link href="#" className="flex items-center space-x-3 rtl:space-x-reverse">
             <Image src={Logo} alt="Telkom Society" />
           </Link>
+
           <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
             <div>
               {status === "unauthenticated" ? (
@@ -43,9 +45,14 @@ export default function Navbar() {
                     <></>
                   ) : (
                     <div className="">
-                      <FormButton type="button" variant="base" onClick={handleProf} withArrow className="flex justify-center gap-x-2 py-2 px-4 ">
-                        <Image src={session?.user?.image as string} alt="user image" width={36} height={36} className="rounded-full" />
-                      </FormButton>
+                      <div className="flex gap-x-6">
+                        <LinkButton variant="white" href="/profile/notification" className="group">
+                          <Bell />
+                        </LinkButton>
+                        <FormButton type="button" variant="base" onClick={handleProf} withArrow className="flex justify-center gap-x-2 py-2 px-4 ">
+                          <Image src={session?.user?.image as string} alt="user image" width={36} height={36} className="rounded-full" />
+                        </FormButton>
+                      </div>
                       {prof && (
                         <div className="w-full p-2 max-w-56 bg-white mt-1 border border-slate-300 rounded-lg fixed right-12 top-24 inline-block">
                           <LinkButton variant="base" href="/profile" className="w-full">
@@ -75,6 +82,7 @@ export default function Navbar() {
                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h15M1 7h15M1 13h15" />
               </svg>
             </button>
+
             <div>
               {modal && (
                 <div className="flex mt-10 text-center md:hidden">
