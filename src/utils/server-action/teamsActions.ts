@@ -174,12 +174,15 @@ export const AcceptInviteMember = async (id: string) => {
         data: {
           status: "Have_Team",
           notiification: {
-            create: {
-              title: "Invitation to Join Team",
-              message: "You Accepted the Invitation",
-              createAt: new Date(),
-              teamRequest: {
-                connect: { id: acc?.id },
+            update: {
+              where: { id: acc.notificationId as string },
+              data: {
+                title: "Invitation to Join Team",
+                message: "You Accepted the Invitation",
+                createAt: new Date(),
+                teamRequest: {
+                  connect: { id: acc?.id },
+                },
               },
             },
           },
@@ -217,12 +220,15 @@ export const DeniedInviteMember = async (id: string) => {
       data: {
         status: "Dont_Have_Team",
         notiification: {
-          create: {
-            title: "Invitation to Join Team",
-            message: "You Denied the Invitation",
-            createAt: new Date(),
-            teamRequest: {
-              connect: { id: den?.id },
+          update: {
+            where: { id: den.notificationId as string },
+            data: {
+              title: "Invitation to Join Team",
+              message: "You Denied the Invitation",
+              createAt: new Date(),
+              teamRequest: {
+                connect: { id: den?.id },
+              },
             },
           },
         },
@@ -312,12 +318,15 @@ export const AcceptRequest = async (id: string) => {
         data: {
           status: "Have_Team",
           notiification: {
-            create: {
-              title: "Request to Join Team",
-              message: "You have been approved to join the team",
-              createAt: new Date(),
-              teamRequest: {
-                connect: { id: acc?.id },
+            update: {
+              where: { id: acc.notificationId as string },
+              data: {
+                title: "Request to Join Team",
+                message: "You have been approved to join the team",
+                createAt: new Date(),
+                teamRequest: {
+                  connect: { id: acc?.id },
+                },
               },
             },
           },
@@ -360,12 +369,15 @@ export const DeniedRequest = async (id: string) => {
       data: {
         status: "Dont_Have_Team",
         notiification: {
-          create: {
-            title: "Request to Join Team",
-            message: "You have been rejected to join the team",
-            createAt: new Date(),
-            teamRequest: {
-              connect: { id: den?.id },
+          update: {
+            where: { id: den.notificationId as string },
+            data: {
+              title: "Request to Join Team",
+              message: "You have been rejected to join the team",
+              createAt: new Date(),
+              teamRequest: {
+                connect: { id: den?.id },
+              },
             },
           },
         },
@@ -392,17 +404,20 @@ export const CancelInviteMember = async (id: string) => {
     const del = await prisma.teamRequest.delete({
       where: { id: id },
     });
+
+    const findTeam = await prisma.team.findFirst({ where: { id: del.teamId } });
+
     await prisma.user.update({
       where: { id: del.receiverId },
       data: {
         status: "Dont_Have_Team",
         notiification: {
-          create: {
-            title: "Cancel Invitation",
-            message: "Invitation Canceled",
-            createAt: new Date(),
-            teamRequest: {
-              connect: { id: del?.id },
+          update: {
+            where: { id: del.notificationId as string },
+            data: {
+              title: `Invitation Canceled`,
+              message: `Invitation Canceled by Owner of ${findTeam?.name}`,
+              createAt: new Date(),
             },
           },
         },
@@ -430,14 +445,17 @@ export const KickMember = async (id: string) => {
     if (!del) {
       throw new Error("Failed to Kick Member!");
     }
+    const findTeam = await prisma.team.findFirst({
+      where: { id: del.teamId },
+    });
     await prisma.user.update({
       where: { id: del.userId },
       data: {
         status: "Dont_Have_Team",
         notiification: {
           create: {
-            title: "Kick Member",
-            message: "You have been kicked from the team",
+            title: `You have been removed from ${findTeam?.name}`,
+            message: `You have been kicked from the ${findTeam?.name}`,
             createAt: new Date(),
           },
         },
