@@ -2,8 +2,7 @@
 import { nextGetServerSession } from "@/lib/authOption";
 import { revalidatePath } from "next/cache";
 import prisma from "@/lib/prisma";
-import { Role } from "@prisma/client";
-import { hash } from "bcrypt";
+import { UploadImageCloudinary } from "../uploadImage";
 
 export const CreateTeam = async (data: FormData) => {
   try {
@@ -11,13 +10,16 @@ export const CreateTeam = async (data: FormData) => {
     if (!session?.user?.email) {
       throw new Error("Auth Required!");
     }
+
     const UserId = session.user.id;
     const name = data.get("name") as string;
     const description = data.get("description") as string;
-    const logo = data.get("logo") as string;
     const mentor = data.get("mentor") as string;
     const instagram = data.get("instagram") as string;
     const linkedin = data.get("linkedin") as string;
+    const logo = data.get("logo") as File;
+    const ArrayBuffer = await logo.arrayBuffer();
+    const upload = await UploadImageCloudinary(Buffer.from(ArrayBuffer));
 
     const CreateTeam = await prisma.team.create({
       data: {
@@ -26,8 +28,8 @@ export const CreateTeam = async (data: FormData) => {
         mentor: mentor ?? "",
         instagram: instagram ?? "",
         linkedin: linkedin ?? "",
-        logo: logo ?? "",
         ownerId: UserId as string,
+        logo: (upload.data?.url as string) ?? "",
         createAt: new Date(),
         member: { create: { userId: UserId as string, role: "OWNER", joinedAt: new Date() } },
       },
@@ -61,9 +63,12 @@ export const UpdateTeam = async (id: string, data: FormData) => {
       throw new Error("Team Not Found!");
     }
 
+    const logo = data.get("logo") as File;
+    const ArrayBuffer = await logo.arrayBuffer();
+    const upload = await UploadImageCloudinary(Buffer.from(ArrayBuffer));
+
     const name = data.get("name") as string;
     const description = data.get("description") as string;
-    const logo = data.get("logo") as string;
     const mentor = data.get("mentor") as string;
     const instagram = data.get("instagram") as string;
     const linkedin = data.get("linkedin") as string;
@@ -77,7 +82,7 @@ export const UpdateTeam = async (id: string, data: FormData) => {
           mentor: mentor ?? "",
           instagram: instagram ?? "",
           linkedin: linkedin ?? "",
-          logo: logo ?? "",
+          logo: (upload.data?.url as string) ?? "",
           createAt: new Date(),
         },
       });

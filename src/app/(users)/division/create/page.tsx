@@ -5,19 +5,25 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Religion } from "@prisma/client";
 import { mentor } from "@/types/mentor";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
 import { CreateTeam } from "@/utils/server-action/teamsActions";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 export default function CreatePage() {
   const router = useRouter();
+  const [logo, setLogo] = useState("");
+
   const HandleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
+      const toastId = toast.loading("Loading...");
       const formData = new FormData(e.target);
+      const logoStream = formData.get("logo") as File | undefined;
+      if (logoStream?.name === "") return toast.error("Please select a file", { id: toastId });
+      formData.append("logo", logo);
       const create = await CreateTeam(formData);
       if (create) {
-        const toastId = toast.loading("Loading...");
         toast.success("Sukses membuat Tim!", { id: toastId });
         router.push(`/division/profile/${create.id}`);
       }
@@ -36,7 +42,8 @@ export default function CreatePage() {
             <TextArea name="description" label="Division Description" placeholder="Division Description" />
           </div>
           <div>
-            <TextField name="logo" label="Division Logo" type="text" />
+            <TextField name="logo" label="Division Logo" type="file" handleChange={(e) => setLogo(URL.createObjectURL(e.target.files![0]))} />
+            {logo && <Image width={100} height={100} className="w-44 h-44 mb-8" src={logo as string} alt={"Team Logo"} />}
             <DropDown
               name="mentor"
               label="Mentor"

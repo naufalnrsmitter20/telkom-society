@@ -41,7 +41,9 @@ export default function ModalEditCover({ setIsOpenModal }: { setIsOpenModal: Rea
           />
         </div>
         <Image src={cover} alt="Cover" width={300} height={180} className="w-full h-44 object-cover" />
-        <FormButton variant="base">Change</FormButton>
+        <FormButton variant="base" className="mt-4">
+          Change
+        </FormButton>
       </form>
     </ModalProfile>
   );

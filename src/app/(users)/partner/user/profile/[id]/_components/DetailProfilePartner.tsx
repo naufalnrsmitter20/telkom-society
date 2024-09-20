@@ -21,11 +21,11 @@ export default function DetailProfilePartner({
   return (
     <>
       <div className="bg-slate-100 p-0 sm:p-5 md:p-10 lg:p-15 xl:p-20">
-        <div className="mt-24 bg-white rounded-3xl p-10 sm:p-10 md:p-15 lg:p-20 xl:p-24 relative overflow-hidden">
+        <div className="mt-24 bg-white md:rounded-3xl p-10 sm:p-10 md:p-15 lg:p-20 xl:p-24 relative overflow-hidden">
           <div className="absolute inset-0 z-0 h-72">
-            <Image src={Banner} alt="banner profile" className="w-full h-full object-cover" />
+            <Image src={userData.cover as string} width={100} height={100} quality={100} unoptimized alt="banner profile" className="w-full md:h-full h-28 object-cover" />
           </div>
-          <div className="relative z-10 flex flex-col items-start mt-44 sm:mt-48 md:mt-44 lg:mt-32 xl:mt-28">
+          <div className="relative z-10 flex flex-col items-start md:mt-44 lg:mt-32 xl:mt-28">
             <div className="w-32 h-32 sm:w-24 md:w-32 flex place-items-center lg:w-36 xl:w-40 sm:h-24 md:h-32 lg:h-36 xl:h-40 rounded-full bg-gray-300 mb-4 overflow-hidden">
               <Image src={userData.photo_profile as string} alt="Image Profile" width={180} height={180} className="mx-auto" />
             </div>
@@ -33,14 +33,7 @@ export default function DetailProfilePartner({
               <h1 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal">
                 {userData?.name} {`${userData?.job ? `(${userData?.job})` : "Loading..."}` as string}
               </h1>
-              <div className="flex gap-x-2">
-                {/* <FormButton variant="base" onClick={handleModal}>
-                  Edit Profile
-                </FormButton>
-                <LinkButton href="/profile/notification" variant="base">
-                  Notification
-                </LinkButton> */}
-              </div>
+              <div className="flex gap-x-2"></div>
             </div>
             <div className="h-2"></div>
             <p className="text-gray-500 text-lg sm:text-lg md:text-xl lg:text-xl">{userData?.clasess}</p>
@@ -120,7 +113,7 @@ export default function DetailProfilePartner({
             </ul>
           </div>
 
-          <div className="relative z-10 flex justify-between items-start">
+          <div className="relative z-10 lg:flex justify-between items-start">
             <div>
               <h2 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal mb-4">Partner List</h2>
               <p className="font-semibold text-xl mb-4">
@@ -156,7 +149,7 @@ export default function DetailProfilePartner({
             </div>
 
             <div>
-              <h2 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal mb-4">Social Media</h2>
+              <h2 className="text-2xl mt-8 sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal mb-4">Social Media</h2>
               <ul className="space-y-6">
                 <li className="flex items-center gap-x-3">
                   <LinkedinIcon />

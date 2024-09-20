@@ -127,7 +127,7 @@ export default function PersonalData() {
             <div id="1">
               <TextField defaultValue={userData?.NIS as string} label="NIS" name="NIS" type="text" placeholder="Insert your NIS" />
               <TextField defaultValue={userData?.NISN as string} label="NISN" name="NISN" type="text" placeholder="Insert your NISN" />
-              <TextField defaultValue={userData?.Phone as string} label="Phone" name="Phone" type="number" placeholder="Insert your Phone Number" required />
+              <TextField defaultValue={userData?.whatsapp as string} label="Whatsapp" name="whatsapp" type="number" placeholder="Insert your Whatsapp Number" required />
               <TextField defaultValue={userData?.schoolOrigin as string} disabled readOnly label="School origin" name="schoolOrigin" type="text" placeholder="Insert your School origin" />
               <div className="mb-6">
                 <label className="text-[17px] font-normal">Skills</label>

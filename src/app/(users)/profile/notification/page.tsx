@@ -72,11 +72,6 @@ export default async function Notification() {
                       ) : (
                         <>{y.status === "VERIFIED" ? <p className="text-[16px] text-green-400 font-medium m-6">You {y.status} this Team</p> : <p className="text-[16px] text-red-400 font-medium m-6">You {y.status} this Team</p>}</>
                       )}
-                      {/* <div>
-                        <FormButton variant="base" className="w-full text-center">
-                          Back to Profile
-                        </FormButton>
-                      </div> */}
                     </div>
                   ) : (
                     <>
@@ -142,19 +137,19 @@ export default async function Notification() {
           )
         )
       ) : (
-        <>
+        <div className="w-5/6 h-3/5 mx-auto">
           <div className="flex flex-col w-full">
             <div className="max-w-5xl mx-auto">
-              <h1 className="text-2xl text-black mt-56 text-center">Oops! Tidak ada notifikasi apa pun disini</h1>
-              <div className="px-52 mt-2 flex gap-4">
+              <h1 className="text-2xl text-black mt-36 lg:mt-56 text-center">Oops! Tidak ada notifikasi apa pun disini</h1>
+              <div className=" mt-2 flex gap-4">
                 <Reload />
-                <LinkButton variant="base" href="/profile" className="w-full text-center">
-                  Back to Profile
+                <LinkButton variant="base" href="/profile" className="w-full">
+                  <p className="text-center mx-auto">Back to Profile</p>
                 </LinkButton>
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
