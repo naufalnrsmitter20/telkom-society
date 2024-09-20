@@ -93,7 +93,7 @@ export const authOptions: AuthOptions = {
     async redirect({ url, baseUrl }) {
       return url.startsWith("/") ? new URL(url, baseUrl).toString() : url;
     },
-    async signIn({ user, account }) {
+    async signIn({ user, account, profile }) {
       try {
         if (account?.provider === "credentials") {
           if (user.email) {

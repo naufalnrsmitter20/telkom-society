@@ -10,6 +10,7 @@ import CancelInvite from "./actions/CancelInvite";
 import KickMember from "./actions/KickMember";
 import { Session } from "next-auth";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function MemberTable({
   teamMember,
@@ -25,6 +26,7 @@ export default function MemberTable({
   session: Session;
 }) {
   const [modalData, setModalData] = useState<boolean>(false);
+  const router = useRouter();
 
   return (
     <>
@@ -69,8 +71,9 @@ export default function MemberTable({
                     </td>
                   ) : (
                     <td className="flex justify-end space-x-4 w-1/3">
-                      <button className="bg-red-500 scale-75 sm:scale-75 lg:scale-100 text-white py-1 px-2 rounded-lg hover:bg-red-600 transition duration-300">View</button>
-                      <button className="bg-red-500 opacity-0 scale-75 sm:scale-75 lg:scale-100 text-white py-1 px-2 rounded-lg hover:bg-red-600 transition duration-300">View</button>
+                      <button onClick={() => router.push(`/partner/user/profile/${x.userId}`)} className="bg-red-500 scale-75 sm:scale-75 lg:scale-100 text-white py-1 px-2 rounded-lg hover:bg-red-600 transition duration-300">
+                        View
+                      </button>
                     </td>
                   )}
                 </tr>

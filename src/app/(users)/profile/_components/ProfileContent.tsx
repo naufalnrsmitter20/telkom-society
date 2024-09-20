@@ -62,7 +62,7 @@ export default function ContentProfile({ userData, session }: { userData: userFu
       toast.error("Gagal Mengedit Profil");
     }
   };
-  const currentTeam = userData.Team.find((x) => x.userId === session.user?.id);
+  const currentTeam = userData.Team.find((x) => x.userId === session.user?.id) || null;
   console.log(userData.cover);
 
   return (
@@ -191,7 +191,7 @@ export default function ContentProfile({ userData, session }: { userData: userFu
             <h2 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal mb-4">Partner List</h2>
             <p className="font-semibold text-xl mb-4">
               Team Name :{" "}
-              {currentTeam?.team ? (
+              {currentTeam?.team && currentTeam.team.teamStatus !== "DELETED" ? (
                 <span className="className='text-[#F45846]'">{currentTeam?.team.name}</span>
               ) : (
                 <span className="text-slate-500 font-medium">
@@ -200,7 +200,7 @@ export default function ContentProfile({ userData, session }: { userData: userFu
               )}
             </p>
             <ul className="space-y-2">
-              {currentTeam ? (
+              {currentTeam && currentTeam.team.teamStatus !== "DELETED" ? (
                 currentTeam.team.member.map((x, i) => (
                   <li key={i}>
                     <Link href="#" className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800">

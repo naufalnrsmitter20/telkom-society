@@ -73,6 +73,10 @@ export const UpdateTeam = async (id: string, data: FormData) => {
     const instagram = data.get("instagram") as string;
     const linkedin = data.get("linkedin") as string;
 
+    const findTeam = await prisma.team.findFirst({
+      where: { id: id },
+    });
+
     if (id) {
       const update = await prisma.team.update({
         where: { id: id },
@@ -82,7 +86,7 @@ export const UpdateTeam = async (id: string, data: FormData) => {
           mentor: mentor ?? "",
           instagram: instagram ?? "",
           linkedin: linkedin ?? "",
-          logo: (upload.data?.url as string) ?? "",
+          logo: logo ? (upload.data?.url as string) : findTeam?.logo,
           createAt: new Date(),
         },
       });
@@ -557,8 +561,11 @@ export const deleteTeam = async (teamId: string) => {
     if (findTeam?.ownerId != session.user.id) {
       return { status: 401, message: "Unauthorize" };
     }
-    const del = await prisma.team.delete({
+    const del = await prisma.team.update({
       where: { id: teamId },
+      data: {
+        teamStatus: "DELETED",
+      },
     });
     if (!del) {
       return { status: 400, message: "Failed to Delete Team!" };
@@ -575,8 +582,9 @@ export const deleteTeam = async (teamId: string) => {
     if (!updateOwner || !updateUser) {
       return { status: 400, message: "Failed to Delete User from Team!" };
     }
-    await prisma.notification.deleteMany({
+    await prisma.notification.updateMany({
       where: { teamRequest: { every: { teamId: teamId } } },
+      data: { receiverId: updateOwner.id, title: `Team ${del.name} Have Been Deleted by Owner`, message: `Team ${del.name} Have Been Deleted by Owner`, createAt: new Date() },
     });
 
     revalidatePath("/division/profile");

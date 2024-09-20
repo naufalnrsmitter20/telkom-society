@@ -8,14 +8,14 @@ import Link from "next/link";
 
 export default async function Notification() {
   const session = await nextGetServerSession();
-  const inviteNotif = await prisma.teamRequest.findMany({
-    where: { receiverId: session?.user?.id, type: "INVITE" },
-    include: { sender: true, team: true, receiver: true },
-  });
-  const requestNotif = await prisma.teamRequest.findMany({
-    where: { receiverId: session?.user?.id, type: "REQUEST" },
-    include: { sender: true, team: true, receiver: true },
-  });
+  // const inviteNotif = await prisma.teamRequest.findMany({
+  //   where: { receiverId: session?.user?.id, type: "INVITE" },
+  //   include: { sender: true, team: true, receiver: true },
+  // });
+  // const requestNotif = await prisma.teamRequest.findMany({
+  //   where: { receiverId: session?.user?.id, type: "REQUEST" },
+  //   include: { sender: true, team: true, receiver: true },
+  // });
   const currentNotif = await prisma.notification.findMany({
     where: { receiverId: session?.user?.id },
     include: { teamRequest: { include: { receiver: true, Notification: true, sender: true, team: true } }, receiver: true },
@@ -32,7 +32,7 @@ export default async function Notification() {
   });
 
   return (
-    <div className="w-screen min-h-screen pt-40 justify-center pb-10">
+    <main className="w-screen min-h-screen pt-40 justify-center pb-10">
       {NotificationUser.length !== 0 ? (
         currentNotif?.map((x, i) =>
           x.teamRequest.length !== 0 ? (
@@ -129,6 +129,8 @@ export default async function Notification() {
                   <p className="text-[16px] text-red-400 font-medium m-6">{x.message}</p>
                 ) : x.title.includes("Invitation Canceled") ? (
                   <p className="text-[16px] text-red-400 font-medium m-6">{x.message}</p>
+                ) : x.title.includes("Deleted") ? (
+                  <p className="text-[16px] text-red-400 font-medium m-6">{x.message}</p>
                 ) : (
                   <p className="text-[16px] text-slate-400 font-medium m-6">{x.message}</p>
                 )}
@@ -151,6 +153,6 @@ export default async function Notification() {
           </div>
         </div>
       )}
-    </div>
+    </main>
   );
 }
