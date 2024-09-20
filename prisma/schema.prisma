@@ -59,6 +59,7 @@ model Team {
   instagram   String?
   linkedin    String?
   ownerId     String
+  teamStatus  TeamStatus    @default(ACTIVE)
   createAt    DateTime      @default(now())
   member      TeamMember[]
   requests    TeamRequest[]
@@ -163,4 +164,10 @@ enum InvitationType {
 enum TeamRole {
   OWNER
   MEMBER
+}
+
+enum TeamStatus {
+  ACTIVE
+  INACTIVE
+  DELETED
 }

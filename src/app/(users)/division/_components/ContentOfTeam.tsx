@@ -1,3 +1,4 @@
+"use client";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import banner from "@/../public/img/banner ryo.png";
 import Image from "next/image";
@@ -29,45 +30,35 @@ export default function ContentOfTeam({
   Owner: Prisma.UserGetPayload<{ include: { _count: true } }>;
   session: Session;
 }) {
-  // const { data: session } = useSession();
-  // const [searchInput, setSearchInput] = useState<string>("");
-  // const [selected, setSelected] = useState("All");
-  // const [triger, setTriger] = useState(false);
-  // const { data: response, error } = useSWR("/api/data", fetcher, {
-  //   refreshInterval: 1000,
-  // });
+  const [searchInput, setSearchInput] = useState<string>("");
+  const [selected, setSelected] = useState("All");
 
-  // const userData = response?.dataUser || [];
-  // console.log(userData);
+  const [filteredUser, setFilteredUser] = useState<Prisma.TeamGetPayload<{ include: { _count: true; member: { include: { team: true; user: true } }; requests: true } }>[]>(teams);
 
-  // const handleSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
-  //   setSearchInput(e.target.value);
-  // };
-  // const handleDetail = () => {
-  //   console.log("hai");
+  useEffect(() => {
+    const filterUsers = () => {
+      const filteredByName = teams.filter((team: Prisma.TeamGetPayload<{ include: { _count: true; member: { include: { team: true; user: true } }; requests: true } }>) => team.name.toLowerCase().includes(searchInput.toLowerCase()));
 
-  // setTriger(true);
-  // };
-  // const handleButtonFilter = (data: string) => {
-  //   setSelected(data);
-  // };
+      const finalFilteredUsers = selected === "All" ? filteredByName : filteredByName.filter((teams: Prisma.TeamGetPayload<{}>) => teams.ownerId === selected);
 
-  // if (error) return <div>Data Tidak Ditemukan</div>;
-  // if (!response) return <div>Loading...</div>;
+      setFilteredUser(finalFilteredUsers);
+    };
 
-  // const getUser = await prisma.user.findMany({ where: { Team: { some: { teamId:  } } } });
-  // const getRole = getUser.filter((x) => x.job);
-  // console.log(getRole.map((x) => x.job));
+    filterUsers();
+  }, [searchInput, selected, teams]);
+
+  const handleSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value);
+  };
+
+  const handleButtonFilter = (data: string) => {
+    setSelected(data);
+  };
+
   const availableJobs = ["Hacker", "Hipster", "Hustler"];
 
   return (
     <>
-      {/* responsive */}
-      {/* <Popup triggers={triger} setTriggers={setTriger}>
-        <div className="flex w-full h-fit justify-center">
-          <Link href=""></Link>
-        </div>
-      </Popup> */}
       <section className="max-w-full min-h-screen mx-auto xl:mx-48 pt-32 md:flex mb-56 gap-x-4 px-4 xl:px-0">
         <div className="block md:hidden mb-4">
           <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
@@ -83,7 +74,8 @@ export default function ContentOfTeam({
               type="search"
               className="block w-full p-4 ps-10 text-sm text-gray-900 border rounded-full border-gray-100  bg-white focus:ring-red-100 focus:ring-2 outline-none focus:border-base"
               placeholder="Search Name or Job"
-              required
+              value={searchInput}
+              onChange={handleSearchInput}
             />
             <button type="submit" className="absolute end-0 bottom-0 focus:outline-none text-white bg-base hover:bg-red-600 focus:ring-4 focus:ring-red-400 font-medium  text-sm px-5 py-2.5 me-2 mb-2 flex w-fit items-center rounded-full">
               Search
@@ -108,7 +100,11 @@ export default function ContentOfTeam({
               <div className="py-4 font-Quicksand xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-light text-slate-500">Manage Your Team</div>
               <hr />
               <div className="grid grid-cols-1">
-                <button className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2">
+                <button onClick={() => handleButtonFilter("All")} className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2">
+                  <Image src={setting} width={30} alt="hustler" />
+                  <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-500">All Team</p>
+                </button>
+                <button onClick={() => handleButtonFilter(session?.user?.id as string)} className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2">
                   <Image src={setting} width={30} alt="hustler" />
                   <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-500">Your Team</p>
                 </button>
@@ -131,9 +127,8 @@ export default function ContentOfTeam({
                 type="search"
                 className="block w-full p-4 ps-10 text-sm text-gray-900 border rounded-full border-gray-100  bg-white focus:ring-red-100 focus:ring-2 outline-none focus:border-base"
                 placeholder="Search Name or Job"
-                // value={searchInput}
-                // onChange={handleSearchInput}
-                required
+                value={searchInput}
+                onChange={handleSearchInput}
               />
               <button type="submit" className="absolute end-0 bottom-0 focus:outline-none text-white bg-base hover:bg-red-600 focus:ring-4 focus:ring-red-400 font-medium  text-sm px-5 py-2.5 me-2 mb-2 flex w-fit items-center rounded-full">
                 Search
@@ -145,13 +140,13 @@ export default function ContentOfTeam({
               Create Team
             </LinkButton>
             <div className="font-semibold text-lg">
-              Total All Teams : <span>{teams.length}</span>
+              Total Result : <span>{filteredUser.length}</span>
             </div>
           </div>
 
           <div className="grid grid-cols-1 bg-white rounded-xl gap-y-4 w-full">
             <>
-              {teams.map((x, i) => (
+              {filteredUser.map((x, i) => (
                 <div key={i} className="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row w-full hover:bg-gray-100 ">
                   <Image unoptimized quality={100} className="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-full border-2 border-black m-5" width={200} height={100} src={x.logo as string} alt={x.name} />
                   <div className="flex flex-col justify-between p-4 leading-normal w-full">
@@ -166,7 +161,7 @@ export default function ContentOfTeam({
                     <h5 className="text-xl font-semibold tracking-tight text-black">Jumlah Anggota : {x._count.member}</h5>
                     <h5 className="mb-2 text-lg font-semibold tracking-tight text-black">Mentor : {x.mentor}</h5>
                     <p className="text-lg font-medium text-black ">Description</p>
-                    <p className="mb-3 font-normal text-slate-600 ">{x.description}</p>
+                    <p className="mb-3 font-normal text-slate-600 overflow-x-hidden">{x.description}</p>
                     <div className="flex justify-end gap-x-3">
                       {x.ownerId === session.user?.id || (x.member.find((y) => y.userId === session.user?.id) ? <></> : <JoinTeam teamId={x.id} />)}
                       <LinkButton href={`/division/profile/${x.id}`} variant="base">

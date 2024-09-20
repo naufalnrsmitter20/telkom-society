@@ -133,7 +133,7 @@ export default function DetailProfilePartner({
                       <Link href={`/partner/user/profile/${x.userId}`} className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800 hover:text-highlight">
                         {i + 1}. {x.user.name} - {x.user.job} {" ( "}
                         <span className={`${x.user.Team.find((x) => x.userId === userId)?.role == "OWNER" ? "text-[#F45846]" : "text-black"} font-semibold`}>
-                          {x.user.Team.find((x) => x.userId === userId)?.role ? x.user.Team.find((x) => x.userId === userId)?.role : "MEMBER"}
+                          {x.user.Team.find((x) => x.userId === userId)?.role ? "MEMBER" : "OWNER"}
                         </span>{" "}
                         {" ) "}
                       </Link>

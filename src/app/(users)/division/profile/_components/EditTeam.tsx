@@ -18,8 +18,6 @@ export default function EditTeam({ onClose, teamId, data }: { onClose: () => voi
       e.preventDefault();
       const toastId = toast.loading("Loading...");
       const formData = new FormData(e.target);
-      const logoStream = formData.get("logo") as File | undefined;
-      if (logoStream?.name === "") return toast.error("Please select a file", { id: toastId });
       formData.append("logo", logo);
       await UpdateTeam(teamId, formData);
       toast.success("Sukses Mengedit Tim!", { id: toastId });
@@ -36,8 +34,8 @@ export default function EditTeam({ onClose, teamId, data }: { onClose: () => voi
         <div className="gap-x-6 w-full">
           <TextField defaultValue={data?.name} name="name" placeholder="Insert division name" label="Division Name" type="text" />
           <TextArea defaultValue={data?.description} name="description" label="Division Description" placeholder="Division Description" />
-          <TextField handleChange={(e) => setLogo(URL.createObjectURL(e.target.files![0]))} name="logo" label="Division Logo" type="file" />
-          <Image width={100} height={100} className="w-44 h-44 mb-8" src={logo as string} alt={data?.name} />
+          <TextField handleChange={(e) => setLogo(URL.createObjectURL(e.target.files[0]))} name="logo" label="Division Logo" type="file" />
+          <Image width={100} height={100} unoptimized quality={100} className="w-44 h-44 mb-8" src={logo as string} alt={data?.name} />
           <DropDown
             name="mentor"
             label="Mentor"

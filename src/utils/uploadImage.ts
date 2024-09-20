@@ -4,6 +4,9 @@ import cloudinary from "@/lib/cloudinary";
 
 export async function UploadImageCloudinary(file: Buffer | any) {
   try {
+    if (!file || (!file.data && !file.length)) {
+      return { error: true, message: "No file provided or file is empty" };
+    }
     const upload: UploadApiResponse | undefined = await new Promise((resolve, reject) => {
       cloudinary.uploader
         .upload_stream({ upload_preset: "cover_user", quality: "auto:best" }, (error, result) => {
@@ -12,6 +15,7 @@ export async function UploadImageCloudinary(file: Buffer | any) {
         })
         .end(file?.data ? file.data : file);
     });
+
     if (!upload) return { error: true, message: "Gagal Upload!" };
 
     const data = {

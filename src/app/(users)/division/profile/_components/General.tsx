@@ -34,19 +34,23 @@ export default function General({ profile, teamId, userId }: { profile: Prisma.T
     <div>
       <div className="tracking-wide font-semibold text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-black">{profile?.name}</div>
       <p className="block mt-2 text-sm text-black sm:text-sm lg:text-text-[16px] xl:text-[18px] leading-tight font-semibold">{profile?.description}</p>
-      <div className="flex justify-between mt-4">
+      <div className="lg:flex lg:justify-between mt-4">
         <div>
-          <p className="mt-2 text-gray-500 text-sm sm:text-sm md:text-sm lg:text-[16px] xl:text-[16px]">Mentor: {profile?.mentor}</p>
-          <p className="mt-2 text-gray-500 text-sm sm:text-sm md:text-sm lg:text-[16px] xl:text-[16px]">ID: {profile?.id}</p>
+          <p className="mt-2 text-black text-sm sm:text-sm md:text-sm lg:text-[16px] xl:text-[16px]">
+            Mentor: <span className="font-semibold"> {profile?.mentor}</span>
+          </p>
+          <p className="mt-2 text-black text-sm sm:text-sm md:text-sm lg:text-[16px] xl:text-[16px]">
+            Team ID: <span className="font-semibold">{profile?.id}</span>
+          </p>
         </div>
-        <div className="flex space-x-0 ml-20">
+        <div className="flex space-x-0 lg:ml-20 mt-6 lg:mt-0">
           {userId === profile?.ownerId ? (
             <FormButton variant="base" onClick={() => setModal(true)}>
               Edit
             </FormButton>
           ) : (
             <FormButton variant="base" onClick={() => setView(true)}>
-              View
+              Detail
             </FormButton>
           )}
           {userId === profile?.ownerId ? (
