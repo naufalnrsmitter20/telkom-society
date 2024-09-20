@@ -19,6 +19,7 @@ model User {
   NISN          String?
   schoolOrigin  String?
   generation    String?
+  cover         String?
   role          Role           @default(SISWA)
   job           Job            @default(Undefined)
   biography     String?
@@ -81,8 +82,8 @@ model TeamRequest {
   type           InvitationType
   status         RequestStatus  @default(PENDING)
   createAt       DateTime       @default(now())
-  receiver       User           @relation("RequestReceiver", fields: [receiverId], references: [id])
-  sender         User           @relation("RequestSender", fields: [senderId], references: [id])
+  receiver       User           @relation("RequestReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  sender         User           @relation("RequestSender", fields: [senderId], references: [id], onDelete: Cascade)
   team           Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
   Notification   Notification?  @relation(fields: [notificationId], references: [id])
   notificationId String?

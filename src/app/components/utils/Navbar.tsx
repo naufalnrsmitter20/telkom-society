@@ -112,6 +112,13 @@ export default function Navbar() {
                         Developers
                       </Link>
                     </li>
+                    {session?.user?.role !== "SISWA" && (
+                      <li>
+                        <Link href="/admin" className={`${pathName === "/admin" ? "text-red-400" : "text-black"} rounded md:hover:bg-transparent hover:text-red-600`}>
+                          Admin
+                        </Link>
+                      </li>
+                    )}
                     <li className="flex justify-center">
                       <Link href="https://portalku.benspace.xyz/">
                         <Image src={portalku} width={78} alt="Portalku" />
@@ -150,6 +157,13 @@ export default function Navbar() {
                   Developers
                 </Link>
               </li>
+              {session?.user?.role !== "SISWA" && (
+                <li>
+                  <Link href="/admin" className={`${pathName === "/admin" ? "text-red-400" : "text-black"} rounded md:hover:bg-transparent hover:text-red-600`}>
+                    Admin
+                  </Link>
+                </li>
+              )}
               <li>
                 <Link target="_blank" href="https://portalku.benspace.xyz/">
                   <Image src={portalku} width={78} alt="Portalku" />

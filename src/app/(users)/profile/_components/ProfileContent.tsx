@@ -21,16 +21,17 @@ import { occupation } from "@/types/occupation";
 import EditSkill from "./EditSkill";
 import EditProject from "./EditProject";
 import { Session } from "next-auth";
+import ModalEditCover from "./ModalEditCover";
 
 export default function ContentProfile({ userData, session }: { userData: userFullPayload; session: Session }) {
   const [selectedOccupation, setSelectedOccupation] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [addSkillModal, setAddSkillModal] = useState(false);
   const [addProjectModal, setAddProjectModal] = useState(false);
+  const [cover, setCover] = useState(false);
 
   const router = useRouter();
   const [modal, setModal] = useState(false);
-  console.log(userData?.projects);
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
@@ -49,7 +50,6 @@ export default function ContentProfile({ userData, session }: { userData: userFu
 
   const handleSubmit = async (formData: FormData) => {
     setIsLoading(true);
-
     try {
       await UpdateGeneralProfileById(formData);
       toast.success("Sukses Mengisi Data");
@@ -59,17 +59,30 @@ export default function ContentProfile({ userData, session }: { userData: userFu
     } catch (error) {
       console.log((error as Error).message);
       setIsLoading(false);
-
       toast.error("Gagal Mengedit Profil");
     }
   };
   const currentTeam = userData.Team.find((x) => x.userId === session.user?.id);
+  console.log(userData.cover);
+
   return (
     <div className="bg-slate-100 p-0 sm:p-5 md:p-10 lg:p-15 xl:p-20">
       <div className="mt-24 bg-white rounded-3xl p-10 sm:p-10 md:p-15 lg:p-20 xl:p-24 relative overflow-hidden">
         <div className="absolute inset-0 z-0 h-72">
-          <Image src={Banner} alt="banner profile" className="w-full h-full object-cover" />
+          <Image
+            quality={100}
+            unoptimized
+            src={(userData.cover as string) || "https://res.cloudinary.com/dhjeoo1pm/image/upload/v1726727429/mdhydandphi4efwa7kte.png"}
+            width={100}
+            height={1000}
+            alt="banner profile"
+            className="w-full h-full object-cover"
+          />
         </div>
+        <FormButton variant="base" className="absolute top-8 right-10" onClick={() => setCover(true)}>
+          Edit Cover
+        </FormButton>
+        {cover && <ModalEditCover setIsOpenModal={setCover} />}
         <div className="relative z-10 flex flex-col items-start mt-44 sm:mt-48 md:mt-44 lg:mt-32 xl:mt-28">
           <div className="w-32 h-32 sm:w-24 md:w-32 flex place-items-center lg:w-36 xl:w-40 sm:h-24 md:h-32 lg:h-36 xl:h-40 rounded-full bg-gray-300 mb-4 overflow-hidden">
             <Image src={session?.user?.image as string} alt="Image Profile" width={180} height={180} className="mx-auto" />
