@@ -43,7 +43,7 @@ export default async function Division({ params }: { params: { id: string } }) {
       <div className="max-w-7xl w-full mx-auto bg-white shadow-md outline outline-1 outline-slate-200 lg:rounded-[20px] overflow-hidden">
         <div className="md:flex w-full mx-auto">
           <div className="p-10">
-            <Image src={profile?.logo as string} width={192} height={192} alt="logo" className="h-48 w-full object-cover md:w-48" />
+            <Image unoptimized quality={100} src={profile?.logo as string} width={192} height={192} alt="logo" className="h-auto w-full object-cover md:w-48" />
           </div>
           <div className="p-8 w-full">
             <General profile={profile!} teamId={params.id} userId={session?.user?.id as string} />

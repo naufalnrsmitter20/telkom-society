@@ -2,6 +2,7 @@
 import { nextGetServerSession } from "@/lib/authOption";
 import { revalidatePath } from "next/cache";
 import prisma from "@/lib/prisma";
+import { UploadImageCloudinary } from "../uploadImage";
 
 export const CreateTeam = async (data: FormData) => {
   try {
@@ -9,13 +10,16 @@ export const CreateTeam = async (data: FormData) => {
     if (!session?.user?.email) {
       throw new Error("Auth Required!");
     }
+
     const UserId = session.user.id;
     const name = data.get("name") as string;
     const description = data.get("description") as string;
-    const logo = data.get("logo") as string;
     const mentor = data.get("mentor") as string;
     const instagram = data.get("instagram") as string;
     const linkedin = data.get("linkedin") as string;
+    const logo = data.get("logo") as File;
+    const ArrayBuffer = await logo.arrayBuffer();
+    const upload = await UploadImageCloudinary(Buffer.from(ArrayBuffer));
 
     const CreateTeam = await prisma.team.create({
       data: {
@@ -24,8 +28,8 @@ export const CreateTeam = async (data: FormData) => {
         mentor: mentor ?? "",
         instagram: instagram ?? "",
         linkedin: linkedin ?? "",
-        logo: logo ?? "",
         ownerId: UserId as string,
+        logo: (upload.data?.url as string) ?? "",
         createAt: new Date(),
         member: { create: { userId: UserId as string, role: "OWNER", joinedAt: new Date() } },
       },
@@ -59,9 +63,12 @@ export const UpdateTeam = async (id: string, data: FormData) => {
       throw new Error("Team Not Found!");
     }
 
+    const logo = data.get("logo") as File;
+    const ArrayBuffer = await logo.arrayBuffer();
+    const upload = await UploadImageCloudinary(Buffer.from(ArrayBuffer));
+
     const name = data.get("name") as string;
     const description = data.get("description") as string;
-    const logo = data.get("logo") as string;
     const mentor = data.get("mentor") as string;
     const instagram = data.get("instagram") as string;
     const linkedin = data.get("linkedin") as string;
@@ -75,7 +82,7 @@ export const UpdateTeam = async (id: string, data: FormData) => {
           mentor: mentor ?? "",
           instagram: instagram ?? "",
           linkedin: linkedin ?? "",
-          logo: logo ?? "",
+          logo: (upload.data?.url as string) ?? "",
           createAt: new Date(),
         },
       });
@@ -465,6 +472,75 @@ export const KickMember = async (id: string) => {
     return del;
   } catch (error) {
     console.log(error as Error);
+    throw new Error((error as Error).message);
+  }
+};
+
+export const UpdateTeamsInAdmin = async (id: string, data: FormData) => {
+  try {
+    const session = await nextGetServerSession();
+    if (!session?.user) {
+      return { status: 401, message: "Auth Required" };
+    }
+    if (session?.user.role !== "ADMIN") {
+      return { status: 401, message: "Unauthorize" };
+    }
+    // const email = data.get("email") as string;
+    // const name = data.get("name") as string;
+    // const password = data.get("password") as string;
+    // const role = data.get("role") as Role;
+
+    // const findEmail = await prisma.user.findUnique({
+    //   where: { email },
+    //   include: { userAuth: true },
+    // });
+
+    // if (!findEmail && id == null) {
+    //   const create = await prisma.user.create({
+    //     data: {
+    //       email,
+    //       name,
+    //       role,
+    //       userAuth: {
+    //         create: {
+    //           password: await hash(password, 10),
+    //           last_login: new Date(),
+    //         },
+    //       },
+    //     },
+    //   });
+    //   if (!create) throw new Error("Failed to create admin!");
+    //   revalidatePath("/admin");
+    //   return { status: 200, message: "Create Success!" };
+    // } else if (id) {
+    //   const findUser = await prisma.user.findFirst({
+    //     where: { id },
+    //     include: { userAuth: true },
+    //   });
+    //   if (findUser) {
+    //     const update = await prisma.user.update({
+    //       where: { id: id ?? findUser?.id },
+    //       data: {
+    //         name: name ?? findUser?.name,
+    //         email: email ?? findUser?.email,
+    //         role: role ?? (findUser?.role as Role),
+    //         userAuth: {
+    //           update: {
+    //             last_login: new Date(),
+    //           },
+    //         },
+    //       },
+    //     });
+    //     console.log(update);
+    //     if (!update) throw new Error("Failed to update admin!");
+    //     revalidatePath("/admin");
+    //     return { status: 200, message: "Update Success!" };
+    //   } else throw new Error("User not found!");
+    // }
+    revalidatePath("/admin");
+    return { status: 200, message: "Update Success!" };
+  } catch (error) {
+    console.error("Error update user:", error);
     throw new Error((error as Error).message);
   }
 };

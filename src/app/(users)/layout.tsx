@@ -16,6 +16,24 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Telkom Society",
   description: "Find the Best Competition Partner to Succeed Together!",
+  authors: [
+    {
+      name: "Naufal Nabil Ramadhan",
+      url: "https://naufalnr.my.moklet.org/",
+    },
+    {
+      name: "Jean Richnerd Rantabaratrahjaga",
+      url: "#",
+    },
+    {
+      name: "Haza Nasrullah Kuswantoro",
+      url: "http://hazanasrullah.me/",
+    },
+    {
+      name: "Ryo Hariyono Angwyn",
+      url: "#",
+    },
+  ],
 };
 
 export default function RootLayout({

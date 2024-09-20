@@ -21,16 +21,17 @@ import { occupation } from "@/types/occupation";
 import EditSkill from "./EditSkill";
 import EditProject from "./EditProject";
 import { Session } from "next-auth";
+import ModalEditCover from "./ModalEditCover";
 
 export default function ContentProfile({ userData, session }: { userData: userFullPayload; session: Session }) {
   const [selectedOccupation, setSelectedOccupation] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [addSkillModal, setAddSkillModal] = useState(false);
   const [addProjectModal, setAddProjectModal] = useState(false);
+  const [cover, setCover] = useState(false);
 
   const router = useRouter();
   const [modal, setModal] = useState(false);
-  console.log(userData?.projects);
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
@@ -49,7 +50,6 @@ export default function ContentProfile({ userData, session }: { userData: userFu
 
   const handleSubmit = async (formData: FormData) => {
     setIsLoading(true);
-
     try {
       await UpdateGeneralProfileById(formData);
       toast.success("Sukses Mengisi Data");
@@ -59,26 +59,39 @@ export default function ContentProfile({ userData, session }: { userData: userFu
     } catch (error) {
       console.log((error as Error).message);
       setIsLoading(false);
-
       toast.error("Gagal Mengedit Profil");
     }
   };
   const currentTeam = userData.Team.find((x) => x.userId === session.user?.id);
+  console.log(userData.cover);
+
   return (
-    <div className="bg-slate-100 p-0 sm:p-5 md:p-10 lg:p-15 xl:p-20">
+    <div className="bg-slate-100 p-0 pt-8 md:pt-10 lg:pt-10 sm:p-5 md:p-10 lg:p-15 xl:p-20">
       <div className="mt-24 bg-white rounded-3xl p-10 sm:p-10 md:p-15 lg:p-20 xl:p-24 relative overflow-hidden">
         <div className="absolute inset-0 z-0 h-72">
-          <Image src={Banner} alt="banner profile" className="w-full h-full object-cover" />
+          <Image
+            quality={100}
+            unoptimized
+            src={(userData.cover as string) || "https://res.cloudinary.com/dhjeoo1pm/image/upload/v1726727429/mdhydandphi4efwa7kte.png"}
+            width={100}
+            height={1000}
+            alt="banner profile"
+            className="w-full md:h-full h-28 object-cover"
+          />
         </div>
-        <div className="relative z-10 flex flex-col items-start mt-44 sm:mt-48 md:mt-44 lg:mt-32 xl:mt-28">
+        <FormButton variant="base" className="absolute top-8 right-10" onClick={() => setCover(true)}>
+          Edit Cover
+        </FormButton>
+        {cover && <ModalEditCover setIsOpenModal={setCover} />}
+        <div className="relative z-10 flex flex-col items-start md:mt-44 lg:mt-32 xl:mt-28">
           <div className="w-32 h-32 sm:w-24 md:w-32 flex place-items-center lg:w-36 xl:w-40 sm:h-24 md:h-32 lg:h-36 xl:h-40 rounded-full bg-gray-300 mb-4 overflow-hidden">
             <Image src={session?.user?.image as string} alt="Image Profile" width={180} height={180} className="mx-auto" />
           </div>
-          <div className="mt-4 flex w-full justify-between">
+          <div className="mt-4 lg:flex w-full justify-between">
             <h1 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal">
               {userData?.name} {`${userData?.job ? `(${userData?.job})` : "Loading..."}` as string}
             </h1>
-            <div className="flex gap-x-2">
+            <div className="flex gap-x-2 mt-2 lg:mt-0">
               <FormButton variant="base" onClick={handleModal}>
                 Edit Profile
               </FormButton>
@@ -173,7 +186,7 @@ export default function ContentProfile({ userData, session }: { userData: userFu
           </ul>
         </div>
 
-        <div className="relative z-10 flex justify-between items-start">
+        <div className="relative z-10 lg:flex justify-between items-start">
           <div>
             <h2 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal mb-4">Partner List</h2>
             <p className="font-semibold text-xl mb-4">
@@ -202,7 +215,7 @@ export default function ContentProfile({ userData, session }: { userData: userFu
           </div>
 
           <div>
-            <h2 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal mb-4">Social Media</h2>
+            <h2 className="text-2xl mt-8 lg:mt-0 sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal mb-4">Social Media</h2>
             <ul className="space-y-6">
               <li className="flex items-center gap-x-3">
                 <LinkedinIcon />
@@ -290,19 +303,19 @@ export default function ContentProfile({ userData, session }: { userData: userFu
             <div>
               <div className="flex gap-x-3 items-center">
                 <WhatsappIcons />
-                <TextField type="text" label="Whatsapp" name="whatsapp" className="w-full" defaultValue={userData?.whatsapp as string} />
+                <TextField type="text" label="Whatsapp" name="whatsapp" className="w-full" placeholder="62xxxxx" defaultValue={userData?.whatsapp as string} />
               </div>
               <div className="flex gap-x-3 items-center">
                 <InstagramIcons />
-                <TextField type="text" label="Instagram" name="instagram" className="w-full" defaultValue={userData?.instagram as string} />
+                <TextField type="text" label="Instagram" name="instagram" className="w-full" placeholder="instagram username" defaultValue={userData?.instagram as string} />
               </div>
               <div className="flex gap-x-3 items-center">
                 <LinkedinIcon />
-                <TextField type="text" label="Linkedin" name="linkedin" className="w-full" defaultValue={userData?.linkedin as string} />
+                <TextField type="text" label="Linkedin" name="linkedin" className="w-full" placeholder="linkedin username" defaultValue={userData?.linkedin as string} />
               </div>
               <div className="flex gap-x-3 items-center">
                 <GithubIcons />
-                <TextField type="text" label="Github" name="github" className="w-full" defaultValue={userData?.github as string} />
+                <TextField type="text" label="Github" name="github" className="w-full" placeholder="github username" defaultValue={userData?.github as string} />
               </div>
             </div>
             <div className="flex justify-end w-full gap-x-4 pb-4">

@@ -112,7 +112,8 @@ export const authOptions: AuthOptions = {
               photo_profile: user.image || "https://res.cloudinary.com/dvwhepqbd/image/upload/v1720580914/pgfrhzaobzcajvugl584.png",
               name: user.name || "",
               job: "Undefined",
-              role: user.email.includes("student") ? "SISWA" : "GURU",
+              role: user.email.includes("smktelkom-mlg.sch.id") ? (user.email.includes("student") ? "SISWA" : "GURU") : "SISWA",
+              cover: "https://res.cloudinary.com/dhjeoo1pm/image/upload/v1726727429/mdhydandphi4efwa7kte.png",
               userAuth: {
                 create: {
                   last_login: new Date(),

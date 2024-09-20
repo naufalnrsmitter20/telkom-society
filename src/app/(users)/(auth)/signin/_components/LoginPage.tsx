@@ -19,11 +19,19 @@ export default function LoginPage({ userData, session }: { userData: userFullPay
       setIsLoading(true);
       if (userData.job === "Undefined") {
         toast.success("Berhasil Login!");
-        router.push("/pilihKeahlian");
+        if (userData.role === "SISWA") {
+          router.push("/pilihKeahlian");
+        } else {
+          router.push("/admin");
+        }
         setIsLoading(false);
       } else if (["Hacker", "Hipster", "Hustler"].includes(userData.job)) {
         toast.success("Berhasil Login!");
-        router.push("/profile");
+        if (userData.role === "SISWA") {
+          router.push("/profile");
+        } else {
+          router.push("/admin");
+        }
         setIsLoading(false);
       } else {
         toast.error("Maaf Login Gagal");
@@ -49,40 +57,6 @@ export default function LoginPage({ userData, session }: { userData: userFullPay
             <div className="max-w-lg mx-auto mt-2">
               <h3 className="text-[35.4px] font-medium text-black leading-none">Welcome to Telkom Society!</h3>
               <p className="text-[20px] font-medium text-black opacity-70 lg:-mt-2">Find and build your team here</p>
-              {/* <form name="FormData" className="mt-4 ">
-                <div className="mt-3">
-                  <label htmlFor="email" className="block mb-2 text-sm font-normal text-black dark:text-white">
-                    Email address
-                  </label>
-                  <input
-                    type="text"
-                    id="email"
-                    className="bg-slate-50 border border-slate-900 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-slate-200 focus:border-slate-400 block w-full p-2.5 outline-none placeholder:text-slate-700 tracking-wide placeholder:font-extralight"
-                    placeholder="Email Sekolah"
-                    required
-                  />
-                </div>
-                <div className="mt-3">
-                  <label htmlFor="password" className="block mb-2 text-sm font-normal text-black dark:text-white">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    className="bg-slate-50 border border-slate-900 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-slate-200 focus:border-slate-400 block w-full p-2.5 outline-none placeholder:text-slate-700 tracking-wide placeholder:font-extralight"
-                    placeholder="Password Email Sekolah"
-                    required
-                  />
-                </div>
-                <FormButton type="button" onClick={() => router.push("/pilihKeahlian")} variant="base" className="w-full mt-6">
-                  Masuk
-                </FormButton>
-              </form> */}
-              {/* <div className="flex justify-center items-center mt-4">
-                <div className="h-0.5 w-1/3 bg-slate-400"></div>
-                <p className="xl:text-[16px] lg:text-[15px] w-1/3 md:text-[14px] sm:text-[13px] text-[12px] text-center text-slate-400 font-light mx-2">Or continue with</p>
-                <div className="h-0.5 w-1/3 bg-slate-400"></div>
-              </div> */}
               {loading ? (
                 <button className="focus:outline-none text-white bg-base flex justify-center items-center hover:bg-red-600 focus:ring focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-3 me-2 mb-2 mt-6 w-full">
                   <div className="flex gap-x-3 items-center">

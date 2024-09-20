@@ -153,7 +153,7 @@ export default function ContentOfTeam({
             <>
               {teams.map((x, i) => (
                 <div key={i} className="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row w-full hover:bg-gray-100 ">
-                  <Image className="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-full border-2 border-black m-5" width={200} height={100} src={x.logo as string} alt={x.name} />
+                  <Image unoptimized quality={100} className="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-full border-2 border-black m-5" width={200} height={100} src={x.logo as string} alt={x.name} />
                   <div className="flex flex-col justify-between p-4 leading-normal w-full">
                     <h5 className=" text-2xl font-bold tracking-tight text-black">{x.name}</h5>
                     <h5 className="mb-2 text-sm font-medium tracking-tight text-black">
