@@ -10,5 +10,7 @@ export default async function Division() {
 
   const Owner = await prisma.user.findFirst({ where: { id: getOwner?.ownerId }, include: { _count: true } });
 
-  return <ContentOfTeam session={session!} teams={getTeams} Owner={Owner!} />;
+  const currentUser = await prisma.user.findFirst({ where: { id: session?.user?.id } });
+
+  return <ContentOfTeam currentUser={currentUser!} session={session!} teams={getTeams} Owner={Owner!} />;
 }

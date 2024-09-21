@@ -12,7 +12,7 @@ import useSWR from "swr";
 import { Prisma } from "@prisma/client";
 import { Session } from "next-auth";
 
-export default function Main({ userData, session }: { userData: Prisma.UserGetPayload<{}>[]; session: Session }) {
+export default function Main({ userData, session, currentUser }: { userData: Prisma.UserGetPayload<{}>[]; session: Session; currentUser: Prisma.UserGetPayload<{}> }) {
   const [searchInput, setSearchInput] = useState<string>("");
   const [selected, setSelected] = useState("All");
 
@@ -69,7 +69,7 @@ export default function Main({ userData, session }: { userData: Prisma.UserGetPa
       <div className="lg:w-5/12">
         <div className="grid grid-cols-1 gap-4">
           <div className="w-full bg-white rounded-3xl pb-6">
-            <Image src={banner} alt="banner" className="w-full" />
+            <Image src={currentUser.cover as string} unoptimized quality={100} width={100} height={100} alt="banner" className="w-full rounded-t-3xl" />
             <div className="rounded-full overflow-hidden -mt-8 relative w-[60px] h-[60px] ml-4">
               <Image src={session?.user?.image as string} height={60} width={60} alt="image" className="absolute" />
             </div>
@@ -131,7 +131,7 @@ export default function Main({ userData, session }: { userData: Prisma.UserGetPa
             <>
               {filteredUser.map((user, i) => (
                 <div key={i} id="container" className="w-full bg-slate-50 rounded-3xl pb-6 border border-slate-200">
-                  <Image src={banner} alt="banner" className="w-full" />
+                  <Image src={user.cover as string} unoptimized quality={100} width={100} height={100} alt="banner" className="w-full rounded-t-3xl" />
                   <div className="rounded-full overflow-hidden -mt-12 relative w-[60px] h-[60px] ml-4">
                     <Image src={user.photo_profile as string} height={60} width={60} alt="image" className="absolute" />
                   </div>

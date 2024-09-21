@@ -8,10 +8,13 @@ export default async function Partner() {
   const getUser = await prisma.user.findMany({
     where: { AND: [{ NOT: { role: "ADMIN" } }, { NOT: { role: "GURU" } }, { NOT: { id: session?.user?.id } }] },
   });
+  const getCurrentUser = await prisma.user.findFirst({
+    where: { id: session?.user?.id },
+  });
   return (
     <main className="min-h-screen bg-slate-100 py-36">
       <section>
-        <Main session={session!} userData={getUser} />
+        <Main currentUser={getCurrentUser!} session={session!} userData={getUser} />
       </section>
     </main>
   );
