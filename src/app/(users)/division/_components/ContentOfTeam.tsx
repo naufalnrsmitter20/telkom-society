@@ -25,10 +25,12 @@ export default function ContentOfTeam({
   teams,
   Owner,
   session,
+  currentUser,
 }: {
   teams: Prisma.TeamGetPayload<{ include: { _count: true; member: { include: { team: true; user: true } }; requests: true } }>[];
   Owner: Prisma.UserGetPayload<{ include: { _count: true } }>;
   session: Session;
+  currentUser: Prisma.UserGetPayload<{}>;
 }) {
   const [searchInput, setSearchInput] = useState<string>("");
   const [selected, setSelected] = useState("All");
@@ -87,7 +89,7 @@ export default function ContentOfTeam({
         <div className="lg:w-5/12">
           <div className="grid grid-cols-1 gap-4">
             <div className="w-full bg-white rounded-3xl pb-6">
-              <Image src={banner} alt="banner" className="w-full" />
+              <Image src={currentUser.cover as string} unoptimized quality={100} width={100} height={100} alt="banner" className="w-full rounded-t-3xl" />
               <div className="rounded-full overflow-hidden -mt-8 relative w-[60px] h-[60px] ml-4">
                 <Image src={session?.user?.image as string} height={60} width={60} alt="image" className="absolute" />
               </div>
