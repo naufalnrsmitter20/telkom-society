@@ -7,7 +7,6 @@ import { Prisma } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import Banner from "@/../public/img/banner_profile.png";
 
 export default function DetailProfilePartner({
   userData,
