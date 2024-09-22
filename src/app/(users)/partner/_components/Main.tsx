@@ -1,32 +1,25 @@
 "use client";
-import React, { ChangeEvent, use, useEffect, useState } from "react";
-import banner from "@/../public/img/banner ryo.png";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import Image from "next/image";
 import hipster from "@/../public/svg/hipsterP.png";
 import hustler from "@/../public/svg/hustlerP.svg";
 import hacker from "@/../public/svg/hackerP.png";
 import setting from "@/../public/svg/settingsP.png";
 import { LinkButton } from "@/app/components/utils/Button";
-import { fetcher } from "@/utils/server-action/Fetcher";
-import useSWR from "swr";
 import { Prisma } from "@prisma/client";
 import { Session } from "next-auth";
 
 export default function Main({ userData, session, currentUser }: { userData: Prisma.UserGetPayload<{}>[]; session: Session; currentUser: Prisma.UserGetPayload<{}> }) {
   const [searchInput, setSearchInput] = useState<string>("");
   const [selected, setSelected] = useState("All");
-
   const [filteredUser, setFilteredUser] = useState<Prisma.UserGetPayload<{}>[]>(userData);
 
   useEffect(() => {
     const filterUsers = () => {
       const filteredByName = userData.filter((userData: Prisma.UserGetPayload<{}>) => userData.name.toLowerCase().includes(searchInput.toLowerCase()));
-
       const finalFilteredUsers = selected === "All" ? filteredByName : filteredByName.filter((dataUser: Prisma.UserGetPayload<{}>) => dataUser.job === selected);
-
       setFilteredUser(finalFilteredUsers);
     };
-
     filterUsers();
   }, [searchInput, selected, userData]);
 
@@ -40,7 +33,6 @@ export default function Main({ userData, session, currentUser }: { userData: Pri
 
   return (
     <section className="max-w-full mx-auto xl:mx-48 md:flex  gap-x-4 px-4 xl:px-0">
-      {/* responsive */}
       <div className="block md:hidden mb-4">
         <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
           Search
@@ -64,7 +56,6 @@ export default function Main({ userData, session, currentUser }: { userData: Pri
           </button>
         </div>
       </div>
-      {/* responsive */}
 
       <div className="lg:w-5/12">
         <div className="grid grid-cols-1 gap-4">
@@ -102,6 +93,7 @@ export default function Main({ userData, session, currentUser }: { userData: Pri
           </div>
         </div>
       </div>
+
       <div className="w-full">
         <div className="md:block hidden">
           <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
@@ -126,6 +118,7 @@ export default function Main({ userData, session, currentUser }: { userData: Pri
             </button>
           </div>
         </div>
+
         {filteredUser.length != 0 ? (
           <div className="grid lg:grid-cols-2 grid-cols-1 gap-4 bg-white rounded-xl p-8 mt-4">
             <>
