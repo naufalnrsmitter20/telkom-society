@@ -53,13 +53,13 @@ export default function Navbar() {
                   ) : (
                     <div className="">
                       <div className="flex lg:gap-x-6 justify-end">
-                        <LinkButton variant="white" href="/profile/notification" className="group">
+                        <LinkButton variant="white" href="/profile/notification" className="group hidden sm:block">
                           <Bell />
                         </LinkButton>
-                        <FormButton type="button" variant="base" onClick={handleProf} withArrow className="md:flex hidden justify-center gap-x-2 py-2 px-4 ">
+                        <FormButton type="button" variant="base" onClick={handleProf} withArrow className="md:flex hidden justify-center gap-x-2 py-2 px-4">
                           <Image src={session?.user?.image as string} alt="user image" width={36} height={36} className="rounded-full" />
                         </FormButton>
-                        <button type="button" onClick={handleProf} className="mt-2 mr-3 flex md:hidden">
+                        <button type="button" onClick={handleProf} className="mt-2 mr-3 flex md:hidden ">
                           <Image src={session?.user?.image as string} alt="user image" width={36} height={36} className="rounded-full" />
                         </button>
                       </div>
@@ -81,7 +81,7 @@ export default function Navbar() {
             <button
               data-collapse-toggle="navbar-sticky"
               type="button"
-              className="inline-flex p-2 w-10 h-10 mb-2 lg:mb-0 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400"
+              className="inline-flex p-2 w-10 h-10 mb-2 lg:mb-0 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400"
               onClick={handleClick}
             >
               <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
@@ -91,7 +91,7 @@ export default function Navbar() {
 
             <div>
               {modal && (
-                <div className="flex mt-10 text-center md:hidden">
+                <div className="flex mt-10 text-center lg:hidden">
                   <ul className="fixed left-0 mt-4 w-screen border-y bg-white border-slate-300 bg-primary-1000 py-14 space-y-14">
                     <li>
                       <Link onClick={redirectPage} href="/" className={`${pathName === "/" ? "text-red-400" : "text-black"} rounded md:bg-transparent hover:text-red-600`}>
@@ -135,7 +135,7 @@ export default function Navbar() {
               )}
             </div>
           </div>
-          <div className="items-center justify-between hidden w-full xl:flex md:w-auto md:order-1" id="navbar-sticky">
+          <div className="items-center justify-between hidden w-full lg:flex md:w-auto md:order-1" id="navbar-sticky">
             <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 opacity-80">
               <li>
                 <Link onClick={redirectPage} href="/" className={`${pathName === "/" ? "text-red-400" : "text-black"} rounded md:bg-transparent hover:text-red-600 duration-500`}>
