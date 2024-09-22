@@ -46,7 +46,7 @@ export default function InformasiPilihan() {
       </div>
       <div className="w-full max-w-full mb-5">
         <h1 className="text-[25px] font-medium mx-auto">Sudah Paham? Jika sudah, silahkan kembali ke halaman pemilihan</h1>
-        <div className="px-80">
+        <div className="lg:px-80">
           <LinkButton href="/pilihKeahlian" variant="base" className="w-full mt-8">
             <p className="mx-auto">Halaman Pemilihan</p>
           </LinkButton>
