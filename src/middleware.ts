@@ -2,7 +2,7 @@ import { getToken } from "next-auth/jwt";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
 export default async function middleware(req: NextRequest, res: NextResponse, next: NextFetchEvent) {
-  const requireAuthToken = ["/partner", "/profile", "/profile/edit", "/isiIdentitas", "/isiIdentitas/personalData", "/isiIdentitas/achievement", "/pilihKeahlian"];
+  const requireAuthToken = ["/partner", "/profile", "/profile/edit", "/division", "/isiIdentitas", "/isiIdentitas/personalData", "/isiIdentitas/achievement", "/pilihKeahlian"];
   const { pathname } = req.nextUrl;
 
   const token = await getToken({
@@ -30,5 +30,5 @@ export default async function middleware(req: NextRequest, res: NextResponse, ne
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/admin", "/partner", "/profile", "/profile/edit", "/isiIdentitas", "/isiIdentitas/personalData", "/isiIdentitas/achievement", "/pilihKeahlian"],
+  matcher: ["/admin/:path*", "/admin", "/division", "/partner", "/profile", "/profile/edit", "/isiIdentitas", "/isiIdentitas/personalData", "/isiIdentitas/achievement", "/pilihKeahlian"],
 };
