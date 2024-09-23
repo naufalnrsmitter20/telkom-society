@@ -124,7 +124,7 @@ export default function Main({ userData, session, currentUser }: { userData: Pri
             <>
               {filteredUser.map((user, i) => (
                 <div key={i} id="container" className="w-full bg-slate-50 rounded-3xl pb-6 border border-slate-200">
-                  <Image src={user.cover as string} unoptimized quality={100} width={100} height={100} alt="banner" className="w-full rounded-t-3xl" />
+                  <Image src={user.cover as string} unoptimized quality={100} width={100} height={100} alt="banner" className="w-full h-36 rounded-t-3xl" />
                   <div className="rounded-full overflow-hidden -mt-12 relative w-[60px] h-[60px] ml-4">
                     <Image src={user.photo_profile as string} height={60} width={60} alt="image" className="absolute" />
                   </div>

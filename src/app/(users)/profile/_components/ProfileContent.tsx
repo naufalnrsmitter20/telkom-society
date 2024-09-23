@@ -63,7 +63,6 @@ export default function ContentProfile({ userData, session }: { userData: userFu
     }
   };
   const currentTeam = userData.Team.find((x) => x.userId === session.user?.id) || null;
-  console.log(userData.cover);
 
   return (
     <div className="bg-slate-100 p-0 pt-8 md:pt-10 lg:pt-10 sm:p-5 md:p-10 lg:p-15 xl:p-20">
