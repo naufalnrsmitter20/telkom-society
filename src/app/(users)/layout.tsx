@@ -34,6 +34,7 @@ export const metadata: Metadata = {
       url: "#",
     },
   ],
+  keywords: ["SMK Telkom Malang", "Telkom Society", "Find the Best Team", "Hipster", "Hustler", "Hacker", "Telkom Schools", "Create Team", "Find Partner", "Competition"],
 };
 
 export default function RootLayout({

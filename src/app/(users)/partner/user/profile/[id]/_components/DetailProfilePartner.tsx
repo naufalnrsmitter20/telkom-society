@@ -63,11 +63,11 @@ export default function DetailProfilePartner({
 
           <div className="relative z-10 flex flex-col items-start mt-8">
             <h2 className="font-normal text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl mb-4">Skill</h2>
-            <div className="flex flex-wrap justify-start gap-x-4 gap-y-2 mb-8 mt-4">
+            <div className="flex flex-wrap justify-start gap-x-4 gap-y-4 mb-8 mt-4">
               {userData && userData?.Skills.length != 0 ? (
                 <>
                   {userData?.Skills.map((skill, i) => (
-                    <div key={i} className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl px-4 py-2 bg-red-500 text-white rounded-full">
+                    <div key={i} className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl px-4 py-2 bg-red-500 text-white rounded-[8px]">
                       {skill.SkillName}
                     </div>
                   ))}
@@ -84,10 +84,10 @@ export default function DetailProfilePartner({
             <h2 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal mb-4">Project</h2>
             <ul className="space-y-2">
               {userData && userData?.projects.length !== 0 ? (
-                <div className="flex gap-x-3">
+                <div className="flex gap-4 flex-wrap">
                   {userData?.projects.map((x, i) => (
                     <div key={i}>
-                      <div className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl px-6 py-2 bg-red-500 text-white rounded-full flex  items-center gap-x-3">
+                      <div className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl px-6 py-2 bg-red-500 text-white rounded-[8px] flex  items-center gap-x-3">
                         <p className="font-medium text-lg">{x.ProjeectName}</p>
                         <Link href={x.link as string} target="_blank">
                           <svg className="w-6 h-6 text-white " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -132,7 +132,7 @@ export default function DetailProfilePartner({
                       <Link href={`/partner/user/profile/${x.userId}`} className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800 hover:text-highlight">
                         {i + 1}. {x.user.name} - {x.user.job} {" ( "}
                         <span className={`${x.user.Team.find((x) => x.userId === userId)?.role == "OWNER" ? "text-[#F45846]" : "text-black"} font-semibold`}>
-                          {x.user.Team.find((x) => x.userId === userId)?.role ? "MEMBER" : "OWNER"}
+                          {x.user.Team.find((x) => x.userId === userId)?.role ? "OWNER" : "MEMBER"}
                         </span>{" "}
                         {" ) "}
                       </Link>

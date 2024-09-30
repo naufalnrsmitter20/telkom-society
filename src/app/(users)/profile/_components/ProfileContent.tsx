@@ -78,11 +78,11 @@ export default function ContentProfile({ userData, session }: { userData: userFu
             className="w-full md:h-full h-28 object-cover"
           />
         </div>
-        <FormButton variant="base" className="absolute top-8 right-10" onClick={() => setCover(true)}>
-          Edit Cover
-        </FormButton>
         {cover && <ModalEditCover setIsOpenModal={setCover} />}
         <div className="relative z-10 flex flex-col items-start md:mt-44 lg:mt-32 xl:mt-28">
+          <FormButton variant="base" className="absolute top-0 right-0 z-10" onClick={() => setCover(true)}>
+            Edit Cover
+          </FormButton>
           <div className="w-32 h-32 sm:w-24 md:w-32 flex place-items-center lg:w-36 xl:w-40 sm:h-24 md:h-32 lg:h-36 xl:h-40 rounded-full bg-gray-300 mb-4 overflow-hidden">
             <Image src={session?.user?.image as string} alt="Image Profile" width={180} height={180} className="mx-auto" />
           </div>
@@ -129,10 +129,10 @@ export default function ContentProfile({ userData, session }: { userData: userFu
         <div className="relative z-10 flex flex-col items-start mt-8">
           <h2 className="font-normal text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl mb-4">Skill</h2>
           <div className="flex flex-wrap justify-start gap-x-4 gap-y-2 mb-8 mt-4">
-            {userData && userData?.Skills.length != 0 ? (
+            {userData && userData?.Skills.length > 0 ? (
               <>
                 {userData?.Skills.map((skill, i) => (
-                  <div key={i} className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl px-4 py-2 bg-red-500 text-white rounded-full">
+                  <div key={i} className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl px-4 py-2 bg-red-500 text-white rounded-[8px]">
                     {skill.SkillName}
                   </div>
                 ))}
@@ -154,10 +154,10 @@ export default function ContentProfile({ userData, session }: { userData: userFu
           <h2 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal mb-4">My Project</h2>
           <ul className="space-y-2">
             {userData && userData?.projects.length !== 0 ? (
-              <div className="flex gap-x-3">
+              <div className="flex gap-3 flex-wrap">
                 {userData?.projects.map((x, i) => (
                   <div key={i}>
-                    <div className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl px-6 py-2 bg-red-500 text-white rounded-full flex  items-center gap-x-3">
+                    <div className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl px-6 py-2 bg-red-500 text-white rounded-[8px] flex  items-center gap-x-3">
                       <p className="font-medium text-lg">{x.ProjeectName}</p>
                       <Link href={x.link as string} target="_blank">
                         <svg className="w-6 h-6 text-white " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">

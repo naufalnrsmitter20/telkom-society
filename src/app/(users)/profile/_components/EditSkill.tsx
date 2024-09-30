@@ -29,7 +29,6 @@ export default function EditSkill({ onClose, userData, session }: { onClose: () 
   const removeSkill = (index: number) => {
     setSkills(skills.filter((_, i) => i !== index));
   };
-  console.log(removeSkill);
 
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();

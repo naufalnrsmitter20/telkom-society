@@ -18,7 +18,7 @@ export default function EditProject({ onClose, userData, session }: { onClose: (
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const addProject = () => {
-    const exixtingProject = project?.find((p) => p.ProjeectName.trim().toLowerCase() === currentProject.ProjeectName?.trim().toLowerCase() || p.link?.trim().toLowerCase() === currentProject.link?.trim().toLowerCase());
+    const exixtingProject = project?.find((p) => p.ProjeectName.trim().toLowerCase() === currentProject.ProjeectName?.trim().toLowerCase());
     if (exixtingProject) {
       toast.error("Project Sudah Ada!");
       return;
@@ -100,7 +100,7 @@ export default function EditProject({ onClose, userData, session }: { onClose: (
                   </svg>
                 </Link>
               </div>
-              <button type="button" onClick={() => removeProject(i)} className="z-10 w-full">
+              <button type="button" onClick={() => removeProject(i)} className="z-10">
                 <XIcon />
               </button>
             </div>

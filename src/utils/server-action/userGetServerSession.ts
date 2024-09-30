@@ -5,7 +5,6 @@ import prisma from "@/lib/prisma";
 import { createUser, findUser, updateUser } from "../user.query";
 import { revalidatePath } from "next/cache";
 import { nextGetServerSession } from "@/lib/authOption";
-import { GetServerSideProps } from "next";
 import { hash } from "bcrypt";
 // import { getImage } from "../formidable";
 

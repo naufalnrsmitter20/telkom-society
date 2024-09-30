@@ -103,6 +103,7 @@ export const authOptions: AuthOptions = {
         // if (account?.provider === "google" && !profile?.email?.endsWith("smktelkom-mlg.sch.id")) {
         //   return false;
         // }
+        const match = user.email?.match(/\d+/);
 
         if (user.email) {
           const userDatabase = await findUser({ email: user.email });
@@ -114,6 +115,7 @@ export const authOptions: AuthOptions = {
               job: "Undefined",
               role: user.email.includes("smktelkom-mlg.sch.id") ? (user.email.includes("student") ? "SISWA" : "GURU") : "SISWA",
               cover: "https://res.cloudinary.com/dhjeoo1pm/image/upload/v1726727429/mdhydandphi4efwa7kte.png",
+              generation: user.email.includes("smktelkom-mlg.sch.id") ? (match ? match[0] : "0") : "0",
               userAuth: {
                 create: {
                   last_login: new Date(),
@@ -122,7 +124,11 @@ export const authOptions: AuthOptions = {
               schoolOrigin: user.email.endsWith("smktelkom-mlg.sch.id") ? "SMK Telkom Malang" : "Sekolah Tidak Terdaftar",
             });
             revalidatePath("/partner");
+            revalidatePath("/division/create");
             revalidatePath("/api/data");
+            revalidatePath("/");
+            revalidatePath("/admin");
+            revalidatePath("/isiIdentitas/personalData");
           }
         }
         return true;

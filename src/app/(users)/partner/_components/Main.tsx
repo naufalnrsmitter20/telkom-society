@@ -13,6 +13,8 @@ export default function Main({ userData, session, currentUser }: { userData: Pri
   const [searchInput, setSearchInput] = useState<string>("");
   const [selected, setSelected] = useState("All");
   const [filteredUser, setFilteredUser] = useState<Prisma.UserGetPayload<{}>[]>(userData);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage] = useState<number>(20);
 
   useEffect(() => {
     const filterUsers = () => {
@@ -29,6 +31,16 @@ export default function Main({ userData, session, currentUser }: { userData: Pri
 
   const handleButtonFilter = (data: string) => {
     setSelected(data);
+    setCurrentPage(1);
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentUsers = filteredUser.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredUser.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
@@ -119,12 +131,12 @@ export default function Main({ userData, session, currentUser }: { userData: Pri
           </div>
         </div>
 
-        {filteredUser.length != 0 ? (
+        {currentUsers.length != 0 ? (
           <div className="grid lg:grid-cols-2 grid-cols-1 gap-4 bg-white rounded-xl p-8 mt-4">
             <>
-              {filteredUser.map((user, i) => (
+              {currentUsers.map((user, i) => (
                 <div key={i} id="container" className="w-full bg-slate-50 rounded-3xl pb-6 border border-slate-200">
-                  <Image src={user.cover as string} unoptimized quality={100} width={100} height={100} alt="banner" className="w-full h-36 rounded-t-3xl" />
+                  <Image src={user.cover as string} unoptimized quality={100} width={100} height={100} alt="banner" className="w-full h-36 rounded-t-3xl object-cover object-top" />
                   <div className="rounded-full overflow-hidden -mt-12 relative w-[60px] h-[60px] ml-4">
                     <Image src={user.photo_profile as string} height={60} width={60} alt="image" className="absolute" />
                   </div>
@@ -150,6 +162,15 @@ export default function Main({ userData, session, currentUser }: { userData: Pri
         ) : (
           <div className="bg-white px-2 py-10">
             <h1 className="text-center text-[20px] mx-auto">Oops! Data Tidak Ditemukan</h1>
+          </div>
+        )}
+        {filteredUser.length > itemsPerPage && (
+          <div className="flex justify-center mt-4 space-x-2">
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button key={index} className={`px-3 py-1 rounded ${currentPage === index + 1 ? "bg-red-500 text-white" : "bg-gray-200"}`} onClick={() => handlePageChange(index + 1)}>
+                {index + 1}
+              </button>
+            ))}
           </div>
         )}
       </div>
