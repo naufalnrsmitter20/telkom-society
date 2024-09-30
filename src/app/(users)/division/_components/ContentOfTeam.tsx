@@ -34,18 +34,17 @@ export default function ContentOfTeam({
 }) {
   const [searchInput, setSearchInput] = useState<string>("");
   const [selected, setSelected] = useState("All");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage] = useState<number>(10);
 
   const [filteredUser, setFilteredUser] = useState<Prisma.TeamGetPayload<{ include: { _count: true; member: { include: { team: true; user: true } }; requests: true } }>[]>(teams);
 
   useEffect(() => {
     const filterUsers = () => {
       const filteredByName = teams.filter((team: Prisma.TeamGetPayload<{ include: { _count: true; member: { include: { team: true; user: true } }; requests: true } }>) => team.name.toLowerCase().includes(searchInput.toLowerCase()));
-
       const finalFilteredUsers = selected === "All" ? filteredByName : filteredByName.filter((teams: Prisma.TeamGetPayload<{}>) => teams.ownerId === selected);
-
       setFilteredUser(finalFilteredUsers);
     };
-
     filterUsers();
   }, [searchInput, selected, teams]);
 
@@ -55,6 +54,16 @@ export default function ContentOfTeam({
 
   const handleButtonFilter = (data: string) => {
     setSelected(data);
+    setCurrentPage(1);
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentTeams = filteredUser.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredUser.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
   };
 
   const availableJobs = ["Hacker", "Hipster", "Hustler"];
@@ -148,9 +157,9 @@ export default function ContentOfTeam({
 
           <div className="grid grid-cols-1 bg-white rounded-xl gap-y-4 w-full">
             <>
-              {filteredUser.map((x, i) => (
+              {currentTeams.map((x, i) => (
                 <div key={i} className="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row w-full hover:bg-gray-100 ">
-                  <Image unoptimized quality={100} className="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-full border-2 border-black m-5" width={200} height={100} src={x.logo as string} alt={x.name} />
+                  <Image unoptimized quality={100} className="object-cover w-full rounded-lg h-96 md:h-auto md:w-48 m-5" width={200} height={100} src={x.logo as string} alt={x.name} />
                   <div className="flex flex-col justify-between p-4 leading-normal w-full">
                     <h5 className=" text-2xl font-bold tracking-tight text-black">{x.name}</h5>
                     <h5 className="mb-2 text-sm font-medium tracking-tight text-black">
@@ -175,6 +184,15 @@ export default function ContentOfTeam({
                 </div>
               ))}
             </>
+            {filteredUser.length > itemsPerPage && (
+              <div className="flex justify-center mt-4 space-x-2">
+                {Array.from({ length: totalPages }, (_, index) => (
+                  <button key={index} className={`px-3 py-1 rounded ${currentPage === index + 1 ? "bg-red-500 text-white" : "bg-gray-200"}`} onClick={() => handlePageChange(index + 1)}>
+                    {index + 1}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>

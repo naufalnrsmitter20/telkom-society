@@ -7,7 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prisma:push": "dotenv -e .env.local prisma db push"
+    "prisma:push": "dotenv -e .env.local prisma db push",
+    "seed": "node --loader ts-node/esm ./prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "node --loader ts-node/esm ./prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.19.1",
@@ -36,7 +40,7 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^20.16.6",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
@@ -45,6 +49,7 @@
     "postcss": "^8",
     "prisma": "^5.19.1",
     "tailwindcss": "^3.3.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }

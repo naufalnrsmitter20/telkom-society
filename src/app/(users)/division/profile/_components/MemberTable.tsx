@@ -34,7 +34,7 @@ export default function MemberTable({
         <div className="my-6">
           <h2 className="text-xl font-semibold mb-3">Owner</h2>
           <div className="flex items-center gap-x-6">
-            <Image src={teamOwner.user.photo_profile as string} width={42} height={42} className="rounded-full" alt={teamOwner.user.name} />
+            <Image src={(teamOwner?.user?.photo_profile as string) || "https://res.cloudinary.com/mokletorg/image/upload/f_auto,q_auto/user"} width={42} height={42} className="rounded-full" alt={teamOwner.user.name} />
 
             <p className={clsx("text-sm sm:text-sm mt-1 md:text-sm lg:text-[16px] xl:text-[16px] text-black md:text-black lg:text-black font-semibold")}>{teamOwner.user.name}</p>
             <p className={clsx("text-sm sm:text-sm mt-1 md:text-sm lg:text-[16px] xl:text-[16px] text-black md:text-black lg:text-black font-semibold")}>{teamOwner.user.job}</p>
@@ -113,11 +113,13 @@ export default function MemberTable({
                               {x.status !== "PENDING" ? <p className="text-[16px] text-green-400 font-medium w-full">{x.status} Invitation</p> : <p className="text-[16px] text-red-400 font-medium "> {x.status} Invitation</p>}
                               <CancelInvite title="delete" reqId={x.id} />
                             </td>
-                          ) : (
+                          ) : session.user?.id === teamOwner.userId ? (
                             <td className="flex w-1/3 space-x-4">
                               <Accept reqId={x.id} teamId={x.teamId} />
                               <Decline reqId={x.id} teamId={x.teamId} />
                             </td>
+                          ) : (
+                            <td className="flex w-1/3 space-x-4"></td>
                           )}
                         </>
                       )}

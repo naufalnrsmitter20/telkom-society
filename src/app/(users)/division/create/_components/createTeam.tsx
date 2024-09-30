@@ -36,7 +36,7 @@ export default function CreatePage({ user }: { user: Prisma.UserGetPayload<{}>[]
     <main className="flex w-full min-h-screen flex-col">
       <h1 className="text-[48px] font-bold opacity-60 text-center mt-32 mb-12">Create Division</h1>
       <form onSubmit={HandleSubmit}>
-        <div className="grid grid-cols-2 max-w-screen-2xl w-full gap-x-[80px] mx-auto">
+        <div className="grid grid-cols-1 px-6 lg:px-0 lg:grid-cols-2 max-w-screen-2xl w-full gap-x-[80px] mx-auto">
           <div>
             <TextField name="name" placeholder="Insert division name" label="Division Name" type="text" />
             <TextArea name="description" label="Division Description" placeholder="Division Description" />
@@ -47,9 +47,9 @@ export default function CreatePage({ user }: { user: Prisma.UserGetPayload<{}>[]
             <DropDown
               name="mentor"
               label="Mentor"
-              options={user.map((x, i) => ({
-                label: x.name,
-                value: x.name,
+              options={mentor.map((x, i) => ({
+                label: x,
+                value: x,
               }))}
             />
 

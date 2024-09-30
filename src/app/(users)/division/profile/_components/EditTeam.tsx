@@ -4,7 +4,6 @@ import { DropDown, TextArea, TextField } from "@/app/components/utils/Form";
 import ModalProfile from "@/app/components/utils/Modal";
 import { mentor } from "@/types/mentor";
 import { UpdateTeam } from "@/utils/server-action/teamsActions";
-import { UpdateTeamLogo } from "@/utils/server-action/uploadCover";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useState } from "react";
@@ -41,8 +40,8 @@ export default function EditTeam({ onClose, teamId, data }: { onClose: () => voi
             label="Mentor"
             defaultValue={data?.mentor}
             options={mentor.map((x, i) => ({
-              label: x.name,
-              value: x.name,
+              label: x,
+              value: x,
             }))}
           />
           <TextField defaultValue={data?.instagram} name="instagram" label="Instagram (link)" type="text" />
