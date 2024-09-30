@@ -4,6 +4,6 @@ import prisma from "@/lib/prisma";
 
 export default async function page() {
   const users = await prisma.user.findMany();
-  const teams = await prisma.team.findMany();
+  const teams = await prisma.team.findMany({ where: { teamStatus: "ACTIVE" } });
   return <Home teams={teams} users={users} />;
 }
