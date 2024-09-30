@@ -98,7 +98,7 @@ export default function ContentOfTeam({
         <div className="lg:w-5/12">
           <div className="grid grid-cols-1 gap-4">
             <div className="w-full bg-white rounded-3xl pb-6">
-              <Image src={(currentUser?.cover as string) || ""} unoptimized quality={100} width={100} height={100} alt="banner" className="w-full rounded-t-3xl" />
+              <Image src={(currentUser?.cover as string) || ""} unoptimized quality={100} width={100} height={100} alt="banner" className="w-full rounded-t-3xl h-36 object-cover object-top" />
               <div className="rounded-full overflow-hidden -mt-8 relative w-[60px] h-[60px] ml-4">
                 <Image src={(session?.user?.image as string) || ""} height={60} width={60} alt="image" className="absolute" />
               </div>
