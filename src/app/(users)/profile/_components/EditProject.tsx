@@ -9,7 +9,7 @@ import { UpdateUserProjectById } from "@/utils/server-action/userGetServerSessio
 import { Project } from "@prisma/client";
 import { Session } from "next-auth";
 import Link from "next/link";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function EditProject({ onClose, userData, session }: { onClose: () => void; userData: userFullPayload; session: Session }) {
