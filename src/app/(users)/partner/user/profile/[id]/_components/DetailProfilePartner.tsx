@@ -3,6 +3,7 @@ import InstagramIcons from "@/app/components/Icons/InstagramIcons";
 import LinkedinIcon from "@/app/components/Icons/LinkedinIcon";
 import RedirectArrow from "@/app/components/Icons/RedirectArrow";
 import WhatsappIcons from "@/app/components/Icons/WhatsappIcons";
+import { formatPhoneNumber } from "@/utils/formatPhone";
 import { Prisma } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -166,8 +167,8 @@ export default function DetailProfilePartner({
                 </li>
                 <li className="flex items-center gap-x-3">
                   <WhatsappIcons />
-                  <p className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800">wa.me/{userData?.whatsapp}</p>
-                  <Link href={`https://wa.me/${userData?.whatsapp}`} target="_blank">
+                  <p className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800">wa.me/{formatPhoneNumber(userData?.whatsapp as string)}</p>
+                  <Link href={`https://wa.me/${formatPhoneNumber(userData?.whatsapp as string)}`} target="_blank">
                     <RedirectArrow />
                   </Link>
                 </li>

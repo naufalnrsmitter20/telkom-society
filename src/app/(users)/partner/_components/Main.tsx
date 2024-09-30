@@ -8,6 +8,7 @@ import setting from "@/../public/svg/settingsP.png";
 import { LinkButton } from "@/app/components/utils/Button";
 import { Prisma } from "@prisma/client";
 import { Session } from "next-auth";
+import { formatPhoneNumber } from "@/utils/formatPhone";
 
 export default function Main({ userData, session, currentUser }: { userData: Prisma.UserGetPayload<{}>[]; session: Session; currentUser: Prisma.UserGetPayload<{}> }) {
   const [searchInput, setSearchInput] = useState<string>("");
@@ -134,7 +135,7 @@ export default function Main({ userData, session, currentUser }: { userData: Pri
         {currentUsers.length != 0 ? (
           <div className="grid lg:grid-cols-2 grid-cols-1 gap-4 bg-white rounded-xl p-8 mt-4">
             <>
-              {currentUsers.map((user, i) => (
+              {currentUsers?.map((user, i) => (
                 <div key={i} id="container" className="w-full bg-slate-50 rounded-3xl pb-6 border border-slate-200">
                   <Image src={user.cover as string} unoptimized quality={100} width={100} height={100} alt="banner" className="w-full rounded-t-3xl h-36 object-cover object-top" />
                   <div className="rounded-full overflow-hidden -mt-12 relative w-[60px] h-[60px] ml-4">
@@ -150,7 +151,7 @@ export default function Main({ userData, session, currentUser }: { userData: Pri
                       <LinkButton variant="white" href={`/partner/user/profile/${user.id}`} className="bg-transparent border rounded-full">
                         Profil
                       </LinkButton>
-                      <LinkButton variant="white" href={`https://wa.me/${user.whatsapp}`} target="_blank" className="bg-transparent border rounded-full">
+                      <LinkButton variant="white" href={`https://wa.me/${formatPhoneNumber(user?.whatsapp as string)}`} target="_blank" className="bg-transparent border rounded-full">
                         Chat
                       </LinkButton>
                     </div>
