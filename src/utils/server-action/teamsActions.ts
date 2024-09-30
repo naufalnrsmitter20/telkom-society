@@ -45,6 +45,8 @@ export const CreateTeam = async (data: FormData) => {
       throw new Error("Gagal Membuat Tim!");
     }
     revalidatePath("/division/profile");
+    revalidatePath("/");
+    revalidatePath("/admin");
     return CreateTeam;
   } catch (error) {
     console.log(error as Error);
@@ -94,6 +96,8 @@ export const UpdateTeam = async (id: string, data: FormData) => {
         throw new Error("Gagal Membuat Tim!");
       }
       revalidatePath("/division/profile");
+      revalidatePath("/");
+      revalidatePath("/admin");
     }
   } catch (error) {
     console.log(error as Error);

@@ -22,6 +22,7 @@ import EditSkill from "./EditSkill";
 import EditProject from "./EditProject";
 import { Session } from "next-auth";
 import ModalEditCover from "./ModalEditCover";
+import { formatPhoneNumber } from "@/utils/formatPhone";
 
 export default function ContentProfile({ userData, session }: { userData: userFullPayload; session: Session }) {
   const [selectedOccupation, setSelectedOccupation] = useState<string | null>(null);
@@ -232,8 +233,8 @@ export default function ContentProfile({ userData, session }: { userData: userFu
               </li>
               <li className="flex items-center gap-x-3">
                 <WhatsappIcons />
-                <p className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800">wa.me/{userData?.whatsapp}</p>
-                <Link href={`https://wa.me/${userData?.whatsapp}`} target="_blank">
+                <p className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800">wa.me/{formatPhoneNumber(userData?.whatsapp as string)}</p>
+                <Link href={`https://wa.me/${formatPhoneNumber(userData?.whatsapp as string)}`} target="_blank">
                   <RedirectArrow />
                 </Link>
               </li>
@@ -264,7 +265,7 @@ export default function ContentProfile({ userData, session }: { userData: userFu
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3">
               <TextField type="text" label="Class" name="clasess" defaultValue={userData?.clasess as string} />
               <TextField type="text" label="Absent" name="absent" defaultValue={userData?.absent as string} />
-              <TextField type="text" label="Phone" name="Phone" defaultValue={userData?.Phone as string} />
+              {/* <TextField type="text" label="Phone" name="Phone" defaultValue={userData?.Phone as string} /> */}
               <TextField type="date" label="Birth Date" name="BirthDate" defaultValue={userData?.BirthDate as string} />
               <TextField type="text" label="NIS" name="NIS" defaultValue={userData?.NIS as string} />
               <TextField type="text" label="NISN" name="NISN" defaultValue={userData?.NISN as string} />
