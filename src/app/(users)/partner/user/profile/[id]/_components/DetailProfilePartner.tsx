@@ -131,11 +131,7 @@ export default function DetailProfilePartner({
                   currentTeam.team.member.map((x, i) => (
                     <li key={i}>
                       <Link href={`/partner/user/profile/${x.userId}`} className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800 hover:text-highlight">
-                        {i + 1}. {x.user.name} - {x.user.job} {" ( "}
-                        <span className={`${x.user.Team.find((x) => x.userId === userId)?.role == "OWNER" ? "text-[#F45846]" : "text-black"} font-semibold`}>
-                          {x.user.Team.find((x) => x.userId === userId)?.role ? "OWNER" : "MEMBER"}
-                        </span>{" "}
-                        {" ) "}
+                        {i + 1}. {x.user.name} - {x.user.job}
                       </Link>
                     </li>
                   ))
