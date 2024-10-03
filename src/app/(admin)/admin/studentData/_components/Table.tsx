@@ -73,7 +73,7 @@ export default function Table({ studentData }: { studentData: Prisma.UserGetPayl
         <div className="flex justify-end items-center">
           <AddStudent />
         </div>
-        <div className="w-full border-b-2 border-black "></div>
+        <div className="w-full border-b-2 border-gray-300"></div>
         <div className="mt-6">
           <DataTable data={studentData} columns={columns} />
         </div>

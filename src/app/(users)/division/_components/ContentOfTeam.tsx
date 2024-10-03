@@ -158,7 +158,7 @@ export default function ContentOfTeam({
           <div className="grid grid-cols-1 bg-white rounded-xl gap-y-4 w-full">
             <>
               {currentTeams.map((x, i) => (
-                <div key={i} className="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row w-full hover:bg-gray-100 ">
+                <div key={i} className="flex flex-col items-start bg-white border border-gray-200 rounded-lg shadow md:flex-row w-full hover:bg-gray-100 ">
                   <Image unoptimized quality={100} className="object-cover w-full rounded-lg h-96 md:h-auto md:w-48 m-5" width={200} height={100} src={x.logo as string} alt={x.name} />
                   <div className="flex flex-col justify-between p-4 leading-normal w-full">
                     <h5 className=" text-2xl font-bold tracking-tight text-black">{x.name}</h5>
@@ -166,7 +166,6 @@ export default function ContentOfTeam({
                       Create by <span className="font-semibold">{x.ownerId === session?.user?.id ? "You" : x.member.find((y) => y.role === "OWNER")?.user.name}</span>
                     </h5>
                     <h5 className="mb-2 text-[1rem] font-semibold tracking-tight text-green-400">
-                      {/* Existing Job <span className="font-semibold">{x.member.map((n) => n.user.job.concat(", "))}</span> */}
                       Available Job : <span className="font-semibold text-black">{availableJobs.filter((job) => !x.member.some((member) => member.user.job === job)).join(" & ")}</span>
                     </h5>
                     <h5 className="text-xl font-semibold tracking-tight text-black">Jumlah Anggota : {x._count.member}</h5>

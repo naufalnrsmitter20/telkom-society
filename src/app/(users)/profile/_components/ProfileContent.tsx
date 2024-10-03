@@ -76,7 +76,7 @@ export default function ContentProfile({ userData, session }: { userData: userFu
             width={100}
             height={1000}
             alt="banner profile"
-            className="w-full md:h-full h-28 object-cover"
+            className="w-full md:h-full h-28 object-cover object-top"
           />
         </div>
         {cover && <ModalEditCover setIsOpenModal={setCover} />}

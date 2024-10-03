@@ -36,6 +36,7 @@ export const authOptions: AuthOptions = {
   session: {
     strategy: "jwt",
   },
+  jwt: { maxAge: 60 * 60 * 24 * 7 },
   pages: {
     signIn: "/signin",
     error: "/AccessDenied",

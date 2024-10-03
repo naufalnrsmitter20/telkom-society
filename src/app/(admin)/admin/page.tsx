@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import AdminHeaders from "./components/main/AdminHeaders";
 import { findAllUsers } from "@/utils/user.query";
-import { Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import TableUser from "./components/main/TableUser";
-import { FormButton } from "@/app/components/utils/Button";
-import Table from "./studentData/_components/Table";
 
 interface cardProps {
   title: string;
@@ -15,7 +12,7 @@ interface cardProps {
 
 export default async function AdminPage() {
   const dataUser = await findAllUsers({
-    AND: [{ NOT: { role: "ADMIN" } }, { NOT: { role: "GURU" } }],
+    AND: [{ NOT: { role: "ADMIN" } }, { NOT: { role: "GURU" } }, { NOT: { job: "Undefined" } }],
   });
   const dataGuru = await findAllUsers({
     AND: [{ NOT: { role: "SISWA" } }, { NOT: { role: "ADMIN" } }],
@@ -26,7 +23,11 @@ export default async function AdminPage() {
     },
     include: { userAuth: true },
   });
-  const dataTim = await prisma.team.findMany();
+  const dataTim = await prisma.team.findMany({
+    where: {
+      NOT: { teamStatus: "DELETED" },
+    },
+  });
 
   const CardItem: cardProps[] = [
     {
@@ -70,8 +71,6 @@ export default async function AdminPage() {
         </section>
       </section>
       <TableUser dataAdmin={dataAdmin} />
-
-      {/* <button className="w-[100px] h-[100px] text-white text-lg font-medium text-center items-center flex justify-center rounded-full fixed z-[10000] right-10 bottom-10 bg-[#F45846]"> add </button> */}
     </div>
   );
 }

@@ -23,7 +23,7 @@ export default function DetailProfilePartner({
       <div className="bg-slate-100 p-0 sm:p-5 md:p-10 lg:p-15 xl:p-20">
         <div className="mt-24 bg-white md:rounded-3xl p-10 sm:p-10 md:p-15 lg:p-20 xl:p-24 relative overflow-hidden">
           <div className="absolute inset-0 z-0 h-72">
-            <Image src={userData.cover as string} width={100} height={100} quality={100} unoptimized alt="banner profile" className="w-full md:h-full h-28 object-cover" />
+            <Image src={userData.cover as string} width={100} height={100} quality={100} unoptimized alt="banner profile" className="w-full md:h-full h-28 object-cover object-top" />
           </div>
           <div className="relative z-10 flex flex-col items-start md:mt-44 lg:mt-32 xl:mt-28">
             <div className="w-32 h-32 sm:w-24 md:w-32 flex place-items-center lg:w-36 xl:w-40 sm:h-24 md:h-32 lg:h-36 xl:h-40 rounded-full bg-gray-300 mb-4 overflow-hidden">

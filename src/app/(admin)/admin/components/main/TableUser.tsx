@@ -78,7 +78,7 @@ export default function TableUser({ dataAdmin }: { dataAdmin: Prisma.UserGetPayl
             <h5 className="text-[40px] font-bold mx-5 text-[#F45846]">Admin</h5>
             <AddUser />
           </div>
-          <div className="w-full border-b-2 border-black "></div>
+          <div className="w-full border-b-2 border-gray-300"></div>
           <div className="mt-6">
             <DataTable data={dataAdmin} columns={columns} />
           </div>
