@@ -2,15 +2,13 @@
 import { DropDown, TextArea, TextField } from "@/app/components/utils/Form";
 import { FormButton, LinkButton } from "@/app/components/utils/Button";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Prisma, Religion } from "@prisma/client";
 import { mentor } from "@/types/mentor";
 import { ChangeEvent, useState } from "react";
 import { CreateTeam } from "@/utils/server-action/teamsActions";
 import toast from "react-hot-toast";
 import Image from "next/image";
 
-export default function CreatePage({ user }: { user: Prisma.UserGetPayload<{}>[] }) {
+export default function CreatePage() {
   const router = useRouter();
   const [logo, setLogo] = useState("");
 

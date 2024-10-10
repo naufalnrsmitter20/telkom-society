@@ -4,6 +4,7 @@ import { findAllUsers, updateUser, updateUserAuth } from "@/utils/user.query";
 import { Prisma, Role } from "@prisma/client";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import React from "react";
 
 export default async function App() {
   // const [formData, setFormData] = useState({

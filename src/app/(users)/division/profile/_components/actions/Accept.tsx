@@ -1,6 +1,5 @@
 "use client";
-import { FormButton } from "@/app/components/utils/Button";
-import { AcceptInviteMember, AcceptRequest } from "@/utils/server-action/teamsActions";
+import { AcceptRequest } from "@/utils/server-action/teamsActions";
 import { useRouter } from "next/navigation";
 import React, { ChangeEvent } from "react";
 import toast from "react-hot-toast";

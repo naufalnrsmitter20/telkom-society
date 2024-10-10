@@ -25,7 +25,6 @@ export default async function Division({ params }: { params: { id: string } }) {
     where: {
       NOT: [
         { id: session?.user?.id },
-        { job: findCurrentUser?.job },
         { Team: { some: { userId: findMember?.userId } } },
         { role: "ADMIN" },
         { role: "GURU" },

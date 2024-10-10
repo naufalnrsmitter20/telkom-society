@@ -1,6 +1,5 @@
 "use client";
 import { FormButton } from "@/app/components/utils/Button";
-import { nextGetServerSession } from "@/lib/authOption";
 import { RequestTeam } from "@/utils/server-action/teamsActions";
 import { useRouter } from "next/navigation";
 import React, { ChangeEvent } from "react";

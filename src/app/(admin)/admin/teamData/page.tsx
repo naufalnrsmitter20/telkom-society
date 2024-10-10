@@ -5,7 +5,6 @@ export default function teamData() {
   return (
     <>
       <AdminHeaders data="Team Data" />
-      <div></div>
     </>
   );
 }

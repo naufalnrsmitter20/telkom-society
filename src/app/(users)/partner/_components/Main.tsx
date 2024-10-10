@@ -9,8 +9,9 @@ import { LinkButton } from "@/app/components/utils/Button";
 import { Prisma } from "@prisma/client";
 import { Session } from "next-auth";
 import { formatPhoneNumber } from "@/utils/formatPhone";
+import { userPayloadMany, userPayloadOne } from "@/utils/relationsip";
 
-export default function Main({ userData, session, currentUser }: { userData: Prisma.UserGetPayload<{}>[]; session: Session; currentUser: Prisma.UserGetPayload<{}> }) {
+export default function Main({ userData, session, currentUser }: { userData: userPayloadMany; session: Session; currentUser: userPayloadOne }) {
   const [searchInput, setSearchInput] = useState<string>("");
   const [selected, setSelected] = useState("All");
   const [filteredUser, setFilteredUser] = useState<Prisma.UserGetPayload<{}>[]>(userData);
@@ -83,24 +84,24 @@ export default function Main({ userData, session, currentUser }: { userData: Pri
             </div>
           </div>
           <div className="w-full px-10 bg-white rounded-3xl py-4">
-            <div className="py-4 font-Quicksand xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-light text-slate-500">Manage your partner</div>
+            <div className="py-4 xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium text-slate-600">Manage your partner</div>
             <hr />
             <div className="grid grid-cols-1">
               <button onClick={() => handleButtonFilter("All")} className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2">
                 <Image src={setting} width={30} alt="hustler" />
-                <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-500">All</p>
+                <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-600">All</p>
               </button>
               <button onClick={() => handleButtonFilter("Hustler")} className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2">
                 <Image src={hustler} width={30} alt="hustler" />
-                <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-500">Hustler</p>
+                <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-600">Hustler</p>
               </button>
               <button onClick={() => handleButtonFilter("Hipster")} className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2">
                 <Image src={hipster} width={30} alt="hustler" />
-                <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-500">Hipster</p>
+                <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-600">Hipster</p>
               </button>
               <button onClick={() => handleButtonFilter("Hacker")} className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2">
                 <Image src={hacker} width={30} alt="hustler" />
-                <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-500">Hacker</p>
+                <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-600">Hacker</p>
               </button>
             </div>
           </div>

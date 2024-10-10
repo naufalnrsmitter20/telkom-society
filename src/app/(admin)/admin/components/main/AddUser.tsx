@@ -1,6 +1,6 @@
 "use client";
 import { FormButton } from "@/app/components/utils/Button";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import ModalUser from "./ModalUser";
 
 export default function AddUser() {

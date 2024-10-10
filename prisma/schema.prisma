@@ -8,38 +8,42 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(uuid()) @map("user_id") @db.Char(36)
-  email         String         @unique
-  photo_profile String?
-  name          String
-  clasess       String?
-  absent        String?
-  Phone         String?
-  NIS           String?
-  NISN          String?
-  schoolOrigin  String?
-  generation    String?
-  cover         String?
-  role          Role           @default(SISWA)
-  job           Job            @default(Undefined)
-  biography     String?
-  status        Status         @default(Dont_Have_Team)
-  linkedin      String?
-  github        String?
-  instagram     String?
-  website       String?
-  whatsapp      String?
-  BirthDate     String?
-  religion      Religion?      @default(Islam)
-  gender        Gender?        @default(Male)
-  Team          TeamMember[]
-  invitation    TeamRequest[]  @relation("RequestReceiver")
-  teamRequest   TeamRequest[]  @relation("RequestSender")
-  userAuth      UserAuth?
-  certificates  certificate[]  @relation("CertificateToUser")
-  projects      Project[]      @relation("ProjectToUser")
-  Skills        Skill[]        @relation("SkillToUser")
-  notiification Notification[]
+  id              String         @id @default(uuid()) @map("user_id") @db.Char(36)
+  email           String         @unique
+  photo_profile   String?
+  name            String
+  clasess         String?
+  absent          String?
+  Phone           String?
+  NIS             String?
+  NISN            String?
+  schoolOrigin    String?
+  generation      String?
+  cover           String?
+  role            Role           @default(SISWA)
+  job             Job            @default(Undefined)
+  biography       String?        @db.LongText()
+  status          Status         @default(Dont_Have_Team)
+  linkedin        String?
+  github          String?
+  instagram       String?
+  website         String?
+  whatsapp        String?
+  BirthDate       String?
+  jobId           String
+  classOfTalentId String?
+  religion        Religion?      @default(Islam)
+  gender          Gender?        @default(Male)
+  userAuth        UserAuth?
+  notiification   Notification[]
+  Team            TeamMember[]
+  invitation      TeamRequest[]  @relation("RequestReceiver")
+  teamRequest     TeamRequest[]  @relation("RequestSender")
+  certificates    certificate[]  @relation("CertificateToUser")
+  projects        Project[]      @relation("ProjectToUser")
+  Skills          Skill[]        @relation("SkillToUser")
+  UserJob         UserJob        @relation(fields: [jobId], references: [id])
+  ClassOfTalent   ClassOfTalent? @relation(fields: [classOfTalentId], references: [id])
 }
 
 model UserAuth {
@@ -116,6 +120,22 @@ model certificate {
   img             String
   link            String?
   user            User[]  @relation("CertificateToUser")
+}
+
+model UserJob {
+  id       String   @id @default(uuid())
+  jobName  String   @default("not yet")
+  jobDesc  String   @default("")
+  createAt DateTime @default(now())
+  userId   String
+  user     User[]
+}
+
+model ClassOfTalent {
+  id     String @id @default(uuid())
+  userId String
+  class  String
+  user   User[]
 }
 
 enum Job {

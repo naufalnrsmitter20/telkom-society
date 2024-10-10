@@ -8,12 +8,13 @@ import toast from "react-hot-toast";
 import { FaPencilAlt, FaTrash } from "react-icons/fa";
 import AddStudent from "./AddStudent";
 import ModalStudent from "./Modal";
+import { userWithUserAuthMany, userWithUserAuthOne } from "@/utils/relationsip";
 
-export default function Table({ studentData }: { studentData: Prisma.UserGetPayload<{ include: { userAuth: true } }>[] }) {
+export default function Table({ studentData }: { studentData: userWithUserAuthMany }) {
   const [modal, setModal] = useState(false);
-  const [modalData, setModalData] = useState<Prisma.UserGetPayload<{ include: { userAuth: true } }> | null>(null);
+  const [modalData, setModalData] = useState<userWithUserAuthOne | null>(null);
   const [loader, setLoader] = useState(true);
-  const columns: TableColumn<Prisma.UserGetPayload<{ include: { userAuth: true } }>>[] = [
+  const columns: TableColumn<userWithUserAuthOne>[] = [
     {
       name: "Name",
       selector: (row) => row.name,
@@ -48,7 +49,7 @@ export default function Table({ studentData }: { studentData: Prisma.UserGetPayl
       ),
     },
   ];
-  const EditUser = async (data: Prisma.UserGetPayload<{ include: { userAuth: true } }>) => {
+  const EditUser = async (data: userWithUserAuthOne) => {
     setModal(true);
     setModalData(data);
   };

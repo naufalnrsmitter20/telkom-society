@@ -2,12 +2,13 @@
 import { FormButton } from "@/app/components/utils/Button";
 import { DropDown, TextField } from "@/app/components/utils/Form";
 import ModalProfile from "@/app/components/utils/Modal";
+import { userPayloadOne } from "@/utils/relationsip";
 import { UpdateAdminById } from "@/utils/server-action/userGetServerSession";
-import { Prisma, Role } from "@prisma/client";
+import { Role } from "@prisma/client";
 import React, { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import toast from "react-hot-toast";
 
-export default function ModalUser({ setIsOpenModal, data }: { setIsOpenModal: Dispatch<SetStateAction<boolean>>; data?: Prisma.UserGetPayload<{}> | null }) {
+export default function ModalUser({ setIsOpenModal, data }: { setIsOpenModal: Dispatch<SetStateAction<boolean>>; data?: userPayloadOne | null }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const HandleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {

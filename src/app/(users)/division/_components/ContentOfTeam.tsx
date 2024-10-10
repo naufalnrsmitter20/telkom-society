@@ -1,24 +1,10 @@
 "use client";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import banner from "@/../public/img/banner ryo.png";
 import Image from "next/image";
-import hipster from "@/../public/svg/hipsterP.png";
-import hustler from "@/../public/svg/hustlerP.svg";
-import hacker from "@/../public/svg/hackerP.png";
 import setting from "@/../public/svg/settingsP.png";
-import { userWithLastLogin } from "@/utils/relationsip";
-import { getData } from "@/lib/FetchData";
-import { useSession } from "next-auth/react";
-import { fetcher } from "@/utils/server-action/Fetcher";
-import useSWR from "swr";
-import Popup from "./Popup";
-import Link from "next/link";
-import prisma from "@/lib/prisma";
-import { nextGetServerSession } from "@/lib/authOption";
-import { FormButton, LinkButton } from "@/app/components/utils/Button";
+import { LinkButton } from "@/app/components/utils/Button";
 import JoinTeam from "./JoinTeam";
 import { Prisma } from "@prisma/client";
-import { DefaultArgs } from "@prisma/client/runtime/library";
 import { Session } from "next-auth";
 
 export default function ContentOfTeam({

@@ -102,17 +102,25 @@ export default function MemberTable({
                         <p className={clsx("text-sm lg:text-[16px] xl:text-[16px] text-black  font-semibold")}>{x.receiver ? x.receiver.job : ""}</p>
                       </td>
                       {x.type === "INVITE" && x.status === "PENDING" ? (
-                        <td className="flex w-1/3 space-x-4">
-                          <button className="bg-red-500 w-full scale-75 sm:scale-75 lg:scale-100 text-white py-1 px-2 rounded-lg hover:bg-red-600 transition duration-300">Detail</button>
-                          <CancelInvite title="cancel" reqId={x.id} />
-                        </td>
+                        x.senderId === session.user?.id ? (
+                          <td className="flex w-1/3 space-x-4">
+                            <button className="bg-red-500 w-full scale-75 sm:scale-75 lg:scale-100 text-white py-1 px-2 rounded-lg hover:bg-red-600 transition duration-300">Detail</button>
+                            <CancelInvite title="cancel" reqId={x.id} />
+                          </td>
+                        ) : (
+                          <td></td>
+                        )
                       ) : (
                         <>
                           {x.type === "INVITE" ? (
-                            <td className="flex w-1/3 space-x-4">
-                              {x.status !== "PENDING" ? <p className="text-[16px] text-green-400 font-medium w-full">{x.status} Invitation</p> : <p className="text-[16px] text-red-400 font-medium "> {x.status} Invitation</p>}
-                              <CancelInvite title="delete" reqId={x.id} />
-                            </td>
+                            x.senderId === session.user?.id ? (
+                              <td className="flex w-1/3 space-x-4">
+                                {x.status !== "PENDING" ? <p className="text-[16px] text-green-400 font-medium w-full">{x.status} Invitation</p> : <p className="text-[16px] text-red-400 font-medium "> {x.status} Invitation</p>}
+                                <CancelInvite title="delete" reqId={x.id} />
+                              </td>
+                            ) : (
+                              <></>
+                            )
                           ) : session.user?.id === teamOwner.userId ? (
                             <td className="flex w-1/3 space-x-4">
                               <Accept reqId={x.id} teamId={x.teamId} />

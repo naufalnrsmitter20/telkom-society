@@ -14,13 +14,13 @@ import Piala from "@/../public/ui/piala.png";
 import Merah from "@/../public/ui/User_alt_fill.png";
 import { signIn } from "next-auth/react";
 import { FormButton } from "../../components/utils/Button";
-import { Prisma } from "@prisma/client";
+import { teamPayloadMany, userPayloadMany } from "@/utils/relationsip";
 
-export default function Home({ users, teams }: { users: Prisma.UserGetPayload<{}>[]; teams: Prisma.TeamGetPayload<{}>[] }) {
-  const GetPayloadData = (count: number) => {
-    const data = count >= 5000 ? "5000+" : count >= 4000 ? "4000+" : count >= 3000 ? "3000+" : count >= 2000 ? "2000+" : count >= 1000 ? "1000+" : count >= 500 ? "500+" : count >= 100 ? "100+" : count;
-    return data;
-  };
+export default function Home({ users, teams }: { users: userPayloadMany; teams: teamPayloadMany }) {
+  // const GetPayloadData = (count: number) => {
+  //   const data = count >= 5000 ? "5000+" : count >= 4000 ? "4000+" : count >= 3000 ? "3000+" : count >= 2000 ? "2000+" : count >= 1000 ? "1000+" : count >= 500 ? "500+" : count >= 100 ? "100+" : count;
+  //   return data;
+  // };
   return (
     <main className="mt-[200px]">
       <div className="justify-center flex flex-col xl:flex-row items-center px-4">
@@ -79,7 +79,7 @@ export default function Home({ users, teams }: { users: Prisma.UserGetPayload<{}
               <div className="flex flex-col justify-center items-center px-[10px] md:pb-[80px] xl:pb-[120px] pb-12 ">
                 <Image src={Piala} alt="Piala" />
                 <h1 className="xl:text-[28px] lg:text-[24px] md:text-[22px] sm:text-[20px] text-[19px] mt-3">Jumlah Kompetisi</h1>
-                <p className="opacity-70 mt-2 font-medium xl:text-[36px] lg:text-[34px] md:text-[32px] sm:text-[30px] text-[28px]">{GetPayloadData(0)}</p>
+                <p className="opacity-70 mt-2 font-medium xl:text-[36px] lg:text-[34px] md:text-[32px] sm:text-[30px] text-[28px]">{0}</p>
               </div>
             </div>
             <div className="bg-white flex justify-center pt-4 xl:pt-[30px] xl:rounded-t-xl xl:rounded-b-none rounded-xl flex-col text-center">
@@ -87,7 +87,7 @@ export default function Home({ users, teams }: { users: Prisma.UserGetPayload<{}
               <div className="flex flex-col justify-center items-center px-[10px] md:pb-[80px] xl:pb-[120px] pb-12">
                 <Image src={Merah} alt="Merah" />
                 <h1 className="xl:text-[28px] lg:text-[24px] md:text-[22px] sm:text-[20px] text-[19px] mt-3">Jumlah User</h1>
-                <p className="opacity-70 xl:mb-24 mb-0 mt-2 font-medium xl:text-[36px] lg:text-[34px] md:text-[32px] sm:text-[30px] text-[28px]">{GetPayloadData(users.length)}</p>
+                <p className="opacity-70 xl:mb-24 mb-0 mt-2 font-medium xl:text-[36px] lg:text-[34px] md:text-[32px] sm:text-[30px] text-[28px]">{users.length}</p>
               </div>
             </div>
             <div className="bg-white flex justify-center pt-4 xl:pt-[30px] mt-0 xl:mt-12 xl:rounded-t-xl xl:rounded-b-none rounded-xl flex-col text-center pb-12">
@@ -95,7 +95,7 @@ export default function Home({ users, teams }: { users: Prisma.UserGetPayload<{}
               <div className="flex flex-col justify-center items-center px-[10px] md:pb-[80px] xl:pb-[120px] pb-12]">
                 <Image src={Hijau} alt="Hijau" />
                 <h1 className="xl:text-[28px] lg:text-[24px] md:text-[22px] sm:text-[20px] text-[19px] mt-3">Jumlah Tim</h1>
-                <p className="opacity-70 mb-0 xl:mb-12 mt-2 font-medium xl:text-[36px] lg:text-[34px] md:text-[32px] sm:text-[30px] text-[28px]">{GetPayloadData(teams.length)}</p>
+                <p className="opacity-70 mb-0 xl:mb-12 mt-2 font-medium xl:text-[36px] lg:text-[34px] md:text-[32px] sm:text-[30px] text-[28px]">{teams.length}</p>
               </div>
             </div>
           </div>
