@@ -6,7 +6,7 @@ import Achievement from "./_components/Data2";
 
 export default async function DataUser1() {
   const session = await nextGetServerSession();
-  const data = await prisma.user.findUnique({ where: { id: session?.user?.id }, include: { Skills: true, projects: true } });
+  const data = await prisma.user.findUnique({ where: { id: session?.user?.id }, include: { Student: { include: { Skills: true, projects: true } } } });
   if (!session?.user) redirect("/signin");
   return <Achievement session={session!} userData={data!} />;
 }

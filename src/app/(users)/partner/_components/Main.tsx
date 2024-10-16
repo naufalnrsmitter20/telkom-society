@@ -14,14 +14,14 @@ import { userPayloadMany, userPayloadOne } from "@/utils/relationsip";
 export default function Main({ userData, session, currentUser }: { userData: userPayloadMany; session: Session; currentUser: userPayloadOne }) {
   const [searchInput, setSearchInput] = useState<string>("");
   const [selected, setSelected] = useState("All");
-  const [filteredUser, setFilteredUser] = useState<Prisma.UserGetPayload<{}>[]>(userData);
+  const [filteredUser, setFilteredUser] = useState<Prisma.UserGetPayload<{ include: { Student: { include: { UserJob: true } } } }>[]>(userData);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage] = useState<number>(20);
 
   useEffect(() => {
     const filterUsers = () => {
-      const filteredByName = userData.filter((userData: Prisma.UserGetPayload<{}>) => userData.name.toLowerCase().includes(searchInput.toLowerCase()));
-      const finalFilteredUsers = selected === "All" ? filteredByName : filteredByName.filter((dataUser: Prisma.UserGetPayload<{}>) => dataUser.job === selected);
+      const filteredByName = userData.filter((userData) => userData.name.toLowerCase().includes(searchInput.toLowerCase()));
+      const finalFilteredUsers = selected === "All" ? filteredByName : filteredByName.filter((dataUser) => dataUser.Student?.UserJob?.jobName === selected);
       setFilteredUser(finalFilteredUsers);
     };
     filterUsers();
@@ -144,9 +144,13 @@ export default function Main({ userData, session, currentUser }: { userData: use
                   </div>
                   <div className="ml-12 mt-2">
                     <p className="font-medium xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] text-[16px] text-black">{user.name}</p>
-                    <p className="font-normal xl:text-[15px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[11px] text-slate-600">{user.job} | </p>
-                    <p className={`font-normal xl:text-[15px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[11px] mt-2 ${user?.status === "Dont_Have_Team" ? "text-red-500" : user?.status === "Have_Team" ? "text-green-500" : ""}`}>
-                      Status: {user?.status}
+                    <p className="font-normal xl:text-[15px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[11px] text-slate-600">{user.Student?.UserJob?.jobName} | </p>
+                    <p
+                      className={`font-normal xl:text-[15px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[11px] mt-2 ${
+                        user?.Student?.status === "Dont_Have_Team" ? "text-red-500" : user?.Student?.status === "Have_Team" ? "text-green-500" : ""
+                      }`}
+                    >
+                      Status: {user?.Student?.status}
                     </p>
                     <div className="mt-6 justify-start">
                       <LinkButton variant="white" href={`/partner/user/profile/${user.id}`} className="bg-transparent border rounded-full">

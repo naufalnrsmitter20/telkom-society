@@ -7,8 +7,9 @@ import { ChangeEvent, useState } from "react";
 import { CreateTeam } from "@/utils/server-action/teamsActions";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import { teacherPayloadMany, userWithTeacherPayloadMany } from "@/utils/relationsip";
 
-export default function CreatePage() {
+export default function CreateTeamPage({ data }: { data: teacherPayloadMany }) {
   const router = useRouter();
   const [logo, setLogo] = useState("");
 
@@ -24,6 +25,8 @@ export default function CreatePage() {
       if (create) {
         toast.success("Sukses membuat Tim!", { id: toastId });
         router.push(`/division/profile/${create.id}`);
+      } else {
+        toast.error("Gagal membuat Tim!", { id: toastId });
       }
     } catch (error) {
       console.error(error);
@@ -43,11 +46,11 @@ export default function CreatePage() {
             <TextField name="logo" label="Division Logo" type="file" handleChange={(e) => setLogo(URL.createObjectURL(e.target.files![0]))} />
             {logo && <Image width={100} height={100} className="w-44 h-44 mb-8" src={logo as string} alt={"Team Logo"} />}
             <DropDown
-              name="mentor"
+              name="mentorId"
               label="Mentor"
-              options={mentor.map((x, i) => ({
-                label: x,
-                value: x,
+              options={data.map((x) => ({
+                label: x.user.name,
+                value: x.id,
               }))}
             />
 

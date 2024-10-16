@@ -1,6 +1,6 @@
 "use server";
 
-import { Gender, Job, Religion, Role, Status } from "@prisma/client";
+import { Gender, Religion, Role, Status } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { createUser, findUser, updateUser } from "../user.query";
 import { revalidatePath } from "next/cache";
@@ -18,11 +18,8 @@ export const UpdateUserById = async (data: FormData) => {
     const photo_profile = data.get("photo_profile") as string;
     const name = data.get("name") as string;
     const role = data.get("role") as Role;
-    const job = data.get("job") as Job;
-    const clasess = data.get("clasess") as string;
     const absent = data.get("absent") as string;
     const generation = data.get("generation") as string;
-    const Phone = data.get("Phone") as string;
     const NIS = data.get("NIS") as string;
     const NISN = data.get("NISN") as string;
     const schoolOrigin = data.get("schoolOrigin") as string;
@@ -49,118 +46,121 @@ export const UpdateUserById = async (data: FormData) => {
         photo_profile,
         name,
         role,
-        job,
-        clasess,
-        absent,
-        NIS,
-        NISN,
-        Phone,
-        schoolOrigin,
-        biography,
-        status,
         linkedin,
         github,
         instagram,
         website,
         whatsapp,
-        BirthDate,
         religion,
-        generation,
         gender,
-        certificates: {
-          create: certificates.map((certificate) => ({
-            CertificateName: certificate.CertificateName,
-            img: certificate.img,
-            link: certificate.link,
-          })),
-        },
-        projects: {
-          create: projects.map((project) => ({
-            ProjeectName: project.ProjeectName,
-            link: project.link,
-          })),
-        },
-        Skills: {
-          create: Skills.map((skill) => ({
-            SkillName: skill,
-          })),
+        Student: {
+          create: {
+            username: name,
+            absent,
+            biography,
+            BirthDate,
+            generation,
+            NIS,
+            NISN,
+            status,
+            schoolOrigin,
+            certificates: {
+              create: certificates.map((certificate) => ({
+                CertificateName: certificate.CertificateName,
+                img: certificate.img,
+                link: certificate.link,
+              })),
+            },
+            projects: {
+              create: projects.map((project) => ({
+                ProjeectName: project.ProjeectName,
+                link: project.link,
+              })),
+            },
+            Skills: {
+              create: Skills.map((skill) => ({
+                SkillName: skill,
+              })),
+            },
+          },
         },
       });
       if (!create) throw new Error("Failed to create");
     } else if (id) {
       const findUserWithId = await prisma.user.findUnique({
         where: { id },
-        include: { certificates: true, Skills: true, projects: true },
+        include: { Student: { include: { certificates: true, Skills: true, projects: true, ClassOfTalent: true, UserJob: true } } },
       });
-      const skillsToDisconnect = findUserWithId?.Skills.filter((existingSkill) => !Skills.includes(existingSkill.SkillName)) || [];
-      const certificatesToDisconnect = findUserWithId?.certificates.filter((existingCertificate) => !certificates.some((cert) => cert.CertificateName === existingCertificate.CertificateName));
-      const projectsToDisconnect = findUserWithId?.projects.filter((existingProject) => !projects.some((proj) => proj.ProjeectName === existingProject.ProjeectName));
+      const skillsToDisconnect = findUserWithId?.Student?.Skills.filter((existingSkill) => !Skills.includes(existingSkill.SkillName)) || [];
+      const certificatesToDisconnect = findUserWithId?.Student?.certificates.filter((existingCertificate) => !certificates.some((cert) => cert.CertificateName === existingCertificate.CertificateName));
+      const projectsToDisconnect = findUserWithId?.Student?.projects.filter((existingProject) => !projects.some((proj) => proj.ProjeectName === existingProject.ProjeectName));
 
       const update = await updateUser(
         { id: id ?? findUserWithId?.id },
         {
           email: email ?? findUserWithId?.email,
           name: name ?? findUserWithId?.name,
-          absent: absent ?? findUserWithId?.absent,
-          clasess: clasess ?? findUserWithId?.clasess,
-          NIS: NIS ?? findUserWithId?.NIS,
-          NISN: NISN ?? findUserWithId?.NISN,
-          schoolOrigin: schoolOrigin ?? findUserWithId?.schoolOrigin,
-          Phone: Phone ?? findUserWithId?.Phone,
-          biography: biography ?? findUserWithId?.biography,
-          BirthDate: BirthDate ?? findUserWithId?.BirthDate,
           linkedin: linkedin ?? findUserWithId?.linkedin,
           github: github ?? findUserWithId?.github,
           instagram: instagram ?? findUserWithId?.instagram,
           website: website ?? findUserWithId?.website,
           whatsapp: whatsapp ?? findUserWithId?.whatsapp,
           gender: gender ?? findUserWithId?.gender,
-          role: role ?? findUserWithId?.role,
-          job: job ?? findUserWithId?.job,
-          generation: generation ?? findUserWithId?.generation,
-          status: status ?? findUserWithId?.status,
           photo_profile: photo_profile ?? findUserWithId?.photo_profile,
+          role: role ?? findUserWithId?.role,
+          Student: {
+            update: {
+              absent: absent ?? findUserWithId?.Student?.absent,
+              NIS: NIS ?? findUserWithId?.Student?.NIS,
+              NISN: NISN ?? findUserWithId?.Student?.NISN,
+              schoolOrigin: schoolOrigin ?? findUserWithId?.Student?.schoolOrigin,
+              biography: biography ?? findUserWithId?.Student?.biography,
+              BirthDate: BirthDate ?? findUserWithId?.Student?.BirthDate,
+              generation: generation ?? findUserWithId?.Student?.generation,
+              status: status ?? findUserWithId?.Student?.status,
+              certificates: {
+                connectOrCreate: certificates.map((certificate) => ({
+                  where: {
+                    CertificateName: certificate.CertificateName,
+                    img: certificate.img,
+                    link: certificate.link,
+                  },
+                  create: {
+                    CertificateName: certificate.CertificateName,
+                    img: certificate.img,
+                    link: certificate.link,
+                  },
+                })),
+                disconnect: certificatesToDisconnect?.map((certificate) => ({
+                  CertificateName: certificate.CertificateName,
+                })),
+              },
+              projects: {
+                connectOrCreate: projects.map((project) => ({
+                  where: { ProjeectName: project.ProjeectName, link: project.link },
+                  create: {
+                    ProjeectName: project.ProjeectName,
+                    link: project.link,
+                  },
+                })),
+                disconnect: projectsToDisconnect?.map((project) => ({
+                  ProjeectName: project.ProjeectName,
+                })),
+              },
+              Skills: {
+                connectOrCreate: Skills.map((skill) => ({
+                  where: { SkillName: skill },
+                  create: {
+                    SkillName: skill,
+                  },
+                })),
+                disconnect: skillsToDisconnect.map((skill) => ({
+                  SkillName: skill.SkillName,
+                })),
+              },
+            },
+          },
           religion: religion ?? findUserWithId?.religion,
-          certificates: {
-            connectOrCreate: certificates.map((certificate) => ({
-              where: {
-                CertificateName: certificate.CertificateName,
-                img: certificate.img,
-                link: certificate.link,
-              },
-              create: {
-                CertificateName: certificate.CertificateName,
-                img: certificate.img,
-                link: certificate.link,
-              },
-            })),
-            disconnect: certificatesToDisconnect?.map((certificate) => ({
-              CertificateName: certificate.CertificateName,
-            })),
-          },
-          projects: {
-            connectOrCreate: projects.map((project) => ({
-              where: { ProjeectName: project.ProjeectName, link: project.link },
-              create: {
-                ProjeectName: project.ProjeectName,
-                link: project.link,
-              },
-            })),
-            disconnect: projectsToDisconnect?.map((project) => ({
-              ProjeectName: project.ProjeectName,
-            })),
-          },
-          Skills: {
-            connectOrCreate: Skills.map((skill) => ({
-              where: { SkillName: skill },
-              create: {
-                SkillName: skill,
-              },
-            })),
-            disconnect: skillsToDisconnect.map((skill) => ({
-              SkillName: skill.SkillName,
-            })),
-          },
         }
       );
       if (!update) throw new Error("Update failed");
@@ -170,6 +170,40 @@ export const UpdateUserById = async (data: FormData) => {
     revalidatePath("/profile");
   } catch (error) {
     console.error("Error updating user:", error);
+    throw error;
+  }
+};
+
+export const updateJobById = async (data: FormData) => {
+  try {
+    const session = await nextGetServerSession();
+
+    const id = session?.user?.id;
+    const jobId = data.get("jobId") as string;
+
+    if (!id) throw new Error("User not found");
+    const update = await prisma.user.update({ where: { id }, data: { Student: { update: { jobId: jobId } } } });
+    if (!update) throw new Error("Failed to update job");
+    revalidatePath("/profile");
+  } catch (error) {
+    console.error("Error updating Job:", error);
+    throw error;
+  }
+};
+
+export const updateClassById = async (data: FormData) => {
+  try {
+    const classOfTalentId = data.get("clasessId") as string;
+    const session = await nextGetServerSession();
+    const id = session?.user?.id;
+    console.log(classOfTalentId);
+
+    if (!id) throw new Error("User not found");
+    const update = await prisma.user.update({ where: { id }, data: { Student: { update: { classOfTalentId: classOfTalentId } } } });
+    if (!update) throw new Error("Failed to update Class");
+    revalidatePath("/profile");
+  } catch (error) {
+    console.error("Error updating class:", error);
     throw error;
   }
 };
@@ -208,11 +242,11 @@ export const UpdateGeneralProfileById = async (data: FormData) => {
     const photo_profile = data.get("photo_profile") as string;
     const name = data.get("name") as string;
     const role = data.get("role") as Role;
-    const job = data.get("job") as Job;
-    const clasess = data.get("clasess") as string;
+    const jobName = data.get("jobName") as string;
+    const jobDesc = data.get("jobDesc") as string;
+    const studentClass = data.get("clasess") as string;
     const absent = data.get("absent") as string;
     const generation = data.get("generation") as string;
-    const Phone = data.get("Phone") as string;
     const NIS = data.get("NIS") as string;
     const NISN = data.get("NISN") as string;
     const schoolOrigin = data.get("schoolOrigin") as string;
@@ -233,30 +267,34 @@ export const UpdateGeneralProfileById = async (data: FormData) => {
         photo_profile,
         name,
         role,
-        job,
-        clasess,
-        absent,
-        generation,
-        NIS,
-        NISN,
-        Phone,
-        schoolOrigin,
-        biography,
-        status,
         linkedin,
         github,
         instagram,
         website,
         whatsapp,
-        BirthDate,
         religion,
         gender,
+        Student: {
+          create: {
+            username: name,
+            absent,
+            generation,
+            NIS,
+            NISN,
+            schoolOrigin,
+            biography,
+            status,
+            BirthDate,
+            ClassOfTalent: { create: { Studentclass: studentClass } },
+            UserJob: { create: { jobName, jobDesc } },
+          },
+        },
       });
       if (!create) throw new Error("Failed to create");
     } else if (id) {
       const findUserWithId = await prisma.user.findUnique({
         where: { id },
-        include: { certificates: true, Skills: true, projects: true },
+        include: { Student: { include: { certificates: true, Skills: true, projects: true, ClassOfTalent: true, UserJob: true } } },
       });
 
       const update = await updateUser(
@@ -264,15 +302,6 @@ export const UpdateGeneralProfileById = async (data: FormData) => {
         {
           email: email ?? findUserWithId?.email,
           name: name ?? findUserWithId?.name,
-          absent: absent ?? findUserWithId?.absent,
-          generation: generation ?? findUserWithId?.generation,
-          clasess: clasess ?? findUserWithId?.clasess,
-          NIS: NIS ?? findUserWithId?.NIS,
-          NISN: NISN ?? findUserWithId?.NISN,
-          schoolOrigin: schoolOrigin ?? findUserWithId?.schoolOrigin,
-          Phone: Phone ?? findUserWithId?.Phone,
-          biography: biography ?? findUserWithId?.biography,
-          BirthDate: BirthDate ?? findUserWithId?.BirthDate,
           linkedin: linkedin ?? findUserWithId?.linkedin,
           github: github ?? findUserWithId?.github,
           instagram: instagram ?? findUserWithId?.instagram,
@@ -280,10 +309,22 @@ export const UpdateGeneralProfileById = async (data: FormData) => {
           whatsapp: whatsapp ?? findUserWithId?.whatsapp,
           gender: gender ?? findUserWithId?.gender,
           role: role ?? findUserWithId?.role,
-          job: job ?? findUserWithId?.job,
-          status: status ?? findUserWithId?.status,
           photo_profile: photo_profile ?? findUserWithId?.photo_profile,
           religion: religion ?? findUserWithId?.religion,
+          Student: {
+            update: {
+              absent: absent ?? findUserWithId?.Student?.absent,
+              generation: generation ?? findUserWithId?.Student?.generation,
+              NIS: NIS ?? findUserWithId?.Student?.NIS,
+              NISN: NISN ?? findUserWithId?.Student?.NISN,
+              schoolOrigin: schoolOrigin ?? findUserWithId?.Student?.schoolOrigin,
+              biography: biography ?? findUserWithId?.Student?.biography,
+              BirthDate: BirthDate ?? findUserWithId?.Student?.BirthDate,
+              status: status ?? findUserWithId?.Student?.status,
+              ClassOfTalent: { create: { Studentclass: studentClass ?? findUserWithId?.Student?.ClassOfTalent?.Studentclass } },
+              UserJob: { create: { jobName: jobName ?? findUserWithId?.Student?.UserJob?.jobName, jobDesc: jobDesc ?? findUserWithId?.Student?.UserJob?.jobDesc } },
+            },
+          },
         }
       );
       if (!update) throw new Error("Update failed");
@@ -312,37 +353,44 @@ export const UpdateUserSkillById = async (data: FormData) => {
       const create = await createUser({
         email,
         name,
-
-        Skills: {
-          create: Skills.map((skill) => ({
-            SkillName: skill,
-          })),
+        Student: {
+          create: {
+            username: name,
+            Skills: {
+              create: Skills.map((skill) => ({
+                SkillName: skill,
+              })),
+            },
+          },
         },
       });
       if (!create) throw new Error("Failed to create");
     } else if (id) {
       const findUserWithId = await prisma.user.findUnique({
         where: { id },
-        include: { certificates: true, Skills: true, projects: true },
+        include: { Student: { include: { certificates: true, Skills: true, projects: true } } },
       });
-      const skillsToDisconnect = findUserWithId?.Skills.filter((existingSkill) => !Skills.includes(existingSkill.SkillName)) || [];
+      const skillsToDisconnect = findUserWithId?.Student?.Skills.filter((existingSkill) => !Skills.includes(existingSkill.SkillName)) || [];
 
       const update = await updateUser(
         { id: id ?? findUserWithId?.id },
         {
           email: email ?? findUserWithId?.email,
           name: name ?? findUserWithId?.name,
-
-          Skills: {
-            connectOrCreate: Skills.map((skill) => ({
-              where: { SkillName: skill },
-              create: {
-                SkillName: skill,
+          Student: {
+            update: {
+              Skills: {
+                connectOrCreate: Skills.map((skill) => ({
+                  where: { SkillName: skill },
+                  create: {
+                    SkillName: skill,
+                  },
+                })),
+                disconnect: skillsToDisconnect?.map((skill) => ({
+                  SkillName: skill.SkillName,
+                })),
               },
-            })),
-            disconnect: skillsToDisconnect?.map((skill) => ({
-              SkillName: skill.SkillName,
-            })),
+            },
           },
         }
       );
@@ -362,10 +410,6 @@ export const UpdateUserProjectById = async (data: FormData) => {
     const session = await nextGetServerSession();
 
     const id = session?.user?.id;
-
-    const email = data.get("email") as string;
-    const name = data.get("name") as string;
-
     const projects = JSON.parse((data.get("projects") as string) || "[]") as {
       ProjeectName: string;
       link: string;
@@ -375,11 +419,15 @@ export const UpdateUserProjectById = async (data: FormData) => {
       const create = await updateUser(
         { id },
         {
-          projects: {
-            create: projects.map((project) => ({
-              ProjeectName: project.ProjeectName,
-              link: project.link,
-            })),
+          Student: {
+            update: {
+              projects: {
+                create: projects.map((project) => ({
+                  ProjeectName: project.ProjeectName,
+                  link: project.link,
+                })),
+              },
+            },
           },
         }
       );
@@ -387,27 +435,28 @@ export const UpdateUserProjectById = async (data: FormData) => {
     } else if (id) {
       const findUserWithId = await prisma.user.findUnique({
         where: { id },
-        include: { projects: true },
+        include: { Student: { include: { projects: true } } },
       });
-      const projectsToDisconnect = findUserWithId?.projects.filter((existingProject) => !projects.some((proj) => proj.ProjeectName === existingProject.ProjeectName));
+      const projectsToDisconnect = findUserWithId?.Student?.projects.filter((existingProject) => !projects.some((proj) => proj.ProjeectName === existingProject.ProjeectName));
 
       const update = await updateUser(
         { id: id ?? findUserWithId?.id },
         {
-          // email: email ?? findUserWithId?.email,
-          // name: name ?? findUserWithId?.name,
-
-          projects: {
-            connectOrCreate: projects.map((project) => ({
-              where: { ProjeectName: project.ProjeectName, link: project.link },
-              create: {
-                ProjeectName: project.ProjeectName,
-                link: project.link,
+          Student: {
+            update: {
+              projects: {
+                connectOrCreate: projects.map((project) => ({
+                  where: { ProjeectName: project.ProjeectName, link: project.link },
+                  create: {
+                    ProjeectName: project.ProjeectName,
+                    link: project.link,
+                  },
+                })),
+                disconnect: projectsToDisconnect?.map((project) => ({
+                  ProjeectName: project.ProjeectName,
+                })),
               },
-            })),
-            disconnect: projectsToDisconnect?.map((project) => ({
-              ProjeectName: project.ProjeectName,
-            })),
+            },
           },
         }
       );

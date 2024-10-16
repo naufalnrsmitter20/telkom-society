@@ -11,11 +11,11 @@ import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useState } from "react";
 import toast from "react-hot-toast";
 
-export default function Achievement({ session, userData }: { session: Session; userData: Prisma.UserGetPayload<{ include: { Skills: true; projects: true } }> }) {
+export default function Achievement({ session, userData }: { session: Session; userData: Prisma.UserGetPayload<{ include: { Student: { include: { Skills: true; projects: true } } } }> }) {
   const router = useRouter();
-  const [skills, setSkills] = useState(userData.Skills.map((x) => x.SkillName));
-  const [project, setProject] = useState<Project[]>(userData.projects);
-  const [currentProject, setCurrentProject] = useState<Project>({ link: "", ProjeectName: "" });
+  const [skills, setSkills] = useState(userData.Student?.Skills.map((x) => x.SkillName));
+  const [project, setProject] = useState<Project[]>(userData?.Student?.projects || []);
+  const [currentProject, setCurrentProject] = useState<Project>({ link: "", ProjeectName: "", teamId: null });
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const addProject = () => {
@@ -25,7 +25,7 @@ export default function Achievement({ session, userData }: { session: Session; u
       return;
     } else if (currentProject.ProjeectName?.trim() !== "" && currentProject.link?.trim() !== "") {
       setProject([...project, { ...currentProject }]);
-      setCurrentProject({ ProjeectName: "", link: "" });
+      setCurrentProject({ ProjeectName: "", link: "", teamId: null });
     }
   };
 
@@ -67,7 +67,7 @@ export default function Achievement({ session, userData }: { session: Session; u
           <h1 className="md:text-[48px] text-[40px] font-[700] px-6 lg:px-0 opacity-60">Achievement</h1>
           <form onSubmit={handleSubmit} className="mt-[40px] grid gap-0 xl:gap-[105px] px-6 lg:px-0 grid-cols-1 lg:grid-cols-2">
             <div>
-              <TextArea defaultValue={userData?.biography as string} name="biography" placeholder="type your Biography" label="Biography" />
+              <TextArea defaultValue={userData?.Student?.biography as string} name="biography" placeholder="type your Biography" label="Biography" />
             </div>
             <div>
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-0 xl:gap-x-[55px]">

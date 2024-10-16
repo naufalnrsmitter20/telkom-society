@@ -12,18 +12,21 @@ export default function ContentOfTeam({
   Owner,
   session,
   currentUser,
+  jobList,
 }: {
-  teams: Prisma.TeamGetPayload<{ include: { _count: true; member: { include: { team: true; user: true } }; requests: true } }>[];
+  teams: Prisma.TeamGetPayload<{ include: { _count: true; member: { include: { team: true; user: { include: { Student: { include: { UserJob: true } } } } } }; requests: true; mentor: { include: { user: true } } } }>[];
   Owner: Prisma.UserGetPayload<{ include: { _count: true } }>;
   session: Session;
   currentUser: Prisma.UserGetPayload<{}>;
+  jobList: Prisma.UserJobGetPayload<{ include: { user: true } }>[];
 }) {
   const [searchInput, setSearchInput] = useState<string>("");
   const [selected, setSelected] = useState("All");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage] = useState<number>(10);
 
-  const [filteredUser, setFilteredUser] = useState<Prisma.TeamGetPayload<{ include: { _count: true; member: { include: { team: true; user: true } }; requests: true } }>[]>(teams);
+  const [filteredUser, setFilteredUser] =
+    useState<Prisma.TeamGetPayload<{ include: { _count: true; member: { include: { team: true; user: { include: { Student: { include: { UserJob: true } } } } } }; requests: true; mentor: { include: { user: true } } } }>[]>(teams);
 
   useEffect(() => {
     const filterUsers = () => {
@@ -52,7 +55,7 @@ export default function ContentOfTeam({
     setCurrentPage(pageNumber);
   };
 
-  const availableJobs = ["Hacker", "Hipster", "Hustler"];
+  const availableJobs = jobList.map((job) => job.jobName);
 
   return (
     <>
@@ -152,14 +155,14 @@ export default function ContentOfTeam({
                       Create by <span className="font-semibold">{x.ownerId === session?.user?.id ? "You" : x.member.find((y) => y.role === "OWNER")?.user.name}</span>
                     </h5>
                     <h5 className="mb-2 text-[1rem] font-semibold tracking-tight text-green-400">
-                      Available Job : <span className="font-semibold text-black">{availableJobs.filter((job) => !x.member.some((member) => member.user.job === job)).join(" & ")}</span>
+                      Available Job : <span className="font-semibold text-black">{availableJobs.filter((job) => !x.member.some((member) => member.user.Student?.UserJob?.jobName === job)).join(" & ")}</span>
                     </h5>
                     <h5 className="text-xl font-semibold tracking-tight text-black">Jumlah Anggota : {x._count.member}</h5>
-                    <h5 className="mb-2 text-lg font-semibold tracking-tight text-black">Mentor : {x.mentor}</h5>
+                    <h5 className="mb-2 text-lg font-semibold tracking-tight text-black">Mentor : {x.mentor?.user.name}</h5>
                     <p className="text-lg font-medium text-black ">Description</p>
                     <p className="mb-3 font-normal text-slate-600 overflow-x-hidden">{x.description}</p>
                     <div className="flex justify-end gap-x-3">
-                      {x.ownerId === session.user?.id || (x.member.find((y) => y.userId === session.user?.id) ? <></> : <JoinTeam teamId={x.id} />)}
+                      {x.ownerId === session.user?.id || (x.member.find((y) => y.memberId === session.user?.id) ? <></> : <JoinTeam teamId={x.id} />)}
                       <LinkButton href={`/division/profile/${x.id}`} variant="base">
                         Details
                       </LinkButton>

@@ -3,20 +3,35 @@ import PlusIcon from "@/app/components/Icons/PlusIcon";
 import XIcon from "@/app/components/Icons/XIcon";
 import { FormButton, LinkButton } from "@/app/components/utils/Button";
 import { DropDown, TextField } from "@/app/components/utils/Form";
-import { UpdateUserById } from "@/utils/server-action/userGetServerSession";
+import { classOfTalentPayloadMany } from "@/utils/relationsip";
+import { updateClassById, UpdateUserById } from "@/utils/server-action/userGetServerSession";
 import { Gender, Prisma, Project, Religion, Skill } from "@prisma/client";
 import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import toast from "react-hot-toast";
 
-export default function PersonalData({ session, userData }: { session: Session; userData: Prisma.UserGetPayload<{ include: { Skills: true; projects: true } }> }) {
+export default function PersonalData({
+  session,
+  userData,
+  classOfTalent,
+}: {
+  session: Session;
+  userData: Prisma.UserGetPayload<{ include: { Student: { include: { Skills: true; projects: true; ClassOfTalent: true; UserJob: true } } } }>;
+  classOfTalent: classOfTalentPayloadMany;
+}) {
   const router = useRouter();
-  const [skills, setSkills] = useState<string[]>(userData.Skills.map((x) => x.SkillName));
+  const [skills, setSkills] = useState<string[]>(userData.Student?.Skills.map((x) => x.SkillName) || []);
+  const [classOfStudent, setClassOfStudent] = useState<string | null>(userData?.Student?.ClassOfTalent?.id || "");
   const [currentSkill, setCurrentSkill] = useState<string>("");
-  const [project, setProject] = useState<Project[]>(userData.projects);
+  const [project, setProject] = useState<Project[]>(userData?.Student?.projects || []);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const user = session?.user;
+
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+    setClassOfStudent(selectedValue);
+  };
 
   const addSkill = () => {
     const existingSkill = skills.find((skil) => skil.trim().toLowerCase() === currentSkill.trim().toLowerCase());
@@ -41,6 +56,8 @@ export default function PersonalData({ session, userData }: { session: Session; 
       formData.append("Skills", JSON.stringify(skills));
       formData.append("projects", JSON.stringify(project));
       await UpdateUserById(formData);
+      formData.append("clasessId", classOfStudent as string);
+      await updateClassById(formData);
       toast.success("Sukses Mengisi Data");
       setIsLoading(false);
       router.push("/isiIdentitas/achievement");
@@ -67,16 +84,26 @@ export default function PersonalData({ session, userData }: { session: Session; 
             <div>
               <TextField defaultValue={user?.name} readOnly disabled placeholder="Insert your name" label="Name" type="text" required />
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-0 xl:gap-x-[55px]">
-                <TextField defaultValue={userData?.clasess as string} name="clasess" placeholder="Ex. Format : XI RPL 6" label="Class" type="text" required />
-                <TextField defaultValue={userData?.generation as string} name="generation" placeholder="Insert your generation" label="Generation" type="text" required />
+                <DropDown
+                  options={classOfTalent.map((x) => ({
+                    label: x.Studentclass,
+                    value: x.id,
+                  }))}
+                  handleChange={handleSelectChange}
+                  value={classOfStudent as string}
+                  name="clasess"
+                  label="Class"
+                  required
+                />
+                <TextField defaultValue={userData?.Student?.generation as string} name="generation" placeholder="Insert your generation" label="Generation" type="text" required />
               </div>
-              <TextField name="BirthDate" defaultValue={userData?.BirthDate as string} placeholder="Insert your Birth Date" label="Birth Date" type="date" required />
+              <TextField name="BirthDate" defaultValue={userData?.Student?.BirthDate as string} placeholder="Insert your Birth Date" label="Birth Date" type="date" required />
               <DropDown
                 options={Object.values(Gender).map((x) => ({
                   label: x,
                   value: x,
                 }))}
-                value={userData?.gender as string}
+                defaultValue={userData?.gender as string}
                 name="gender"
                 label="Gender"
                 required
@@ -86,17 +113,17 @@ export default function PersonalData({ session, userData }: { session: Session; 
                   label: x,
                   value: x,
                 }))}
-                value={userData?.religion as string}
+                defaultValue={userData?.religion as string}
                 name="religion"
                 label="Religion"
                 required
               />
             </div>
             <div id="1">
-              <TextField defaultValue={userData?.NIS as string} label="NIS" name="NIS" type="text" placeholder="Insert your NIS" />
-              <TextField defaultValue={userData?.NISN as string} label="NISN" name="NISN" type="text" placeholder="Insert your NISN" />
+              <TextField defaultValue={userData?.Student?.NIS as string} label="NIS" name="NIS" type="text" placeholder="Insert your NIS" />
+              <TextField defaultValue={userData?.Student?.NISN as string} label="NISN" name="NISN" type="text" placeholder="Insert your NISN" />
               <TextField defaultValue={userData?.whatsapp as string} label="Whatsapp" name="whatsapp" type="number" placeholder="Ex. Format: 62xxxx " required />
-              <TextField defaultValue={userData?.schoolOrigin as string} disabled readOnly label="School origin" name="schoolOrigin" type="text" placeholder="Insert your School origin" />
+              <TextField defaultValue={userData?.Student?.schoolOrigin as string} disabled readOnly label="School origin" name="schoolOrigin" type="text" placeholder="Insert your School origin" />
               <div className="mb-6">
                 <label className="text-[17px] font-normal">Skills</label>
               </div>

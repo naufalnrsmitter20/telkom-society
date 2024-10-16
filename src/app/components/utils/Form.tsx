@@ -122,7 +122,7 @@ export function DropDown({ name, options, className, disabled, handleChange, lab
         <option value="null">Select</option>
         {options &&
           options.map((opt, i) => (
-            <option onChange={onChangeOption} key={i} value={opt.value}>
+            <option key={i} value={opt.value}>
               {opt.label}
             </option>
           ))}

@@ -13,10 +13,17 @@ export default function DetailProfilePartner({
   userData,
   userId,
 }: {
-  userData: Prisma.UserGetPayload<{ include: { Skills: true; Team: { include: { team: { include: { member: { include: { user: { include: { Team: true } } } } } }; user: true } }; invitation: true; projects: true; notiification: true } }>;
+  userData: Prisma.UserGetPayload<{
+    include: {
+      Student: { include: { Skills: true; projects: true; UserJob: true; ClassOfTalent: true } };
+      Team: { include: { team: { include: { member: { include: { user: { include: { Team: true; Student: { include: { UserJob: true } } } } } } } }; user: true } };
+      invitation: true;
+      notification: true;
+    };
+  }>;
   userId: string;
 }) {
-  const currentTeam = userData.Team.find((x) => x.userId === userId);
+  const currentTeam = userData.Team.find((x) => x.memberId === userId);
 
   return (
     <>
@@ -31,13 +38,13 @@ export default function DetailProfilePartner({
             </div>
             <div className="mt-4 flex w-full justify-between">
               <h1 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal">
-                {userData?.name} {`${userData?.job ? `(${userData?.job})` : "Loading..."}` as string}
+                {userData?.name} {`${userData?.Student?.UserJob?.jobName ? `(${userData?.Student.UserJob.jobName})` : "Loading..."}` as string}
               </h1>
               <div className="flex gap-x-2"></div>
             </div>
             <div className="h-2"></div>
-            <p className="text-gray-500 text-lg sm:text-lg md:text-xl lg:text-xl">{userData?.clasess}</p>
-            <p className="text-left text-gray-600 text-lg sm:text-lg md:text-xl lg:text-xl mt-4 mb-8">{userData?.biography}</p>
+            <p className="text-gray-500 text-lg sm:text-lg md:text-xl lg:text-xl">{userData?.Student?.ClassOfTalent?.Studentclass}</p>
+            <p className="text-left text-gray-600 text-lg sm:text-lg md:text-xl lg:text-xl mt-4 mb-8">{userData?.Student?.biography}</p>
             <div className="flex items-center gap-x-4 mb-2">
               <svg className="w-6 h-6 text-slate-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path
@@ -48,7 +55,7 @@ export default function DetailProfilePartner({
                   d="M9.143 4H4.857A.857.857 0 0 0 4 4.857v4.286c0 .473.384.857.857.857h4.286A.857.857 0 0 0 10 9.143V4.857A.857.857 0 0 0 9.143 4Zm10 0h-4.286a.857.857 0 0 0-.857.857v4.286c0 .473.384.857.857.857h4.286A.857.857 0 0 0 20 9.143V4.857A.857.857 0 0 0 19.143 4Zm-10 10H4.857a.857.857 0 0 0-.857.857v4.286c0 .473.384.857.857.857h4.286a.857.857 0 0 0 .857-.857v-4.286A.857.857 0 0 0 9.143 14Zm10 0h-4.286a.857.857 0 0 0-.857.857v4.286c0 .473.384.857.857.857h4.286a.857.857 0 0 0 .857-.857v-4.286a.857.857 0 0 0-.857-.857Z"
                 />
               </svg>
-              <p className="text-left text-gray-800 text-lg sm:text-lg md:text-xl lg:text-xl">{userData?.job}</p>
+              <p className="text-left text-gray-800 text-lg sm:text-lg md:text-xl lg:text-xl">{userData?.Student?.UserJob?.jobName}</p>
             </div>
             <div className="flex items-center gap-x-4">
               <svg className="w-6 h-6 text-slate-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -58,16 +65,16 @@ export default function DetailProfilePartner({
                   clipRule="evenodd"
                 />
               </svg>
-              <p className="text-left text-gray-800 text-lg sm:text-lg md:text-xl lg:text-xl">{userData.status}</p>
+              <p className="text-left text-gray-800 text-lg sm:text-lg md:text-xl lg:text-xl">{userData.Student?.status}</p>
             </div>
           </div>
 
           <div className="relative z-10 flex flex-col items-start mt-8">
             <h2 className="font-normal text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl mb-4">Skill</h2>
             <div className="flex flex-wrap justify-start gap-x-4 gap-y-4 mb-8 mt-4">
-              {userData && userData?.Skills.length != 0 ? (
+              {userData && userData?.Student?.Skills.length != 0 ? (
                 <>
-                  {userData?.Skills.map((skill, i) => (
+                  {userData?.Student?.Skills.map((skill, i) => (
                     <div key={i} className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl px-4 py-2 bg-red-500 text-white rounded-[8px]">
                       {skill.SkillName}
                     </div>
@@ -84,9 +91,9 @@ export default function DetailProfilePartner({
           <div className="relative z-10 flex flex-col items-start my-8 mt-8">
             <h2 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal mb-4">Project</h2>
             <ul className="space-y-2">
-              {userData && userData?.projects.length !== 0 ? (
+              {userData && userData?.Student?.projects.length !== 0 ? (
                 <div className="flex gap-4 flex-wrap">
-                  {userData?.projects.map((x, i) => (
+                  {userData?.Student?.projects.map((x, i) => (
                     <div key={i}>
                       <div className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl px-6 py-2 bg-red-500 text-white rounded-[8px] flex  items-center gap-x-3">
                         <p className="font-medium text-lg">{x.ProjeectName}</p>
@@ -130,8 +137,8 @@ export default function DetailProfilePartner({
                 {currentTeam ? (
                   currentTeam.team.member.map((x, i) => (
                     <li key={i}>
-                      <Link href={`/partner/user/profile/${x.userId}`} className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800 hover:text-highlight">
-                        {i + 1}. {x.user.name} - {x.user.job}
+                      <Link href={`/partner/user/profile/${x.memberId}`} className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800 hover:text-highlight">
+                        {i + 1}. {x.user.name} - {x.user.Student?.UserJob?.jobName}
                       </Link>
                     </li>
                   ))

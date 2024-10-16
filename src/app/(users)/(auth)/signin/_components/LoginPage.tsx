@@ -17,15 +17,17 @@ export default function LoginPage({ userData, session }: { userData: userFullPay
   useEffect(() => {
     if (session && userData) {
       setIsLoading(true);
-      if (userData.job === "Undefined") {
+      if (userData.Student?.UserJob?.jobName.length === undefined) {
         toast.success("Berhasil Login!");
         if (userData.role === "SISWA") {
           router.push("/pilihKeahlian");
+        } else if (userData.role === "GUEST") {
+          router.push("/");
         } else {
           router.push("/admin");
         }
         setIsLoading(false);
-      } else if (["Hacker", "Hipster", "Hustler"].includes(userData.job)) {
+      } else if (userData.Student?.UserJob?.jobName) {
         toast.success("Berhasil Login!");
         if (userData.role === "SISWA") {
           router.push("/profile");

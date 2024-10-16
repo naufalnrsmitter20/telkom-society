@@ -18,7 +18,7 @@ export default async function Notification() {
   // });
   const currentNotif = await prisma.notification.findMany({
     where: { receiverId: session?.user?.id },
-    include: { teamRequest: { include: { receiver: true, Notification: true, sender: true, team: true } }, receiver: true },
+    include: { teamRequest: { include: { receiver: { include: { Student: { include: { UserJob: true } } } }, Notification: true, sender: { include: { Student: { include: { UserJob: true } } } }, team: true } }, receiver: true },
     orderBy: {
       createAt: "desc",
     },
@@ -53,7 +53,7 @@ export default async function Notification() {
                       <div>
                         <h1 className="font-semibold text-lg ">Sender :</h1>
                         <p>
-                          {y.sender.name} - {y.sender.job}
+                          {y.sender.name} - {y.sender.Student?.UserJob?.jobName}
                         </p>
                         <p>
                           Owner of : <span className="font-medium text-highlight">{y.team.name}</span>
@@ -61,7 +61,7 @@ export default async function Notification() {
                       </div>
                       <div>
                         <Link href={`/division/profile/${y.teamId}`} className="text-[1rem] font-bold text-highlight border-2 border-moklet w-fit p-3 rounded-xl">
-                          Invite You In {y.team?.name} as {y.receiver.job}
+                          Invite You In {y.team?.name} as {y.receiver.Student?.UserJob?.jobName}
                         </Link>
                       </div>
                       {y.status === "PENDING" ? (
@@ -89,7 +89,7 @@ export default async function Notification() {
                           <div>
                             <h1 className="font-semibold text-lg ">Send to :</h1>
                             <p>
-                              {y.sender.name} - {y.sender.job}
+                              {y.sender.name} - {y.sender.Student?.UserJob?.jobName}
                             </p>
                             <p>
                               Owner of : <span className="font-medium text-highlight">{y.team.name}</span>
@@ -97,7 +97,7 @@ export default async function Notification() {
                           </div>
                           <div>
                             <Link href={`/division/profile/${y.teamId}`} className="text-[1rem] font-bold text-highlight border-2 border-moklet w-fit p-3 rounded-xl">
-                              Request to Join {y.team?.name} as {y.receiver.job}
+                              Request to Join {y.team?.name} as {y.receiver.Student?.UserJob?.jobName}
                             </Link>
                           </div>
                           {y.status === "PENDING" ? (

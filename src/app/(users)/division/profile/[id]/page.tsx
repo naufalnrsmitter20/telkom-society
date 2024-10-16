@@ -10,26 +10,26 @@ export default async function Division({ params }: { params: { id: string } }) {
     return <div className="mt-56">Team Not Found</div>;
   }
   const session = await nextGetServerSession();
-  const findCurrentUser = await prisma.user.findFirst({
-    where: { id: session?.user?.id },
+  const profile = await prisma.team.findFirst({ where: { id: params.id }, include: { member: true, requests: true, mentor: { include: { user: true } } } });
+  const teamMember = await prisma.teamMember.findMany({ where: { teamId: profile?.id, NOT: { role: "OWNER" } }, include: { user: { include: { Student: { include: { UserJob: true } } } }, team: true } });
+  const teamOwner = await prisma.teamMember.findFirst({ where: { teamId: profile?.id, NOT: { role: "MEMBER" } }, include: { user: { include: { Student: { include: { UserJob: true } } } }, team: true } });
+  const teamRequest = await prisma.teamRequest.findMany({ where: { teamId: profile?.id }, include: { sender: { include: { Student: { include: { UserJob: true } } } }, receiver: { include: { Student: { include: { UserJob: true } } } } } });
+  const mentor = await prisma.teacher.findMany({
+    include: { user: true },
   });
-  const profile = await prisma.team.findFirst({ where: { id: params.id }, include: { member: true, requests: true } });
-  const teamMember = await prisma.teamMember.findMany({ where: { teamId: profile?.id, NOT: { role: "OWNER" } }, include: { user: true, team: true } });
-  const teamOwner = await prisma.teamMember.findFirst({ where: { teamId: profile?.id, NOT: { role: "MEMBER" } }, include: { user: true, team: true } });
-  const teamRequest = await prisma.teamRequest.findMany({ where: { teamId: profile?.id }, include: { sender: true, receiver: true } });
-  const findMember = profile?.member.find((x) => x.userId);
+  const findMember = profile?.member.find((x) => x.memberId);
   const findRequestMember = teamRequest?.find((x) => x.receiverId);
 
   const user = await prisma.user.findMany({
-    include: { Team: true, invitation: true, teamRequest: true },
+    include: { Team: true, invitation: true, teamRequest: true, Student: { include: { UserJob: true } } },
     where: {
       NOT: [
         { id: session?.user?.id },
-        { Team: { some: { userId: findMember?.userId } } },
+        { Team: { some: { memberId: findMember?.memberId } } },
         { role: "ADMIN" },
         { role: "GURU" },
-        { job: "Undefined" },
-        { OR: [{ id: findRequestMember?.receiver.id, teamRequest: { some: { status: "PENDING" } } }, { status: "Have_Team" }] },
+        { Student: { UserJob: { jobName: undefined } } },
+        { OR: [{ id: findRequestMember?.receiver.id, teamRequest: { some: { status: "PENDING" } } }, { Student: { status: "Have_Team" } }] },
       ],
     },
   });
@@ -48,7 +48,7 @@ export default async function Division({ params }: { params: { id: string } }) {
             <Image unoptimized quality={100} src={profile?.logo as string} width={192} height={192} alt="logo" className="h-auto w-full object-cover md:w-48" />
           </div>
           <div className="p-8 w-full">
-            <General profile={profile!} teamId={params.id} userId={session?.user?.id as string} />
+            <General profile={profile!} teamId={params.id} userId={session?.user?.id as string} mentor={mentor} />
             <MemberTable teamOwner={teamOwner!} teamMember={teamMember} data={user} teamRequest={teamRequest} session={session!} />
             <div className="mt-8 flex space-x-4">
               <Link target="_blank" href={`https://www.linkedin.com/${profile?.linkedin}`} className="text-blue-500 hover:underline">

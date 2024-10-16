@@ -12,9 +12,13 @@ export default async function PilihKeahlian() {
     where: {
       email: session.user.email,
     },
+    include: { Student: { include: { UserJob: true } } },
   });
-  if (findUser?.job !== "Undefined") {
+  const findJob = await prisma.userJob.findMany({
+    where: { jobName: { not: "Undefined" } },
+  });
+  if (findUser?.Student?.UserJob?.jobName !== undefined) {
     return redirect("/profile");
   }
-  return <Insert />;
+  return <Insert jobData={findJob} />;
 }

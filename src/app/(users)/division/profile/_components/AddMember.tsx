@@ -11,8 +11,8 @@ import makeAnimated from "react-select/animated";
 
 const animatedComponents = makeAnimated();
 
-export default function AddMember({ onClose, data }: { onClose: () => void; data: Prisma.UserGetPayload<{ include: { Team: true } }>[] }) {
-  const userOptions = data.map((x) => ({ label: `${x.name} - ${x.job}`, value: x.id }));
+export default function AddMember({ onClose, data }: { onClose: () => void; data: Prisma.UserGetPayload<{ include: { Team: true; Student: { include: { UserJob: true } } } }>[] }) {
+  const userOptions = data.map((x) => ({ label: `${x.name} - ${x.Student?.UserJob?.jobName}`, value: x.id }));
   const HandleInvite = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
