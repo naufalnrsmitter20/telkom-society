@@ -36,6 +36,7 @@ export const authOptions: AuthOptions = {
   session: {
     strategy: "jwt",
   },
+  jwt: { maxAge: 60 * 60 * 24 * 7 },
   pages: {
     signIn: "/signin",
     error: "/AccessDenied",
@@ -93,36 +94,116 @@ export const authOptions: AuthOptions = {
     async redirect({ url, baseUrl }) {
       return url.startsWith("/") ? new URL(url, baseUrl).toString() : url;
     },
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account }) {
       try {
         if (account?.provider === "credentials") {
           if (user.email) {
             return true;
           }
         }
-        // if (account?.provider === "google" && !profile?.email?.endsWith("smktelkom-mlg.sch.id")) {
-        //   return false;
-        // }
         const match = user.email?.match(/\d+/);
-
         if (user.email) {
           const userDatabase = await findUser({ email: user.email });
           if (!userDatabase) {
-            await createUser({
-              email: user.email,
-              photo_profile: user.image || "https://res.cloudinary.com/dvwhepqbd/image/upload/v1720580914/pgfrhzaobzcajvugl584.png",
-              name: user.name || "",
-              job: "Undefined",
-              role: user.email.includes("smktelkom-mlg.sch.id") ? (user.email.includes("student") ? "SISWA" : "GURU") : "SISWA",
-              cover: "https://res.cloudinary.com/dhjeoo1pm/image/upload/v1726727429/mdhydandphi4efwa7kte.png",
-              generation: user.email.includes("smktelkom-mlg.sch.id") ? (match ? match[0] : "0") : "0",
-              userAuth: {
-                create: {
-                  last_login: new Date(),
-                },
-              },
-              schoolOrigin: user.email.endsWith("smktelkom-mlg.sch.id") ? "SMK Telkom Malang" : "Sekolah Tidak Terdaftar",
-            });
+            if (user.email.includes("smktelkom-mlg.sch.id")) {
+              if (!user.email.includes("student")) {
+                await createUser({
+                  email: user.email,
+                  photo_profile: user.image || "https://res.cloudinary.com/dvwhepqbd/image/upload/v1720580914/pgfrhzaobzcajvugl584.png",
+                  name: user.name || "",
+                  Teacher: {
+                    create: {
+                      school: "SMK Telkom Malang",
+                      subject: "Not Defined",
+                    },
+                  },
+                  role: "GURU",
+                  cover: "https://res.cloudinary.com/dhjeoo1pm/image/upload/v1726727429/mdhydandphi4efwa7kte.png",
+                  userAuth: {
+                    create: {
+                      last_login: new Date(),
+                    },
+                  },
+                });
+              } else {
+                await createUser({
+                  email: user.email,
+                  photo_profile: user.image || "https://res.cloudinary.com/dvwhepqbd/image/upload/v1720580914/pgfrhzaobzcajvugl584.png",
+                  name: user.name || "",
+                  Student: {
+                    create: {
+                      username: user.name || "",
+                      generation: match ? match[0] : "0",
+                      schoolOrigin: "SMK Telkom Malang",
+                    },
+                  },
+                  role: "SISWA",
+                  cover: "https://res.cloudinary.com/dhjeoo1pm/image/upload/v1726727429/mdhydandphi4efwa7kte.png",
+                  userAuth: {
+                    create: {
+                      last_login: new Date(),
+                    },
+                  },
+                });
+              }
+            } else {
+              if (user.email.includes("gmail.com")) {
+                // sementara
+                // await createUser({
+                //   email: user.email,
+                //   photo_profile: user.image || "https://res.cloudinary.com/dvwhepqbd/image/upload/v1720580914/pgfrhzaobzcajvugl584.png",
+                //   name: user.name || "",
+                //   Teacher: {
+                //     create: {
+                //       school: "SMK Telkom Malang",
+                //       subject: "Not Defined",
+                //     },
+                //   },
+                //   role: "GURU",
+                //   cover: "https://res.cloudinary.com/dhjeoo1pm/image/upload/v1726727429/mdhydandphi4efwa7kte.png",
+                //   userAuth: {
+                //     create: {
+                //       last_login: new Date(),
+                //     },
+                //   },
+                // });
+
+                await createUser({
+                  email: user.email,
+                  photo_profile: user.image || "https://res.cloudinary.com/dvwhepqbd/image/upload/v1720580914/pgfrhzaobzcajvugl584.png",
+                  name: user.name || "",
+                  Student: {
+                    create: {
+                      username: user.name || "",
+                      generation: match ? match[0] : "0",
+                      schoolOrigin: "SMK Telkom Malang",
+                    },
+                  },
+                  role: "SISWA",
+                  cover: "https://res.cloudinary.com/dhjeoo1pm/image/upload/v1726727429/mdhydandphi4efwa7kte.png",
+                  userAuth: {
+                    create: {
+                      last_login: new Date(),
+                    },
+                  },
+                });
+
+                // sementara
+              } else {
+                await createUser({
+                  email: user.email,
+                  photo_profile: user.image || "https://res.cloudinary.com/dvwhepqbd/image/upload/v1720580914/pgfrhzaobzcajvugl584.png",
+                  name: user.name || "",
+                  role: "GUEST",
+                  cover: "https://res.cloudinary.com/dhjeoo1pm/image/upload/v1726727429/mdhydandphi4efwa7kte.png",
+                  userAuth: {
+                    create: {
+                      last_login: new Date(),
+                    },
+                  },
+                });
+              }
+            }
             revalidatePath("/partner");
             revalidatePath("/division/create");
             revalidatePath("/api/data");

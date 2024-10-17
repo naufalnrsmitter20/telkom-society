@@ -2,13 +2,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { FormButton, LinkButton } from "./Button";
-
-import Logo from "@/../public/Telkom Society 1.png";
+import Logo from "@/../public/Telkom Society 2 SVG.svg";
 import portalku from "@/../public/img/portalku.png";
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Bell from "../Icons/Bell";
+import React from "react";
 
 export default function Navbar() {
   const [modal, setModal] = useState<boolean>(false);
@@ -104,11 +104,6 @@ export default function Navbar() {
                       </Link>
                     </li>
                     <li>
-                      <Link onClick={redirectPage} href="/messages" className={`${pathName === "/messages" ? "text-red-400" : "text-black"}text-black rounded md:hover:bg-transparent hover:text-red-600`}>
-                        Messages
-                      </Link>
-                    </li>
-                    <li>
                       <Link onClick={redirectPage} href="/division" className={`${pathName === "/division" ? "text-red-400" : "text-black"}text-black rounded md:hover:bg-transparent hover:text-red-600`}>
                         Division
                       </Link>
@@ -145,11 +140,6 @@ export default function Navbar() {
               <li>
                 <Link onClick={redirectPage} href="/partner" className={`${pathName === "/partner" ? "text-red-400" : "text-black"} rounded md:hover:bg-transparent hover:text-red-600 duration-500`}>
                   Partner
-                </Link>
-              </li>
-              <li>
-                <Link onClick={redirectPage} href="/messages" className={`${pathName === "/messages" ? "text-red-400" : "text-black"} rounded md:hover:bg-transparent hover:text-red-600 duration-500`}>
-                  Messages
                 </Link>
               </li>
               <li>

@@ -49,7 +49,7 @@ export const UpdateTeamLogo = async (data: FormData) => {
     const logo = data.get("logo") as File;
     const ArrayBuffer = await logo.arrayBuffer();
     const upload = await UploadImageCloudinary(Buffer.from(ArrayBuffer));
-    const findUser = await prisma.user.findFirst({ where: { id: session.user.id as string }, include: { Team: true } });
+    const findUser = await prisma.user.findFirst({ where: { id: session.user.id as string }, include: { Student: { include: { user: { include: { Team: true } } } } } });
     const update = await prisma.team.update({
       where: { id: findUser?.id as string },
       data: {

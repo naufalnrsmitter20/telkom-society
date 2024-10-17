@@ -7,11 +7,11 @@ import Image from "next/image";
 import { FormButton } from "@/app/components/utils/Button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { UpdateUserById } from "@/utils/server-action/userGetServerSession";
-import { occupation } from "@/types/occupation";
+import { updateJobById, UpdateUserById } from "@/utils/server-action/userGetServerSession";
 import toast from "react-hot-toast";
+import { jobPayloadMany } from "@/utils/relationsip";
 
-export default function Insert() {
+export default function Insert({ jobData }: { jobData: jobPayloadMany }) {
   const [selectedOccupation, setSelectedOccupation] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
@@ -31,42 +31,25 @@ export default function Insert() {
 
     try {
       const formData = new FormData();
-      formData.append("job", selectedOccupation);
-      await UpdateUserById(formData);
+      formData.append("jobId", selectedOccupation);
+      await updateJobById(formData);
       setIsLoading(false);
       toast.success("Berhasil Memilih Keahllian");
       router.push("/isiIdentitas");
     } catch (error) {
       console.error("Failed to update user job:", error);
-      toast.error("Gagal Memilih Keahllian");
+      toast.error((error as Error).message);
       setIsLoading(false);
     }
   };
   return (
     <React.Fragment>
       <main className="flex max-w-full w-full h-screen items-center justify-center">
-        {!selectedOccupation && (
-          <div className={"w-1/2 lg:grid grid-cols-3 gap-x-6 hidden"}>
-            <Image src={programmer} alt="Programmer" className="w-full h-screen object-cover" />
-            <Image src={hipster} alt="Hipster" className="w-full h-screen object-cover" />
-            <Image src={hustler} alt="Hustler" className="w-full h-screen object-cover" />
-          </div>
-        )}
-        {selectedOccupation === "Hipster" && (
-          <div className="w-1/2 lg:grid hidden grid-cols-1 gap-x-6">
-            <Image src={hipster} alt="Hipster" className="w-full h-screen object-cover" />
-          </div>
-        )}
-        {selectedOccupation === "Hacker" && (
-          <div className="w-1/2 lg:grid hidden grid-cols-1 gap-x-6">
-            <Image src={programmer} alt="Programmer" className="w-full h-screen object-cover" />
-          </div>
-        )}
-        {selectedOccupation === "Hustler" && (
-          <div className="w-1/2 hidden lg:grid grid-cols-1 gap-x-6">
-            <Image src={hustler} alt="Hustler" className="w-full h-screen object-cover" />
-          </div>
-        )}
+        <div className={"w-1/2 lg:grid grid-cols-3 gap-x-6 hidden"}>
+          <Image src={programmer} alt="Programmer" className="w-full h-screen object-cover" />
+          <Image src={hipster} alt="Hipster" className="w-full h-screen object-cover" />
+          <Image src={hustler} alt="Hustler" className="w-full h-screen object-cover" />
+        </div>
 
         <div className="lg:w-1/2 w-full px-8 lg:px-4 h-full pt-24">
           <div className="max-w-2xl mx-auto mt-12">
@@ -76,14 +59,14 @@ export default function Insert() {
               <select
                 title="occupation"
                 id="occupation"
-                name="job"
+                name="jobName"
                 className="bg-slate-50 border border-slate-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-slate-200 focus:border-slate-400 block w-full p-2.5 outline-none placeholder:text-slate-300 placeholder:font-light placeholder:tracking-wide"
                 onChange={handleSelectChange}
               >
-                <option>Select Occupation</option>
-                {occupation.map((e, i) => (
-                  <option key={i} value={e.value}>
-                    {e.occupation}
+                <option value={"Undefined"}>Select Occupation</option>
+                {jobData.map((e, i) => (
+                  <option key={i} value={e.id}>
+                    {e.jobName} ({e.jobDesc})
                   </option>
                 ))}
               </select>

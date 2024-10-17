@@ -9,18 +9,19 @@ import { LinkButton } from "@/app/components/utils/Button";
 import { Prisma } from "@prisma/client";
 import { Session } from "next-auth";
 import { formatPhoneNumber } from "@/utils/formatPhone";
+import { jobPayloadMany, userPayloadMany, userPayloadOne } from "@/utils/relationsip";
 
-export default function Main({ userData, session, currentUser }: { userData: Prisma.UserGetPayload<{}>[]; session: Session; currentUser: Prisma.UserGetPayload<{}> }) {
+export default function Main({ userData, session, currentUser, job }: { userData: userPayloadMany; session: Session; currentUser: userPayloadOne; job: jobPayloadMany }) {
   const [searchInput, setSearchInput] = useState<string>("");
   const [selected, setSelected] = useState("All");
-  const [filteredUser, setFilteredUser] = useState<Prisma.UserGetPayload<{}>[]>(userData);
+  const [filteredUser, setFilteredUser] = useState<Prisma.UserGetPayload<{ include: { Student: { include: { UserJob: true } } } }>[]>(userData);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage] = useState<number>(20);
 
   useEffect(() => {
     const filterUsers = () => {
-      const filteredByName = userData.filter((userData: Prisma.UserGetPayload<{}>) => userData.name.toLowerCase().includes(searchInput.toLowerCase()));
-      const finalFilteredUsers = selected === "All" ? filteredByName : filteredByName.filter((dataUser: Prisma.UserGetPayload<{}>) => dataUser.job === selected);
+      const filteredByName = userData.filter((userData) => userData.name.toLowerCase().includes(searchInput.toLowerCase()));
+      const finalFilteredUsers = selected === "All" ? filteredByName : filteredByName.filter((dataUser) => dataUser.Student?.UserJob?.jobName === selected);
       setFilteredUser(finalFilteredUsers);
     };
     filterUsers();
@@ -83,25 +84,17 @@ export default function Main({ userData, session, currentUser }: { userData: Pri
             </div>
           </div>
           <div className="w-full px-10 bg-white rounded-3xl py-4">
-            <div className="py-4 font-Quicksand xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-light text-slate-500">Manage your partner</div>
+            <div className="py-4 xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium text-slate-600">Manage your partner</div>
             <hr />
             <div className="grid grid-cols-1">
               <button onClick={() => handleButtonFilter("All")} className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2">
-                <Image src={setting} width={30} alt="hustler" />
-                <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-500">All</p>
+                <p className="lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium text-slate-700">All</p>
               </button>
-              <button onClick={() => handleButtonFilter("Hustler")} className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2">
-                <Image src={hustler} width={30} alt="hustler" />
-                <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-500">Hustler</p>
-              </button>
-              <button onClick={() => handleButtonFilter("Hipster")} className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2">
-                <Image src={hipster} width={30} alt="hustler" />
-                <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-500">Hipster</p>
-              </button>
-              <button onClick={() => handleButtonFilter("Hacker")} className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2">
-                <Image src={hacker} width={30} alt="hustler" />
-                <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-500">Hacker</p>
-              </button>
+              {job.map((jobData, i) => (
+                <button key={i} onClick={() => handleButtonFilter(`${jobData.jobName}`)} className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2">
+                  <p className="lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium text-slate-700">{jobData.jobName}</p>
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -143,9 +136,13 @@ export default function Main({ userData, session, currentUser }: { userData: Pri
                   </div>
                   <div className="ml-12 mt-2">
                     <p className="font-medium xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] text-[16px] text-black">{user.name}</p>
-                    <p className="font-normal xl:text-[15px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[11px] text-slate-600">{user.job} | </p>
-                    <p className={`font-normal xl:text-[15px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[11px] mt-2 ${user?.status === "Dont_Have_Team" ? "text-red-500" : user?.status === "Have_Team" ? "text-green-500" : ""}`}>
-                      Status: {user?.status}
+                    <p className="font-normal xl:text-[15px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[11px] text-slate-600">{user.Student?.UserJob?.jobName} | </p>
+                    <p
+                      className={`font-normal xl:text-[15px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[11px] mt-2 ${
+                        user?.Student?.status === "Dont_Have_Team" ? "text-red-500" : user?.Student?.status === "Have_Team" ? "text-green-500" : ""
+                      }`}
+                    >
+                      Status: {user?.Student?.status}
                     </p>
                     <div className="mt-6 justify-start">
                       <LinkButton variant="white" href={`/partner/user/profile/${user.id}`} className="bg-transparent border rounded-full">

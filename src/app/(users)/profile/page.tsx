@@ -11,12 +11,23 @@ export default async function Profile() {
   }
   const findUser = await prisma.user.findUnique({
     where: { email: session.user.email },
-    include: { certificates: true, invitation: true, projects: true, Skills: true, Team: { include: { team: { include: { member: { include: { user: true } } } }, user: true } }, teamRequest: true, userAuth: true },
+    include: {
+      userAuth: true,
+      invitation: true,
+      Team: { include: { team: { include: { member: { include: { user: { include: { Student: { include: { UserJob: true } } } } } } } }, user: true } },
+      teamRequest: true,
+      Student: {
+        include: { certificates: true, projects: true, Skills: true, ClassOfTalent: true, UserJob: true },
+      },
+    },
   });
+
+  const JobData = await prisma.userJob.findMany();
+  const ClassOfStudent = await prisma.classOfTalent.findMany();
 
   return (
     <>
-      <ContentProfile userData={findUser!} session={session} />
+      <ContentProfile userData={findUser!} session={session} jobData={JobData} classOfTalent={ClassOfStudent} />
     </>
   );
 }

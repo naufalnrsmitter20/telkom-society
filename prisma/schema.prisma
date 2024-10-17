@@ -11,35 +11,58 @@ model User {
   id            String         @id @default(uuid()) @map("user_id") @db.Char(36)
   email         String         @unique
   photo_profile String?
-  name          String
-  clasess       String?
-  absent        String?
-  Phone         String?
-  NIS           String?
-  NISN          String?
-  schoolOrigin  String?
-  generation    String?
   cover         String?
-  role          Role           @default(SISWA)
-  job           Job            @default(Undefined)
-  biography     String?
-  status        Status         @default(Dont_Have_Team)
+  name          String
+  role          Role           @default(GUEST)
+  religion      Religion?      @default(Islam)
+  gender        Gender?        @default(Male)
   linkedin      String?
   github        String?
   instagram     String?
   website       String?
   whatsapp      String?
-  BirthDate     String?
-  religion      Religion?      @default(Islam)
-  gender        Gender?        @default(Male)
+  userAuth      UserAuth?
+  teacherId     String?
+  studentId     String?
+  Student       Student?
+  Teacher       Teacher?
+  notification  Notification[]
   Team          TeamMember[]
   invitation    TeamRequest[]  @relation("RequestReceiver")
   teamRequest   TeamRequest[]  @relation("RequestSender")
-  userAuth      UserAuth?
-  certificates  certificate[]  @relation("CertificateToUser")
-  projects      Project[]      @relation("ProjectToUser")
-  Skills        Skill[]        @relation("SkillToUser")
-  notiification Notification[]
+}
+
+model Student {
+  id              String         @id @default(uuid())
+  username        String?
+  absent          String?
+  NIS             String?
+  NISN            String?
+  schoolOrigin    String?
+  generation      String?
+  biography       String?        @db.LongText()
+  status          Status         @default(Dont_Have_Team)
+  BirthDate       String?
+  jobId           String?
+  classOfTalentId String?
+  UserJob         UserJob?       @relation(fields: [jobId], references: [id])
+  ClassOfTalent   ClassOfTalent? @relation(fields: [classOfTalentId], references: [id])
+  certificates    certificate[]  @relation("CertificateToUser")
+  projects        Project[]      @relation("ProjectToUser")
+  Skills          Skill[]        @relation("SkillToUser")
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String         @unique
+}
+
+model Teacher {
+  id      String  @id @default(uuid())
+  phone   String?
+  desc    String? @db.LongText()
+  school  String
+  subject String
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String  @unique
+  Team    Team[]  @relation("teacherToTeam")
 }
 
 model UserAuth {
@@ -55,12 +78,14 @@ model Team {
   name        String
   description String        @db.LongText()
   logo        String?
-  mentor      String
   instagram   String?
   linkedin    String?
   ownerId     String
   teamStatus  TeamStatus    @default(ACTIVE)
   createAt    DateTime      @default(now())
+  mentorId    String?
+  mentor      Teacher?      @relation("teacherToTeam", fields: [mentorId], references: [id], onDelete: Cascade)
+  project     Project[]
   member      TeamMember[]
   requests    TeamRequest[]
 }
@@ -68,11 +93,11 @@ model Team {
 model TeamMember {
   id       String   @id @default(uuid())
   teamId   String
-  userId   String   @map("user_id")
+  memberId String
   role     TeamRole
   joinedAt DateTime @default(now())
   team     Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [memberId], references: [id], onDelete: Cascade)
 }
 
 model TeamRequest {
@@ -101,31 +126,41 @@ model Notification {
 }
 
 model Skill {
-  SkillName String @id @unique
-  users     User[] @relation("SkillToUser")
+  SkillName String    @id @unique
+  users     Student[] @relation("SkillToUser")
 }
 
 model Project {
-  ProjeectName String  @id @unique
+  ProjeectName String    @id @unique
   link         String?
-  members      User[]  @relation("ProjectToUser")
+  users        Student[] @relation("ProjectToUser")
+  Team         Team?     @relation(fields: [teamId], references: [id])
+  teamId       String?
 }
 
 model certificate {
-  CertificateName String  @id @unique
+  CertificateName String    @id @unique
   img             String
   link            String?
-  user            User[]  @relation("CertificateToUser")
+  users           Student[] @relation("CertificateToUser")
 }
 
-enum Job {
-  Undefined
-  Hustler
-  Hipster
-  Hacker
+model UserJob {
+  id       String    @id @default(uuid())
+  jobName  String    @default("")
+  jobDesc  String    @default("")
+  createAt DateTime  @default(now())
+  user     Student[]
+}
+
+model ClassOfTalent {
+  id           String    @id @default(uuid())
+  Studentclass String
+  user         Student[]
 }
 
 enum Role {
+  GUEST
   SISWA
   GURU
   ADMIN

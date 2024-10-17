@@ -1,10 +1,8 @@
 import React from "react";
-import CreateTeam from "./_components/createTeam";
+import CreateTeamPage from "./_components/createTeam";
 import prisma from "@/lib/prisma";
 
 export default async function TeamsCreate() {
-  const user = await prisma.user.findMany({
-    where: { role: "GURU" },
-  });
-  return <CreateTeam user={user} />;
+  const data = await prisma.teacher.findMany({ include: { user: true } });
+  return <CreateTeamPage data={data} />;
 }

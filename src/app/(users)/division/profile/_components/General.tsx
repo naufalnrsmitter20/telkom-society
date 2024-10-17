@@ -8,7 +8,17 @@ import toast from "react-hot-toast";
 import { deleteTeam } from "@/utils/server-action/teamsActions";
 import { useRouter } from "next/navigation";
 
-export default function General({ profile, teamId, userId }: { profile: Prisma.TeamGetPayload<{ include: { member: true; requests: true } }>; teamId: string; userId: string }) {
+export default function General({
+  profile,
+  teamId,
+  userId,
+  mentor,
+}: {
+  profile: Prisma.TeamGetPayload<{ include: { member: true; requests: true; mentor: { include: { user: true } } } }>;
+  teamId: string;
+  userId: string;
+  mentor: Prisma.TeacherGetPayload<{ include: { user: true } }>[];
+}) {
   const [modal, setModal] = useState(false);
   const [view, setView] = useState(false);
   const router = useRouter();
@@ -37,7 +47,7 @@ export default function General({ profile, teamId, userId }: { profile: Prisma.T
       <div className="lg:flex lg:justify-between mt-4">
         <div>
           <p className="mt-2 text-black text-sm sm:text-sm md:text-sm lg:text-[16px] xl:text-[16px]">
-            Mentor: <span className="font-semibold"> {profile?.mentor}</span>
+            Mentor: <span className="font-semibold"> {profile?.mentor?.user.name}</span>
           </p>
           <p className="mt-2 text-black text-sm sm:text-sm md:text-sm lg:text-[16px] xl:text-[16px]">
             Team ID: <span className="font-semibold">{profile?.id}</span>
@@ -62,7 +72,7 @@ export default function General({ profile, teamId, userId }: { profile: Prisma.T
           )}
         </div>
       </div>
-      {modal && <EditTeam data={profile} teamId={profile?.id} onClose={() => setModal(false)} />}
+      {modal && <EditTeam data={profile} teamId={profile?.id} onClose={() => setModal(false)} mentor={mentor} />}
       {view && <ViewTeam data={profile} teamId={profile?.id} onClose={() => setView(false)} />}
     </div>
   );

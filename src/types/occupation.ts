@@ -1,8 +1,6 @@
-import { Job } from "@prisma/client";
-
 export interface occupationProps {
   occupation: string;
-  value: Job;
+  value: string;
   id: number;
 }
 

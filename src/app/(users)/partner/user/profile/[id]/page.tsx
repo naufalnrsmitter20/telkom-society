@@ -11,7 +11,12 @@ export default async function profilePartner({ params }: { params: { id: string 
   }
   const findUser = await prisma.user.findFirst({
     where: { id: params.id },
-    include: { Skills: true, Team: { include: { team: { include: { member: { include: { user: { include: { Team: true } } } } } }, user: true } }, invitation: true, projects: true, notiification: true },
+    include: {
+      Student: { include: { Skills: true, projects: true, UserJob: true, ClassOfTalent: true } },
+      Team: { include: { team: { include: { member: { include: { user: { include: { Team: true, Student: { include: { UserJob: true } } } } } } } }, user: true } },
+      invitation: true,
+      notification: true,
+    },
   });
   return <DetailProfilePartner userId={params.id} userData={findUser!} />;
 }

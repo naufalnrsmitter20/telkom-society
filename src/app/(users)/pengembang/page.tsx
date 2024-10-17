@@ -4,9 +4,12 @@ export default function Pengembang() {
   const developers = [
     { job: "General Manager", name: "Muhammad Chusni Agus, M.Pd., Gr." },
     { job: "Project Manager & Fullstack Developer", name: "Naufal Nabil Ramadhan" },
-    { job: "Frontend Developer", name: "Jean Richnerd Rantabaratrahjaga" },
-    { job: "Frontend Developer ", name: "Haza Nasrullah Kuswantoro" },
-    { job: "UI/UX Designer ", name: "Ryo Hariyono Angwyn" },
+    { job: "Backennd Developer", name: "people" },
+    { job: "Frontend Developer 1", name: "Haza Nasrullah Kuswantoro" },
+    { job: "Frontend Developer 2", name: "Aaron Zanett Samudra" },
+    { job: "UI/UX Designer 1", name: "Ryo Hariyono Angwyn" },
+    { job: "UI/UX Designer 2", name: "people" },
+    { job: "Machine Learning Engineer", name: "Shofi Yulloh Kamil" },
   ];
 
   return (

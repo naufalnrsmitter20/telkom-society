@@ -1,24 +1,10 @@
 "use client";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import banner from "@/../public/img/banner ryo.png";
 import Image from "next/image";
-import hipster from "@/../public/svg/hipsterP.png";
-import hustler from "@/../public/svg/hustlerP.svg";
-import hacker from "@/../public/svg/hackerP.png";
 import setting from "@/../public/svg/settingsP.png";
-import { userWithLastLogin } from "@/utils/relationsip";
-import { getData } from "@/lib/FetchData";
-import { useSession } from "next-auth/react";
-import { fetcher } from "@/utils/server-action/Fetcher";
-import useSWR from "swr";
-import Popup from "./Popup";
-import Link from "next/link";
-import prisma from "@/lib/prisma";
-import { nextGetServerSession } from "@/lib/authOption";
-import { FormButton, LinkButton } from "@/app/components/utils/Button";
+import { LinkButton } from "@/app/components/utils/Button";
 import JoinTeam from "./JoinTeam";
 import { Prisma } from "@prisma/client";
-import { DefaultArgs } from "@prisma/client/runtime/library";
 import { Session } from "next-auth";
 
 export default function ContentOfTeam({
@@ -26,18 +12,21 @@ export default function ContentOfTeam({
   Owner,
   session,
   currentUser,
+  jobList,
 }: {
-  teams: Prisma.TeamGetPayload<{ include: { _count: true; member: { include: { team: true; user: true } }; requests: true } }>[];
+  teams: Prisma.TeamGetPayload<{ include: { _count: true; member: { include: { team: true; user: { include: { Student: { include: { UserJob: true } } } } } }; requests: true; mentor: { include: { user: true } } } }>[];
   Owner: Prisma.UserGetPayload<{ include: { _count: true } }>;
   session: Session;
   currentUser: Prisma.UserGetPayload<{}>;
+  jobList: Prisma.UserJobGetPayload<{ include: { user: true } }>[];
 }) {
   const [searchInput, setSearchInput] = useState<string>("");
   const [selected, setSelected] = useState("All");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage] = useState<number>(10);
 
-  const [filteredUser, setFilteredUser] = useState<Prisma.TeamGetPayload<{ include: { _count: true; member: { include: { team: true; user: true } }; requests: true } }>[]>(teams);
+  const [filteredUser, setFilteredUser] =
+    useState<Prisma.TeamGetPayload<{ include: { _count: true; member: { include: { team: true; user: { include: { Student: { include: { UserJob: true } } } } } }; requests: true; mentor: { include: { user: true } } } }>[]>(teams);
 
   useEffect(() => {
     const filterUsers = () => {
@@ -66,7 +55,7 @@ export default function ContentOfTeam({
     setCurrentPage(pageNumber);
   };
 
-  const availableJobs = ["Hacker", "Hipster", "Hustler"];
+  const availableJobs = jobList.map((job) => job.jobName);
 
   return (
     <>
@@ -158,7 +147,7 @@ export default function ContentOfTeam({
           <div className="grid grid-cols-1 bg-white rounded-xl gap-y-4 w-full">
             <>
               {currentTeams.map((x, i) => (
-                <div key={i} className="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row w-full hover:bg-gray-100 ">
+                <div key={i} className="flex flex-col items-start bg-white border border-gray-200 rounded-lg shadow md:flex-row w-full hover:bg-gray-100 ">
                   <Image unoptimized quality={100} className="object-cover w-full rounded-lg h-96 md:h-auto md:w-48 m-5" width={200} height={100} src={x.logo as string} alt={x.name} />
                   <div className="flex flex-col justify-between p-4 leading-normal w-full">
                     <h5 className=" text-2xl font-bold tracking-tight text-black">{x.name}</h5>
@@ -166,15 +155,14 @@ export default function ContentOfTeam({
                       Create by <span className="font-semibold">{x.ownerId === session?.user?.id ? "You" : x.member.find((y) => y.role === "OWNER")?.user.name}</span>
                     </h5>
                     <h5 className="mb-2 text-[1rem] font-semibold tracking-tight text-green-400">
-                      {/* Existing Job <span className="font-semibold">{x.member.map((n) => n.user.job.concat(", "))}</span> */}
-                      Available Job : <span className="font-semibold text-black">{availableJobs.filter((job) => !x.member.some((member) => member.user.job === job)).join(" & ")}</span>
+                      Available Job : <span className="font-semibold text-black">{availableJobs.filter((job) => !x.member.some((member) => member.user.Student?.UserJob?.jobName === job)).join(" & ")}</span>
                     </h5>
                     <h5 className="text-xl font-semibold tracking-tight text-black">Jumlah Anggota : {x._count.member}</h5>
-                    <h5 className="mb-2 text-lg font-semibold tracking-tight text-black">Mentor : {x.mentor}</h5>
+                    <h5 className="mb-2 text-lg font-semibold tracking-tight text-black">Mentor : {x.mentor?.user.name}</h5>
                     <p className="text-lg font-medium text-black ">Description</p>
                     <p className="mb-3 font-normal text-slate-600 overflow-x-hidden">{x.description}</p>
                     <div className="flex justify-end gap-x-3">
-                      {x.ownerId === session.user?.id || (x.member.find((y) => y.userId === session.user?.id) ? <></> : <JoinTeam teamId={x.id} />)}
+                      {x.ownerId === session.user?.id || (x.member.find((y) => y.memberId === session.user?.id) ? <></> : <JoinTeam teamId={x.id} />)}
                       <LinkButton href={`/division/profile/${x.id}`} variant="base">
                         Details
                       </LinkButton>

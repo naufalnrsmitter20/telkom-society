@@ -1,21 +1,19 @@
 "use client";
-import { FormButton } from "@/app/components/utils/Button";
 import { DeleteUser } from "@/utils/server-action/userGetServerSession";
-import { deleteUser } from "@/utils/user.query";
-import { Prisma } from "@prisma/client";
 import React, { useEffect, useState } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
 import toast from "react-hot-toast";
 import { FaPencilAlt, FaTrash } from "react-icons/fa";
 import ModalUser from "./ModalUser";
 import AddUser from "./AddUser";
+import { userPayloadOne, userWithUserAuthMany, userWithUserAuthOne } from "@/utils/relationsip";
 
-export default function TableUser({ dataAdmin }: { dataAdmin: Prisma.UserGetPayload<{ include: { userAuth: true } }>[] }) {
+export default function TableUser({ dataAdmin }: { dataAdmin: userWithUserAuthMany }) {
   const [modal, setModal] = useState(false);
-  const [modalData, setModalData] = useState<Prisma.UserGetPayload<{}> | null>(null);
+  const [modalData, setModalData] = useState<userPayloadOne | null>(null);
   const [loader, setLoader] = useState(true);
 
-  const columns: TableColumn<Prisma.UserGetPayload<{ include: { userAuth: true } }>>[] = [
+  const columns: TableColumn<userWithUserAuthOne>[] = [
     {
       name: "Name",
       selector: (row) => row.name,
@@ -50,7 +48,7 @@ export default function TableUser({ dataAdmin }: { dataAdmin: Prisma.UserGetPayl
       ),
     },
   ];
-  const EditUser = async (data: Prisma.UserGetPayload<{}>) => {
+  const EditUser = async (data: userPayloadOne) => {
     setModal(true);
     setModalData(data);
   };
@@ -78,7 +76,7 @@ export default function TableUser({ dataAdmin }: { dataAdmin: Prisma.UserGetPayl
             <h5 className="text-[40px] font-bold mx-5 text-[#F45846]">Admin</h5>
             <AddUser />
           </div>
-          <div className="w-full border-b-2 border-black "></div>
+          <div className="w-full border-b-2 border-gray-300"></div>
           <div className="mt-6">
             <DataTable data={dataAdmin} columns={columns} />
           </div>

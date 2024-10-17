@@ -13,8 +13,8 @@ import React, { ChangeEvent, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function EditProject({ onClose, userData, session }: { onClose: () => void; userData: userFullPayload; session: Session }) {
-  const [project, setProject] = useState<Project[]>(userData.projects);
-  const [currentProject, setCurrentProject] = useState<Project>({ link: "", ProjeectName: "" });
+  const [project, setProject] = useState<Project[]>(userData?.Student?.projects || []);
+  const [currentProject, setCurrentProject] = useState<Project>({ link: "", ProjeectName: "", teamId: "" });
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const addProject = () => {
@@ -24,7 +24,7 @@ export default function EditProject({ onClose, userData, session }: { onClose: (
       return;
     } else if (currentProject.ProjeectName?.trim() !== "" && currentProject.link?.trim() !== "") {
       setProject([...project, { ...currentProject }]);
-      setCurrentProject({ ProjeectName: "", link: "" });
+      setCurrentProject({ ProjeectName: "", link: "", teamId: "" });
     }
   };
 

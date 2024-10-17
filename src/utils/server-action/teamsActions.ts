@@ -14,33 +14,63 @@ export const CreateTeam = async (data: FormData) => {
     const UserId = session.user.id;
     const name = data.get("name") as string;
     const description = data.get("description") as string;
-    const mentor = data.get("mentor") as string;
+    const mentorId = data.get("mentorId") as string;
     const instagram = data.get("instagram") as string;
     const linkedin = data.get("linkedin") as string;
     const logo = data.get("logo") as File;
     const ArrayBuffer = await logo.arrayBuffer();
     const upload = await UploadImageCloudinary(Buffer.from(ArrayBuffer));
 
+    if (mentorId === null) {
+      throw new Error("Please select mentor!");
+    }
+
+    const mentor = await prisma.teacher.findUnique({
+      where: { id: mentorId },
+      include: { user: true },
+    });
+
+    if (!mentor) {
+      throw new Error("mentor not found!");
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: UserId },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
     const CreateTeam = await prisma.team.create({
       data: {
         name: name ?? "",
         description: description ?? "",
-        mentor: mentor ?? "",
         instagram: instagram ?? "",
         linkedin: linkedin ?? "",
         ownerId: UserId as string,
         logo: (upload.data?.url as string) ?? "",
         createAt: new Date(),
-        member: { create: { userId: UserId as string, role: "OWNER", joinedAt: new Date() } },
+        member: { create: { memberId: UserId as string, role: "OWNER", joinedAt: new Date() } },
+        mentor: { connect: { id: mentorId } },
       },
     });
     if (!CreateTeam) {
       throw new Error("Gagal Membuat Tim!");
     }
-    const updateUser = await prisma.user.update({
-      where: { id: UserId as string },
+
+    const student = await prisma.student.findUnique({
+      where: { userId: UserId },
+    });
+
+    if (!student) {
+      throw new Error("Student not found for the user");
+    }
+    const updateUser = await prisma.student.update({
+      where: { userId: UserId },
       data: { status: "Have_Team" },
     });
+
     if (!updateUser) {
       throw new Error("Gagal Membuat Tim!");
     }
@@ -71,7 +101,7 @@ export const UpdateTeam = async (id: string, data: FormData) => {
 
     const name = data.get("name") as string;
     const description = data.get("description") as string;
-    const mentor = data.get("mentor") as string;
+    const mentorId = data.get("mentorId") as string;
     const instagram = data.get("instagram") as string;
     const linkedin = data.get("linkedin") as string;
 
@@ -85,7 +115,7 @@ export const UpdateTeam = async (id: string, data: FormData) => {
         data: {
           name: name ?? "",
           description: description ?? "",
-          mentor: mentor ?? "",
+          mentor: { connect: { id: mentorId } },
           instagram: instagram ?? "",
           linkedin: linkedin ?? "",
           logo: logo ? (upload.data?.url as string) : findTeam?.logo,
@@ -105,7 +135,7 @@ export const UpdateTeam = async (id: string, data: FormData) => {
   }
 };
 
-export const InviteMember = async (formData: FormData) => {
+export const InviteMember = async (formData: FormData, teamId: string) => {
   try {
     const session = await nextGetServerSession();
     const ownerId = session?.user?.id!;
@@ -116,7 +146,7 @@ export const InviteMember = async (formData: FormData) => {
     const member = formData.getAll("member") as string[];
 
     const findTeam = await prisma.team.findFirst({
-      where: { ownerId: ownerId as string },
+      where: { id: teamId },
     });
 
     await Promise.all(
@@ -134,7 +164,7 @@ export const InviteMember = async (formData: FormData) => {
         await prisma.user.update({
           where: { id: user },
           data: {
-            notiification: {
+            notification: {
               create: {
                 title: "Invitation to Join Team",
                 message: "You have been invited to join the team",
@@ -179,7 +209,7 @@ export const AcceptInviteMember = async (id: string) => {
       await prisma.teamMember.create({
         data: {
           joinedAt: new Date(),
-          userId: memberId as string,
+          memberId: memberId as string,
           teamId: acc.teamId,
           role: "MEMBER",
         },
@@ -187,8 +217,12 @@ export const AcceptInviteMember = async (id: string) => {
       await prisma.user.update({
         where: { id: memberId },
         data: {
-          status: "Have_Team",
-          notiification: {
+          Student: {
+            update: {
+              status: "Have_Team",
+            },
+          },
+          notification: {
             update: {
               where: { id: acc.notificationId as string },
               data: {
@@ -233,8 +267,12 @@ export const DeniedInviteMember = async (id: string) => {
     await prisma.user.update({
       where: { id: memberId },
       data: {
-        status: "Dont_Have_Team",
-        notiification: {
+        Student: {
+          update: {
+            status: "Dont_Have_Team",
+          },
+        },
+        notification: {
           update: {
             where: { id: den.notificationId as string },
             data: {
@@ -286,7 +324,7 @@ export const RequestTeam = async (teamId: string) => {
     await prisma.user.update({
       where: { id: memberId },
       data: {
-        notiification: {
+        notification: {
           create: {
             title: "Request to Join Team",
             message: "You are Request to join the team",
@@ -323,7 +361,7 @@ export const AcceptRequest = async (id: string) => {
       await prisma.teamMember.create({
         data: {
           joinedAt: new Date(),
-          userId: acc.receiverId,
+          memberId: acc.receiverId,
           teamId: acc.teamId,
           role: "MEMBER",
         },
@@ -331,8 +369,12 @@ export const AcceptRequest = async (id: string) => {
       await prisma.user.update({
         where: { id: acc.receiverId },
         data: {
-          status: "Have_Team",
-          notiification: {
+          Student: {
+            update: {
+              status: "Have_Team",
+            },
+          },
+          notification: {
             update: {
               where: { id: acc.notificationId as string },
               data: {
@@ -382,8 +424,12 @@ export const DeniedRequest = async (id: string) => {
     await prisma.user.update({
       where: { id: den.receiverId },
       data: {
-        status: "Dont_Have_Team",
-        notiification: {
+        Student: {
+          update: {
+            status: "Dont_Have_Team",
+          },
+        },
+        notification: {
           update: {
             where: { id: den.notificationId as string },
             data: {
@@ -425,8 +471,12 @@ export const CancelInviteMember = async (id: string) => {
     await prisma.user.update({
       where: { id: del.receiverId },
       data: {
-        status: "Dont_Have_Team",
-        notiification: {
+        Student: {
+          update: {
+            status: "Dont_Have_Team",
+          },
+        },
+        notification: {
           update: {
             where: { id: del.notificationId as string },
             data: {
@@ -464,10 +514,14 @@ export const KickMember = async (id: string) => {
       where: { id: del.teamId },
     });
     await prisma.user.update({
-      where: { id: del.userId },
+      where: { id: del.memberId },
       data: {
-        status: "Dont_Have_Team",
-        notiification: {
+        Student: {
+          update: {
+            status: "Dont_Have_Team",
+          },
+        },
+        notification: {
           create: {
             title: `You have been removed from ${findTeam?.name}`,
             message: `You have been kicked from the ${findTeam?.name}`,
@@ -577,10 +631,10 @@ export const deleteTeam = async (teamId: string) => {
 
     const updateOwner = await prisma.user.update({
       where: { id: session.user.id },
-      data: { status: "Dont_Have_Team" },
+      data: { Student: { update: { status: "Dont_Have_Team" } } },
     });
-    const updateUser = await prisma.user.updateMany({
-      where: { Team: { every: { teamId: teamId } } },
+    const updateUser = await prisma.student.updateMany({
+      where: { user: { Team: { every: { teamId: teamId } } } },
       data: { status: "Dont_Have_Team" },
     });
     if (!updateOwner || !updateUser) {

@@ -12,7 +12,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function EditSkill({ onClose, userData, session }: { onClose: () => void; userData: userFullPayload; session: Session }) {
-  const [skills, setSkills] = useState<string[]>(userData.Skills.map((x) => x.SkillName));
+  const [skills, setSkills] = useState<string[]>(userData.Student?.Skills?.map((x) => x.SkillName) || []);
   const [currentSkill, setCurrentSkill] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 

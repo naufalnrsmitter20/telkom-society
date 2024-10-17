@@ -63,7 +63,7 @@ export default function Sidebar() {
             <div className="flex items-center justify-center mb-8">
               <button
                 onClick={() => signOut({ callbackUrl: "/admin/login" })}
-                className="group flex items-center rounded-[50px] px-5 py-3 text-base font-normal text-primary-400 hover:bg-secondary-color hover:text-white transition-all gap-x-3 w-full"
+                className="group flex items-center rounded-[50px] px-5 py-3 text-base text-primary-400 hover:bg-secondary-color hover:text-red-600 font-semibold transition-all gap-x-3 w-full"
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path

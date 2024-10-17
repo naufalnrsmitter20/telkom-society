@@ -3,7 +3,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import Banner from "@/../public/img/banner_profile.png";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { userFullPayload } from "@/utils/relationsip";
+import { classOfTalentPayloadMany, jobPayloadMany, userFullPayload } from "@/utils/relationsip";
 import { Gender, Project, Religion, Skill } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -16,21 +16,25 @@ import { FormButton, LinkButton } from "@/app/components/utils/Button";
 import ModalProfile from "@/app/components/utils/Modal";
 import { DropDown, TextArea, TextField } from "@/app/components/utils/Form";
 import toast from "react-hot-toast";
-import { UpdateGeneralProfileById, UpdateUserById } from "@/utils/server-action/userGetServerSession";
-import { occupation } from "@/types/occupation";
+import { UpdateGeneralProfileById } from "@/utils/server-action/userGetServerSession";
 import EditSkill from "./EditSkill";
 import EditProject from "./EditProject";
 import { Session } from "next-auth";
 import ModalEditCover from "./ModalEditCover";
 import { formatPhoneNumber } from "@/utils/formatPhone";
 
-export default function ContentProfile({ userData, session }: { userData: userFullPayload; session: Session }) {
-  const [selectedOccupation, setSelectedOccupation] = useState<string | null>(null);
+export default function ContentProfile({ userData, session, jobData, classOfTalent }: { userData: userFullPayload; session: Session; jobData: jobPayloadMany; classOfTalent: classOfTalentPayloadMany }) {
+  const [selectedOccupation, setSelectedOccupation] = useState<string | null>(userData.Student?.UserJob?.id || null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [addSkillModal, setAddSkillModal] = useState(false);
   const [addProjectModal, setAddProjectModal] = useState(false);
   const [cover, setCover] = useState(false);
+  const [classOfStudent, setClassOfStudent] = useState<string | null>(userData?.Student?.ClassOfTalent?.id || "");
 
+  const handleSelectTalentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+    setClassOfStudent(selectedValue);
+  };
   const router = useRouter();
   const [modal, setModal] = useState(false);
 
@@ -63,7 +67,7 @@ export default function ContentProfile({ userData, session }: { userData: userFu
       toast.error("Gagal Mengedit Profil");
     }
   };
-  const currentTeam = userData.Team.find((x) => x.userId === session.user?.id) || null;
+  const currentTeam = userData?.Team.find((x) => x.memberId === session.user?.id) || null;
 
   return (
     <div className="bg-slate-100 p-0 pt-8 md:pt-10 lg:pt-10 sm:p-5 md:p-10 lg:p-15 xl:p-20">
@@ -76,7 +80,7 @@ export default function ContentProfile({ userData, session }: { userData: userFu
             width={100}
             height={1000}
             alt="banner profile"
-            className="w-full md:h-full h-28 object-cover"
+            className="w-full md:h-full h-28 object-cover object-top"
           />
         </div>
         {cover && <ModalEditCover setIsOpenModal={setCover} />}
@@ -89,7 +93,7 @@ export default function ContentProfile({ userData, session }: { userData: userFu
           </div>
           <div className="mt-4 lg:flex w-full justify-between">
             <h1 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal">
-              {userData?.name} {`${userData?.job ? `(${userData?.job})` : "Loading..."}` as string}
+              {userData?.name} {`${userData?.Student?.UserJob?.jobName ? `(${userData?.Student.UserJob.jobName})` : "Loading..."}` as string}
             </h1>
             <div className="flex gap-x-2 mt-2 lg:mt-0">
               <FormButton variant="base" onClick={handleModal}>
@@ -101,8 +105,8 @@ export default function ContentProfile({ userData, session }: { userData: userFu
             </div>
           </div>
           <div className="h-2"></div>
-          <p className="text-gray-500 text-lg sm:text-lg md:text-xl lg:text-xl">{userData?.clasess}</p>
-          <p className="text-left text-gray-600 text-lg sm:text-lg md:text-xl lg:text-xl mt-4 mb-8">{userData?.biography}</p>
+          <p className="text-gray-500 text-lg sm:text-lg md:text-xl lg:text-xl">{userData?.Student?.ClassOfTalent?.Studentclass}</p>
+          <p className="text-left text-gray-600 text-lg sm:text-lg md:text-xl lg:text-xl mt-4 mb-8">{userData?.Student?.biography}</p>
           <div className="flex items-center gap-x-4 mb-2">
             <svg className="w-6 h-6 text-slate-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
               <path
@@ -113,7 +117,7 @@ export default function ContentProfile({ userData, session }: { userData: userFu
                 d="M9.143 4H4.857A.857.857 0 0 0 4 4.857v4.286c0 .473.384.857.857.857h4.286A.857.857 0 0 0 10 9.143V4.857A.857.857 0 0 0 9.143 4Zm10 0h-4.286a.857.857 0 0 0-.857.857v4.286c0 .473.384.857.857.857h4.286A.857.857 0 0 0 20 9.143V4.857A.857.857 0 0 0 19.143 4Zm-10 10H4.857a.857.857 0 0 0-.857.857v4.286c0 .473.384.857.857.857h4.286a.857.857 0 0 0 .857-.857v-4.286A.857.857 0 0 0 9.143 14Zm10 0h-4.286a.857.857 0 0 0-.857.857v4.286c0 .473.384.857.857.857h4.286a.857.857 0 0 0 .857-.857v-4.286a.857.857 0 0 0-.857-.857Z"
               />
             </svg>
-            <p className="text-left text-gray-800 text-lg sm:text-lg md:text-xl lg:text-xl">{userData?.job}</p>
+            <p className="text-left text-gray-800 text-lg sm:text-lg md:text-xl lg:text-xl">{userData?.Student?.UserJob?.jobName}</p>
           </div>
           <div className="flex items-center gap-x-4">
             <svg className="w-6 h-6 text-slate-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -123,16 +127,16 @@ export default function ContentProfile({ userData, session }: { userData: userFu
                 clipRule="evenodd"
               />
             </svg>
-            <p className="text-left text-gray-800 text-lg sm:text-lg md:text-xl lg:text-xl">{userData.status}</p>
+            <p className="text-left text-gray-800 text-lg sm:text-lg md:text-xl lg:text-xl">{userData.Student?.status}</p>
           </div>
         </div>
 
         <div className="relative z-10 flex flex-col items-start mt-8">
           <h2 className="font-normal text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl mb-4">Skill</h2>
           <div className="flex flex-wrap justify-start gap-x-4 gap-y-2 mb-8 mt-4">
-            {userData && userData?.Skills.length > 0 ? (
+            {userData && userData?.Student?.Skills != undefined ? (
               <>
-                {userData?.Skills.map((skill, i) => (
+                {userData?.Student?.Skills.map((skill, i) => (
                   <div key={i} className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl px-4 py-2 bg-red-500 text-white rounded-[8px]">
                     {skill.SkillName}
                   </div>
@@ -154,9 +158,9 @@ export default function ContentProfile({ userData, session }: { userData: userFu
         <div className="relative z-10 flex flex-col items-start my-8 mt-8">
           <h2 className="text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal mb-4">My Project</h2>
           <ul className="space-y-2">
-            {userData && userData?.projects.length !== 0 ? (
+            {userData && userData?.Student?.projects.length !== 0 ? (
               <div className="flex gap-3 flex-wrap">
-                {userData?.projects.map((x, i) => (
+                {userData?.Student?.projects.map((x, i) => (
                   <div key={i}>
                     <div className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl px-6 py-2 bg-red-500 text-white rounded-[8px] flex  items-center gap-x-3">
                       <p className="font-medium text-lg">{x.ProjeectName}</p>
@@ -199,12 +203,13 @@ export default function ContentProfile({ userData, session }: { userData: userFu
                 </span>
               )}
             </p>
+
             <ul className="space-y-2">
               {currentTeam && currentTeam.team.teamStatus !== "DELETED" ? (
                 currentTeam.team.member.map((x, i) => (
                   <li key={i}>
                     <Link href="#" className="text-sm sm:text-sm md:text-lg lg:text-xl xl:text-xl text-slate-800">
-                      {i + 1}. {x.user.name} - {x.user.job}
+                      {i + 1}. {x.user.name} - {x.user.Student?.UserJob?.jobName}
                     </Link>
                   </li>
                 ))
@@ -261,16 +266,23 @@ export default function ContentProfile({ userData, session }: { userData: userFu
           >
             <TextField type="text" label="Name" readOnly disabled defaultValue={userData?.name as string} />
             <TextField type="text" label="Email" readOnly disabled defaultValue={userData?.email as string} />
-            <TextArea label="Biography" name="biography" defaultValue={userData?.biography as string} />
+            <TextArea label="Biography" name="biography" defaultValue={userData?.Student?.biography as string} />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3">
-              <TextField type="text" label="Class" name="clasess" defaultValue={userData?.clasess as string} />
-              <TextField type="text" label="Absent" name="absent" defaultValue={userData?.absent as string} />
-              {/* <TextField type="text" label="Phone" name="Phone" defaultValue={userData?.Phone as string} /> */}
-              <TextField type="date" label="Birth Date" name="BirthDate" defaultValue={userData?.BirthDate as string} />
-              <TextField type="text" label="NIS" name="NIS" defaultValue={userData?.NIS as string} />
-              <TextField type="text" label="NISN" name="NISN" defaultValue={userData?.NISN as string} />
-              <TextField type="text" label="school Origin" name="schoolOrigin" disabled readOnly defaultValue={userData?.schoolOrigin as string} />
-
+              <DropDown
+                options={classOfTalent.map((x) => ({
+                  label: x.Studentclass,
+                  value: x.id,
+                }))}
+                handleChange={handleSelectTalentChange}
+                value={classOfStudent as string}
+                name="clasess"
+                label="Class"
+                required
+              />{" "}
+              <TextField type="date" label="Birth Date" name="BirthDate" defaultValue={userData?.Student?.BirthDate as string} />
+              <TextField type="text" label="NIS" name="NIS" defaultValue={userData?.Student?.NIS as string} />
+              <TextField type="text" label="NISN" name="NISN" defaultValue={userData?.Student?.NISN as string} />
+              <TextField type="text" label="school Origin" name="schoolOrigin" disabled readOnly defaultValue={userData?.Student?.schoolOrigin as string} />
               <DropDown
                 label="Gender"
                 defaultValue={userData?.gender as string}
@@ -293,10 +305,10 @@ export default function ContentProfile({ userData, session }: { userData: userFu
                 name="job"
                 handleChange={handleSelectChange}
                 label="Job"
-                value={selectedOccupation || userData?.job}
-                options={occupation.map((e) => ({
-                  label: e.occupation,
-                  value: e.value,
+                value={selectedOccupation as string}
+                options={jobData.map((e) => ({
+                  label: `${e.jobName} (${e.jobDesc})`,
+                  value: e.id,
                 }))}
               />
             </div>
