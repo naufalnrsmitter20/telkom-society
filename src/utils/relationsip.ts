@@ -16,6 +16,7 @@ export type userFullPayload = Prisma.UserGetPayload<{
 }>;
 export type userPayloadOne = Prisma.UserGetPayload<{}>;
 export type userPayloadMany = Prisma.UserGetPayload<{ include: { Student: { include: { UserJob: true } } } }>[];
+export type userOnlyPayloadMany = Prisma.UserGetPayload<{}>[];
 export type userWithStudentPayloadMany = Prisma.UserGetPayload<{ include: { Student: true } }>[];
 export type userWithTeacherPayloadMany = Prisma.UserGetPayload<{ include: { Teacher: true } }>[];
 export type userWithUserAuthMany = Prisma.UserGetPayload<{ include: { userAuth: true } }>[];

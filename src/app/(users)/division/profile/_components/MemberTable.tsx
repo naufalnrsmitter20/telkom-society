@@ -18,16 +18,17 @@ export default function MemberTable({
   teamOwner,
   data,
   session,
+  CurrentTeam,
 }: {
   teamMember: Prisma.TeamMemberGetPayload<{ include: { user: { include: { Student: { include: { UserJob: true } } } } } }>[];
   teamRequest: Prisma.TeamRequestGetPayload<{ include: { sender: { include: { Student: { include: { UserJob: true } } } }; receiver: { include: { Student: { include: { UserJob: true } } } } } }>[];
   teamOwner: Prisma.TeamMemberGetPayload<{ include: { user: { include: { Student: { include: { UserJob: true } } } } } }>;
   data: Prisma.UserGetPayload<{ include: { Team: true; invitation: true; teamRequest: true; Student: { include: { UserJob: true } } } }>[];
   session: Session;
+  CurrentTeam: Prisma.TeamGetPayload<{ include: { member: true; requests: true; mentor: { include: { user: true } } } }>;
 }) {
   const [modalData, setModalData] = useState<boolean>(false);
   const router = useRouter();
-  console.log(teamOwner);
 
   return (
     <>
@@ -141,7 +142,7 @@ export default function MemberTable({
           </tbody>
         </table>
       </div>
-      {modalData && <AddMember data={data} onClose={() => setModalData(false)} />}
+      {modalData && <AddMember data={data} onClose={() => setModalData(false)} CurrentTeam={CurrentTeam} />}
     </>
   );
 }

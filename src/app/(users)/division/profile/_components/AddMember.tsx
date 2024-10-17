@@ -11,14 +11,22 @@ import makeAnimated from "react-select/animated";
 
 const animatedComponents = makeAnimated();
 
-export default function AddMember({ onClose, data }: { onClose: () => void; data: Prisma.UserGetPayload<{ include: { Team: true; Student: { include: { UserJob: true } } } }>[] }) {
+export default function AddMember({
+  onClose,
+  data,
+  CurrentTeam,
+}: {
+  onClose: () => void;
+  data: Prisma.UserGetPayload<{ include: { Team: true; Student: { include: { UserJob: true } } } }>[];
+  CurrentTeam: Prisma.TeamGetPayload<{ include: { member: true; requests: true; mentor: { include: { user: true } } } }>;
+}) {
   const userOptions = data.map((x) => ({ label: `${x.name} - ${x.Student?.UserJob?.jobName}`, value: x.id }));
   const HandleInvite = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const toastId = toast.loading("Inviting member...");
       const formData = new FormData(e.target);
-      const req = await InviteMember(formData);
+      const req = await InviteMember(formData, CurrentTeam.id);
       if (!req) {
         toast.error(req, { id: toastId });
       } else {

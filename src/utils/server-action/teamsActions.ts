@@ -135,7 +135,7 @@ export const UpdateTeam = async (id: string, data: FormData) => {
   }
 };
 
-export const InviteMember = async (formData: FormData) => {
+export const InviteMember = async (formData: FormData, teamId: string) => {
   try {
     const session = await nextGetServerSession();
     const ownerId = session?.user?.id!;
@@ -146,7 +146,7 @@ export const InviteMember = async (formData: FormData) => {
     const member = formData.getAll("member") as string[];
 
     const findTeam = await prisma.team.findFirst({
-      where: { ownerId: ownerId as string },
+      where: { id: teamId },
     });
 
     await Promise.all(

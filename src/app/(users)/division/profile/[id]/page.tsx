@@ -28,11 +28,11 @@ export default async function Division({ params }: { params: { id: string } }) {
         { Team: { some: { memberId: findMember?.memberId } } },
         { role: "ADMIN" },
         { role: "GURU" },
-        { Student: { UserJob: { jobName: undefined } } },
         { OR: [{ id: findRequestMember?.receiver.id, teamRequest: { some: { status: "PENDING" } } }, { Student: { status: "Have_Team" } }] },
       ],
     },
   });
+
   if (!profile?.id) {
     return (
       <div className="min-h-screen w-full">
@@ -49,7 +49,7 @@ export default async function Division({ params }: { params: { id: string } }) {
           </div>
           <div className="p-8 w-full">
             <General profile={profile!} teamId={params.id} userId={session?.user?.id as string} mentor={mentor} />
-            <MemberTable teamOwner={teamOwner!} teamMember={teamMember} data={user} teamRequest={teamRequest} session={session!} />
+            <MemberTable teamOwner={teamOwner!} teamMember={teamMember} data={user} teamRequest={teamRequest} session={session!} CurrentTeam={profile} />
             <div className="mt-8 flex space-x-4">
               <Link target="_blank" href={`https://www.linkedin.com/${profile?.linkedin}`} className="text-blue-500 hover:underline">
                 LinkedIn

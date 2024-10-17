@@ -12,10 +12,11 @@ export default async function Partner() {
   const getCurrentUser = await prisma.user.findFirst({
     where: { id: session?.user?.id },
   });
+  const getJob = await prisma.userJob.findMany();
   return (
     <main className="min-h-screen bg-slate-100 py-36">
       <section>
-        <Main currentUser={getCurrentUser!} session={session!} userData={getUser} />
+        <Main currentUser={getCurrentUser!} session={session!} userData={getUser} job={getJob} />
       </section>
     </main>
   );

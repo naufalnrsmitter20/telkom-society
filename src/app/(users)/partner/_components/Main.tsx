@@ -9,9 +9,9 @@ import { LinkButton } from "@/app/components/utils/Button";
 import { Prisma } from "@prisma/client";
 import { Session } from "next-auth";
 import { formatPhoneNumber } from "@/utils/formatPhone";
-import { userPayloadMany, userPayloadOne } from "@/utils/relationsip";
+import { jobPayloadMany, userPayloadMany, userPayloadOne } from "@/utils/relationsip";
 
-export default function Main({ userData, session, currentUser }: { userData: userPayloadMany; session: Session; currentUser: userPayloadOne }) {
+export default function Main({ userData, session, currentUser, job }: { userData: userPayloadMany; session: Session; currentUser: userPayloadOne; job: jobPayloadMany }) {
   const [searchInput, setSearchInput] = useState<string>("");
   const [selected, setSelected] = useState("All");
   const [filteredUser, setFilteredUser] = useState<Prisma.UserGetPayload<{ include: { Student: { include: { UserJob: true } } } }>[]>(userData);
@@ -88,21 +88,13 @@ export default function Main({ userData, session, currentUser }: { userData: use
             <hr />
             <div className="grid grid-cols-1">
               <button onClick={() => handleButtonFilter("All")} className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2">
-                <Image src={setting} width={30} alt="hustler" />
-                <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-600">All</p>
+                <p className="lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium text-slate-700">All</p>
               </button>
-              <button onClick={() => handleButtonFilter("Hustler")} className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2">
-                <Image src={hustler} width={30} alt="hustler" />
-                <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-600">Hustler</p>
-              </button>
-              <button onClick={() => handleButtonFilter("Hipster")} className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2">
-                <Image src={hipster} width={30} alt="hustler" />
-                <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-600">Hipster</p>
-              </button>
-              <button onClick={() => handleButtonFilter("Hacker")} className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2">
-                <Image src={hacker} width={30} alt="hustler" />
-                <p className="xl:text-[20px] lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium font-Quicksand text-slate-600">Hacker</p>
-              </button>
+              {job.map((jobData, i) => (
+                <button key={i} onClick={() => handleButtonFilter(`${jobData.jobName}`)} className="flex gap-x-4 items-center py-2 hover:bg-slate-100 focus:ring-2 focus:ring-slate-500 rounded-xl mt-2 pl-2">
+                  <p className="lg:text-[19px] md:text-[18px] sm:text-[17px] font-medium text-slate-700">{jobData.jobName}</p>
+                </button>
+              ))}
             </div>
           </div>
         </div>

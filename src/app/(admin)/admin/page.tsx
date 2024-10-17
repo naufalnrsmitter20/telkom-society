@@ -12,7 +12,7 @@ interface cardProps {
 
 export default async function AdminPage() {
   const dataUser = await findAllUsers({
-    AND: [{ NOT: { role: "ADMIN" } }, { NOT: { role: "GURU" } }, { NOT: { job: "Undefined" } }],
+    AND: [{ NOT: { role: "ADMIN" } }, { NOT: { role: "GURU" } }],
   });
   const dataGuru = await findAllUsers({
     AND: [{ NOT: { role: "SISWA" } }, { NOT: { role: "ADMIN" } }],
